@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <gps.h>
 #include <f1x/aasdk/Channel/Sensor/SensorServiceChannel.hpp>
 #include <f1x/openauto/autoapp/Service/IService.hpp>
 
@@ -34,9 +35,14 @@ class SensorService: public aasdk::channel::sensor::ISensorServiceChannelEventHa
 {
 public:
     SensorService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger);
+    bool isNight = false;
+    bool previous = false;
+    bool stopPolling = false;
 
     void start() override;
     void stop() override;
+    void pause() override;
+    void resume() override;
     void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response) override;
     void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request) override;
     void onSensorStartRequest(const aasdk::proto::messages::SensorStartRequestMessage& request) override;
@@ -46,9 +52,16 @@ private:
     using std::enable_shared_from_this<SensorService>::shared_from_this;
     void sendDrivingStatusUnrestricted();
     void sendNightData();
+    void sendGPSLocationData();
+    bool is_file_exist(const char *filename);
+    void sensorPolling();
+    bool firstRun = true;
 
+    boost::asio::deadline_timer timer_;
     boost::asio::io_service::strand strand_;
     aasdk::channel::sensor::SensorServiceChannel::Pointer channel_;
+    struct gps_data_t gpsData_;
+    bool gpsEnabled_ = false;
 };
 
 }

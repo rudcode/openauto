@@ -35,7 +35,6 @@ QtVideoOutput::QtVideoOutput(configuration::IConfiguration::Pointer configuratio
     this->moveToThread(QApplication::instance()->thread());
     connect(this, &QtVideoOutput::startPlayback, this, &QtVideoOutput::onStartPlayback, Qt::QueuedConnection);
     connect(this, &QtVideoOutput::stopPlayback, this, &QtVideoOutput::onStopPlayback, Qt::QueuedConnection);
-
     QMetaObject::invokeMethod(this, "createVideoOutput", Qt::BlockingQueuedConnection);
 }
 
@@ -72,13 +71,14 @@ void QtVideoOutput::onStartPlayback()
 {
     videoWidget_->setAspectRatioMode(Qt::IgnoreAspectRatio);
     videoWidget_->setFocus();
-    videoWidget_->setWindowFlags(Qt::WindowStaysOnTopHint);
+    //videoWidget_->setWindowFlags(Qt::WindowStaysOnTopHint);
     videoWidget_->setFullScreen(true);
     videoWidget_->show();
 
     mediaPlayer_->setVideoOutput(videoWidget_.get());
     mediaPlayer_->setMedia(QMediaContent(), &videoBuffer_);
     mediaPlayer_->play();
+    OPENAUTO_LOG(debug) << "Player error state -> " << mediaPlayer_->errorString().toStdString();
 }
 
 void QtVideoOutput::onStopPlayback()
