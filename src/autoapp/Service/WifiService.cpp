@@ -19,7 +19,7 @@
 #include <f1x/openauto/Common/Log.hpp>
 #include <f1x/openauto/autoapp/Service/WifiService.hpp>
 #include <fstream>
-#include <QString>
+//#include <QString>
 
 namespace f1x
 {
@@ -60,7 +60,7 @@ void WifiService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse&
     channelDescriptor->set_channel_id(14);
 
     auto* channel = channelDescriptor->mutable_wifi_channel();
-    channel->set_ssid(configuration_->getParamFromFile("/etc/hostapd/hostapd.conf","ssid").toStdString());
+    channel->set_ssid(std::string("Mazda"));
 }
 
 }

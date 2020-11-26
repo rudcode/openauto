@@ -18,7 +18,6 @@
 
 #include <f1x/openauto/autoapp/Configuration/Configuration.hpp>
 #include <f1x/openauto/Common/Log.hpp>
-#include <QTouchDevice>
 
 namespace f1x
 {
@@ -128,7 +127,6 @@ void Configuration::load()
         screenDPI_ = iniConfig.get<size_t>(cVideoScreenDPIKey, 140);
 
         omxLayerIndex_ = iniConfig.get<int32_t>(cVideoOMXLayerIndexKey, 1);
-        videoMargins_ = QRect(0, 0, iniConfig.get<int32_t>(cVideoMarginWidth, 0), iniConfig.get<int32_t>(cVideoMarginHeight, 0));
 
         enableTouchscreen_ = iniConfig.get<bool>(cInputEnableTouchscreenKey, true);
         enablePlayerControl_ = iniConfig.get<bool>(cInputEnablePlayerControlKey, false);
@@ -175,7 +173,6 @@ void Configuration::reset()
     videoResolution_ = aasdk::proto::enums::VideoResolution::_480p;
     screenDPI_ = 140;
     omxLayerIndex_ = 1;
-    videoMargins_ = QRect(0, 0, 0, 0);
     enableTouchscreen_ = true;
     enablePlayerControl_ = false;
     buttonCodes_.clear();
@@ -213,8 +210,6 @@ void Configuration::save()
     iniConfig.put<uint32_t>(cVideoResolutionKey, static_cast<uint32_t>(videoResolution_));
     iniConfig.put<size_t>(cVideoScreenDPIKey, screenDPI_);
     iniConfig.put<int32_t>(cVideoOMXLayerIndexKey, omxLayerIndex_);
-    iniConfig.put<uint32_t>(cVideoMarginWidth, videoMargins_.width());
-    iniConfig.put<uint32_t>(cVideoMarginHeight, videoMargins_.height());
 
     iniConfig.put<bool>(cInputEnableTouchscreenKey, enableTouchscreen_);
     iniConfig.put<bool>(cInputEnablePlayerControlKey, enablePlayerControl_);
@@ -231,21 +226,21 @@ void Configuration::save()
 
 bool Configuration::hasTouchScreen() const
 {
-    auto touchdevs = QTouchDevice::devices();
-
-    OPENAUTO_LOG(info) << "[Touchdev] " <<
-                          "Querying available touch devices [" <<
-                          touchdevs.length() << " available]";
-
-    for (int i = 0; i < touchdevs.length(); i++) {
-        if (touchdevs[i]->type() == QTouchDevice::TouchScreen) {
-            OPENAUTO_LOG(info) << "[Touchdev] Device " << i <<
-                                  ": " << touchdevs[i]->name().toStdString() <<
-                                  ", type " << touchdevs[i]->type();
-            return true;
-        }
-    }
-    return false;
+//    auto touchdevs = QTouchDevice::devices();
+//
+//    OPENAUTO_LOG(info) << "[Touchdev] " <<
+//                          "Querying available touch devices [" <<
+//                          touchdevs.length() << " available]";
+//
+//    for (int i = 0; i < touchdevs.length(); i++) {
+//        if (touchdevs[i]->type() == QTouchDevice::TouchScreen) {
+//            OPENAUTO_LOG(info) << "[Touchdev] Device " << i <<
+//                                  ": " << touchdevs[i]->name().toStdString() <<
+//                                  ", type " << touchdevs[i]->type();
+//            return true;
+//        }
+//    }
+    return true;
 }
 
 void Configuration::setHandednessOfTrafficType(HandednessOfTrafficType value)
@@ -468,15 +463,6 @@ int32_t Configuration::getOMXLayerIndex() const
     return omxLayerIndex_;
 }
 
-void Configuration::setVideoMargins(QRect value)
-{
-    videoMargins_ = value;
-}
-
-QRect Configuration::getVideoMargins() const
-{
-    return videoMargins_;
-}
 
 bool Configuration::getTouchscreenEnabled() const
 {
@@ -558,128 +544,128 @@ void Configuration::setAudioOutputBackendType(AudioOutputBackendType value)
     audioOutputBackendType_ = value;
 }
 
-QString Configuration::getCSValue(QString searchString) const
-{
-    using namespace std;
-    ifstream inFile;
-    ifstream inFile2;
-    string line;
-    searchString = searchString.append("=");
-    inFile.open("/boot/crankshaft/crankshaft_env.sh");
-    inFile2.open("/opt/crankshaft/crankshaft_default_env.sh");
-
-    size_t pos;
-
-    if(inFile) {
-        while(inFile.good())
-        {
-            getline(inFile,line); // get line from file
-            if (line[0] != '#') {
-                pos=line.find(searchString.toStdString()); // search
-                if(pos!=std::string::npos) // string::npos is returned if string is not found
-                {
-                    int equalPosition = line.find("=");
-                    QString value = line.substr(equalPosition + 1).c_str();
-                    value.replace("\"","");
-                    OPENAUTO_LOG(info) << "[Configuration] CS param found: " << searchString.toStdString() << " Value:" << value.toStdString();
-                    return value;
-                }
-            }
-        }
-        OPENAUTO_LOG(warning) << "[Configuration] unable to find cs param: " << searchString.toStdString();
-        OPENAUTO_LOG(warning) << "[Configuration] Fallback to /opt/crankshaft/crankshaft_default_env.sh)";
-        while(inFile2.good())
-        {
-            getline(inFile2,line); // get line from file
-            if (line[0] != '#') {
-                pos=line.find(searchString.toStdString()); // search
-                if(pos!=std::string::npos) // string::npos is returned if string is not found
-                {
-                    int equalPosition = line.find("=");
-                    QString value = line.substr(equalPosition + 1).c_str();
-                    value.replace("\"","");
-                    OPENAUTO_LOG(info) << "[Configuration] CS param found: " << searchString.toStdString() << " Value:" << value.toStdString();
-                    return value;
-                }
-            }
-        }
-        return "";
-    } else {
-        OPENAUTO_LOG(warning) << "[Configuration] unable to open cs param file (/boot/crankshaft/crankshaft_env.sh)";
-        OPENAUTO_LOG(warning) << "[Configuration] Fallback to /opt/crankshaft/crankshaft_default_env.sh)";
-
-        while(inFile2.good())
-        {
-            getline(inFile2,line); // get line from file
-            if (line[0] != '#') {
-                pos=line.find(searchString.toStdString()); // search
-                if(pos!=std::string::npos) // string::npos is returned if string is not found
-                {
-                    int equalPosition = line.find("=");
-                    QString value = line.substr(equalPosition + 1).c_str();
-                    value.replace("\"","");
-                    OPENAUTO_LOG(info) << "[Configuration] CS param found: " << searchString.toStdString() << " Value:" << value.toStdString();
-                    return value;
-                }
-            }
-        }
-        return "";
-    }
-}
-
-QString Configuration::getParamFromFile(QString fileName, QString searchString) const
-{
-    OPENAUTO_LOG(info) << "[Configuration] Request param from file: " << fileName.toStdString() << " param: " << searchString.toStdString();
-    using namespace std;
-    ifstream inFile;
-    string line;
-    if (!searchString.contains("dtoverlay")) {
-        searchString = searchString.append("=");
-    }
-    inFile.open(fileName.toStdString());
-
-    size_t pos;
-
-    if(inFile) {
-        while(inFile.good())
-        {
-            getline(inFile,line); // get line from file
-            if (line[0] != '#') {
-                pos=line.find(searchString.toStdString()); // search
-                if(pos!=std::string::npos) // string::npos is returned if string is not found
-                {
-                    int equalPosition = line.find("=");
-                    QString value = line.substr(equalPosition + 1).c_str();
-                    value.replace("\"","");
-                    OPENAUTO_LOG(info) << "[Configuration] Param from file: " << fileName.toStdString() << " found: " << searchString.toStdString() << " Value:" << value.toStdString();
-                    return value;
-                }
-            }
-        }
-        return "";
-    } else {
-        return "";
-    }
-}
-
-QString Configuration::readFileContent(QString fileName) const
-{
-    using namespace std;
-    ifstream inFile;
-    string line;
-    inFile.open(fileName.toStdString());
-    string result = "";
-    if(inFile) {
-        while(inFile.good())
-        {
-            getline(inFile,line); // get line from file
-            result.append(line);
-        }
-        return result.c_str();
-    } else {
-        return "";
-    }
-}
+//QString Configuration::getCSValue(QString searchString) const
+//{
+//    using namespace std;
+//    ifstream inFile;
+//    ifstream inFile2;
+//    string line;
+//    searchString = searchString.append("=");
+//    inFile.open("/boot/crankshaft/crankshaft_env.sh");
+//    inFile2.open("/opt/crankshaft/crankshaft_default_env.sh");
+//
+//    size_t pos;
+//
+//    if(inFile) {
+//        while(inFile.good())
+//        {
+//            getline(inFile,line); // get line from file
+//            if (line[0] != '#') {
+//                pos=line.find(searchString.toStdString()); // search
+//                if(pos!=std::string::npos) // string::npos is returned if string is not found
+//                {
+//                    int equalPosition = line.find("=");
+//                    QString value = line.substr(equalPosition + 1).c_str();
+//                    value.replace("\"","");
+//                    OPENAUTO_LOG(info) << "[Configuration] CS param found: " << searchString.toStdString() << " Value:" << value.toStdString();
+//                    return value;
+//                }
+//            }
+//        }
+//        OPENAUTO_LOG(warning) << "[Configuration] unable to find cs param: " << searchString.toStdString();
+//        OPENAUTO_LOG(warning) << "[Configuration] Fallback to /opt/crankshaft/crankshaft_default_env.sh)";
+//        while(inFile2.good())
+//        {
+//            getline(inFile2,line); // get line from file
+//            if (line[0] != '#') {
+//                pos=line.find(searchString.toStdString()); // search
+//                if(pos!=std::string::npos) // string::npos is returned if string is not found
+//                {
+//                    int equalPosition = line.find("=");
+//                    QString value = line.substr(equalPosition + 1).c_str();
+//                    value.replace("\"","");
+//                    OPENAUTO_LOG(info) << "[Configuration] CS param found: " << searchString.toStdString() << " Value:" << value.toStdString();
+//                    return value;
+//                }
+//            }
+//        }
+//        return "";
+//    } else {
+//        OPENAUTO_LOG(warning) << "[Configuration] unable to open cs param file (/boot/crankshaft/crankshaft_env.sh)";
+//        OPENAUTO_LOG(warning) << "[Configuration] Fallback to /opt/crankshaft/crankshaft_default_env.sh)";
+//
+//        while(inFile2.good())
+//        {
+//            getline(inFile2,line); // get line from file
+//            if (line[0] != '#') {
+//                pos=line.find(searchString.toStdString()); // search
+//                if(pos!=std::string::npos) // string::npos is returned if string is not found
+//                {
+//                    int equalPosition = line.find("=");
+//                    QString value = line.substr(equalPosition + 1).c_str();
+//                    value.replace("\"","");
+//                    OPENAUTO_LOG(info) << "[Configuration] CS param found: " << searchString.toStdString() << " Value:" << value.toStdString();
+//                    return value;
+//                }
+//            }
+//        }
+//        return "";
+//    }
+//}
+//
+//QString Configuration::getParamFromFile(QString fileName, QString searchString) const
+//{
+//    OPENAUTO_LOG(info) << "[Configuration] Request param from file: " << fileName.toStdString() << " param: " << searchString.toStdString();
+//    using namespace std;
+//    ifstream inFile;
+//    string line;
+//    if (!searchString.contains("dtoverlay")) {
+//        searchString = searchString.append("=");
+//    }
+//    inFile.open(fileName.toStdString());
+//
+//    size_t pos;
+//
+//    if(inFile) {
+//        while(inFile.good())
+//        {
+//            getline(inFile,line); // get line from file
+//            if (line[0] != '#') {
+//                pos=line.find(searchString.toStdString()); // search
+//                if(pos!=std::string::npos) // string::npos is returned if string is not found
+//                {
+//                    int equalPosition = line.find("=");
+//                    QString value = line.substr(equalPosition + 1).c_str();
+//                    value.replace("\"","");
+//                    OPENAUTO_LOG(info) << "[Configuration] Param from file: " << fileName.toStdString() << " found: " << searchString.toStdString() << " Value:" << value.toStdString();
+//                    return value;
+//                }
+//            }
+//        }
+//        return "";
+//    } else {
+//        return "";
+//    }
+//}
+//
+//QString Configuration::readFileContent(QString fileName) const
+//{
+//    using namespace std;
+//    ifstream inFile;
+//    string line;
+//    inFile.open(fileName.toStdString());
+//    string result = "";
+//    if(inFile) {
+//        while(inFile.good())
+//        {
+//            getline(inFile,line); // get line from file
+//            result.append(line);
+//        }
+//        return result.c_str();
+//    } else {
+//        return "";
+//    }
+//}
 
 void Configuration::readButtonCodes(boost::property_tree::ptree& iniConfig)
 {
@@ -712,23 +698,23 @@ void Configuration::insertButtonCode(boost::property_tree::ptree& iniConfig, con
 
 void Configuration::writeButtonCodes(boost::property_tree::ptree& iniConfig)
 {
-    iniConfig.put<bool>(cInputPlayButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PLAY) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputPauseButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PAUSE) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputTogglePlayButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::TOGGLE_PLAY) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputNextTrackButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::NEXT) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputPreviousTrackButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PREV) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputHomeButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::HOME) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputPhoneButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PHONE) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputCallEndButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::CALL_END) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputVoiceCommandButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::MICROPHONE_1) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputLeftButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::LEFT) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputRightButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::RIGHT) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputUpButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::UP) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputDownButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::DOWN) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputScrollWheelButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputBackButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::BACK) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputEnterButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::ENTER) != buttonCodes_.end());
-    iniConfig.put<bool>(cInputNavButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::NAVIGATION) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputPlayButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PLAY) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputPauseButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PAUSE) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputTogglePlayButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::TOGGLE_PLAY) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputNextTrackButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::NEXT) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputPreviousTrackButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PREV) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputHomeButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::HOME) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputPhoneButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::PHONE) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputCallEndButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::CALL_END) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputVoiceCommandButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::MICROPHONE_1) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputLeftButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::LEFT) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputRightButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::RIGHT) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputUpButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::UP) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputDownButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::DOWN) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputScrollWheelButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputBackButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::BACK) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputEnterButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::ENTER) != buttonCodes_.end());
+//    iniConfig.put<bool>(cInputNavButtonKey, std::find(buttonCodes_.begin(), buttonCodes_.end(), aasdk::proto::enums::ButtonCode::NAVIGATION) != buttonCodes_.end());
 }
 
 }

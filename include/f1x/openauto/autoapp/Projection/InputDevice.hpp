@@ -6,7 +6,6 @@
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 3 of the License, or
 *  (at your option) any later version.
-
 *  openauto is distributed in the hope that it will be useful,
 *  but WITHOUT ANY WARRANTY; without even the implied warranty of
 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -18,49 +17,48 @@
 
 #pragma once
 
-#include <QObject>
-#include <QKeyEvent>
+#include <aasdk_proto/ButtonCodeEnum.pb.h>
+#include <aasdk_proto/TouchActionEnum.pb.h>
+#include <f1x/aasdk/IO/Promise.hpp>
 #include <f1x/openauto/autoapp/Projection/IInputDevice.hpp>
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
 
 namespace f1x
 {
-namespace openauto
-{
-namespace autoapp
-{
-namespace projection
-{
+    namespace openauto
+    {
+        namespace autoapp
+        {
+            namespace projection {
+                class InputDevice: public IInputDevice {
 
-class InputDevice: public QObject, public IInputDevice, boost::noncopyable
-{
-    Q_OBJECT
+                public:
+                    InputDevice();
 
-public:
-    InputDevice(QObject& parent, configuration::IConfiguration::Pointer configuration, const QRect& touchscreenGeometry, const QRect& videoGeometry);
+                    void start(IInputDeviceEventHandler &eventHandler) override;
 
-    void start(IInputDeviceEventHandler& eventHandler) override;
-    void stop() override;
-    ButtonCodes getSupportedButtonCodes() const override;
-    bool eventFilter(QObject* obj, QEvent* event) override;
-    bool hasTouchscreen() const override;
-    QRect getTouchscreenGeometry() const override;
+                    void stop() override;
 
-private:
-    void setVideoGeometry();
-    bool handleKeyEvent(QEvent* event, QKeyEvent* key);
-    void dispatchKeyEvent(ButtonEvent event);
-    bool handleTouchEvent(QEvent* event);
+                    ButtonCodes getSupportedButtonCodes() const override;
 
-    QObject& parent_;
-    configuration::IConfiguration::Pointer configuration_;
-    QRect touchscreenGeometry_;
-    QRect displayGeometry_;
-    IInputDeviceEventHandler* eventHandler_;
-    std::mutex mutex_;
-};
+                    bool hasTouchscreen() const override;
 
-}
-}
-}
+                    TouchscreenSize getTouchscreenGeometry() const override;
+
+                private:
+                    IInputDeviceEventHandler *eventHandler_;
+                    std::mutex mutex_;
+                    std::thread input_thread;
+                    int input_thread_quit_pipe_read = -1;
+                    int input_thread_quit_pipe_write = -1;
+                    int touch_fd = -1, kbd_fd = -1, ui_fd = -1;
+                    void input_thread_func();
+                    uint32_t pressScanCode;
+                    time_t pressedSince;
+                    void pass_key_to_mzd(int type, int code, int val);
+
+                };
+            }
+        }
+    }
 }

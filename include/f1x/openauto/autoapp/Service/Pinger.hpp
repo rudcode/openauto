@@ -19,6 +19,7 @@
 #pragma once
 
 #include <f1x/openauto/autoapp/Service/IPinger.hpp>
+#include <boost/system/error_code.hpp>
 
 namespace f1x
 {

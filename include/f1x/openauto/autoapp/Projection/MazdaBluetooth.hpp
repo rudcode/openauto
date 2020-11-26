@@ -19,32 +19,30 @@
 #pragma once
 
 #include <f1x/openauto/autoapp/Projection/IBluetoothDevice.hpp>
+#include <f1x/aasdk/IO/Promise.hpp>
 
-namespace f1x
-{
-namespace openauto
-{
-namespace autoapp
-{
-namespace projection
-{
+namespace f1x {
+    namespace openauto {
+        namespace autoapp {
+            namespace projection {
+                class MazdaBluetooth : public IBluetoothDevice {
+                public:
+                    typedef f1x::aasdk::io::Promise<void, void> PairingPromise;
 
-class RemoteBluetoothDevice: public IBluetoothDevice
-{
-public:
-    RemoteBluetoothDevice(const std::string& address);
+                    void stop() override;
 
-    void stop() override;
-    bool isPaired(const std::string& address) const override;
-    void pair(const std::string& address, PairingPromise::Pointer promise) override;
-    std::string getLocalAddress() const override;
-    bool isAvailable() const override;
+                    bool isPaired(const std::string &address) const override;
 
-private:
-    std::string address_;
-};
+                    void pair(const std::string &address, PairingPromise::Pointer promise) override;
 
+                    std::string getLocalAddress() const override;
+
+                    bool isAvailable() const override;
+                };
+            }
+        }
+    }
 }
-}
-}
-}
+
+
+

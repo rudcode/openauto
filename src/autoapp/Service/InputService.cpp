@@ -88,8 +88,8 @@ void InputService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse
         const auto& touchscreenSurface = inputDevice_->getTouchscreenGeometry();
         auto touchscreenConfig = inputChannel->mutable_touch_screen_config();
 
-        touchscreenConfig->set_width(touchscreenSurface.width());
-        touchscreenConfig->set_height(touchscreenSurface.height());
+        touchscreenConfig->set_width(touchscreenSurface.width);
+        touchscreenConfig->set_height(touchscreenSurface.height);
     }
 }
 

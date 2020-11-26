@@ -19,7 +19,6 @@
 #pragma once
 
 #include <memory>
-#include <QRect>
 #include <aasdk_proto/VideoFPSEnum.pb.h>
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
 #include <f1x/aasdk/Common/Data.hpp>
@@ -32,6 +31,32 @@ namespace autoapp
 {
 namespace projection
 {
+    class VideoMargins {
+    private:
+        int32_t _height = 0;
+        int32_t _width = 0;
+    public:
+        VideoMargins(int32_t height, int32_t width) {
+            _height = height;
+            _width = width;
+        }
+
+        int32_t height() const {
+            return _height;
+        }
+
+        int32_t width() const {
+            return _width;
+        }
+
+        void setHeight(int32_t height) {
+            _height = height;
+        }
+
+        void setWidth(int32_t width) {
+            _width = width;
+        }
+    };
 
 class IVideoOutput
 {
@@ -49,7 +74,7 @@ public:
     virtual aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const = 0;
     virtual aasdk::proto::enums::VideoResolution::Enum getVideoResolution() const = 0;
     virtual size_t getScreenDPI() const = 0;
-    virtual QRect getVideoMargins() const = 0;
+    virtual VideoMargins getVideoMargins() const = 0;
 };
 
 }

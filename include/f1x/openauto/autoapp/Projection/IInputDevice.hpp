@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <QRect>
 #include <f1x/aasdk/IO/Promise.hpp>
 #include <f1x/openauto/autoapp/Projection/InputEvent.hpp>
 
@@ -31,7 +30,13 @@ namespace autoapp
 namespace projection
 {
 
-class IInputDeviceEventHandler;
+
+    struct TouchscreenSize {
+        int32_t width;
+        int32_t height;
+    };
+
+    class IInputDeviceEventHandler;
 
 class IInputDevice
 {
@@ -44,7 +49,7 @@ public:
     virtual void stop() = 0;
     virtual ButtonCodes getSupportedButtonCodes() const = 0;
     virtual bool hasTouchscreen() const = 0;
-    virtual QRect getTouchscreenGeometry() const = 0;
+    virtual TouchscreenSize getTouchscreenGeometry() const = 0;
 };
 
 }

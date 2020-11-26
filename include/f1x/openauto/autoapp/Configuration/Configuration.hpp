@@ -84,9 +84,9 @@ public:
     bool instantPlay() const override;
     void instantPlay(bool value) override;
 
-    QString getCSValue(QString searchString) const override;
-    QString readFileContent(QString fileName) const override;
-    QString getParamFromFile(QString fileName, QString searchString) const override;
+//    QString getCSValue(QString searchString) const override;
+//    QString readFileContent(QString fileName) const override;
+//    QString getParamFromFile(QString fileName, QString searchString) const override;
 
     aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const override;
     void setVideoFPS(aasdk::proto::enums::VideoFPS::Enum value) override;
@@ -96,8 +96,6 @@ public:
     void setScreenDPI(size_t value) override;
     void setOMXLayerIndex(int32_t value) override;
     int32_t getOMXLayerIndex() const override;
-    void setVideoMargins(QRect value) override;
-    QRect getVideoMargins() const override;
 
     bool getTouchscreenEnabled() const override;
     void setTouchscreenEnabled(bool value) override;
@@ -147,7 +145,6 @@ private:
     aasdk::proto::enums::VideoResolution::Enum videoResolution_;
     size_t screenDPI_;
     int32_t omxLayerIndex_;
-    QRect videoMargins_;
     bool enableTouchscreen_;
     bool enablePlayerControl_;
     ButtonCodes buttonCodes_;
