@@ -31,6 +31,7 @@
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
 #include <f1x/openauto/autoapp/Projection/MazdaBluetooth.hpp>
 
+
 namespace f1x
 {
 namespace openauto
@@ -40,9 +41,10 @@ namespace autoapp
 namespace service
 {
 
-ServiceFactory::ServiceFactory(boost::asio::io_service& ioService, configuration::IConfiguration::Pointer configuration)
+ServiceFactory::ServiceFactory(boost::asio::io_service& ioService, configuration::IConfiguration::Pointer configuration, Signals::Pointer signals)
     : ioService_(ioService)
     , configuration_(std::move(configuration))
+    , signals_(std::move(signals))
 {
 
 }
@@ -66,7 +68,7 @@ ServiceList ServiceFactory::create(aasdk::messenger::IMessenger::Pointer messeng
 IService::Pointer ServiceFactory::createVideoService(aasdk::messenger::IMessenger::Pointer messenger)
 {
     projection::IVideoOutput::Pointer videoOutput(new projection::GSTVideoOutput(configuration_));
-    return std::make_shared<VideoService>(ioService_, messenger, std::move(videoOutput));
+    return std::make_shared<VideoService>(ioService_, messenger, std::move(videoOutput), signals_->videoSignals);
 }
 
 IService::Pointer ServiceFactory::createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger)

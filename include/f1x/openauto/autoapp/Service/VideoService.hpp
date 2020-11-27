@@ -23,6 +23,9 @@
 #include <f1x/aasdk/Channel/AV/IVideoServiceChannelEventHandler.hpp>
 #include <f1x/openauto/autoapp/Projection/IVideoOutput.hpp>
 #include <f1x/openauto/autoapp/Service/IService.hpp>
+#include <f1x/openauto/autoapp/Signals/VideoSignals.hpp>
+#include <f1x/openauto/autoapp/Managers/VideoManager.hpp>
+
 
 namespace f1x
 {
@@ -38,7 +41,7 @@ class VideoService: public aasdk::channel::av::IVideoServiceChannelEventHandler,
 public:
     typedef std::shared_ptr<VideoService> Pointer;
 
-    VideoService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput);
+    VideoService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput, VideoSignals::Pointer videoSignals);
 
     void start() override;
     void stop() override;
@@ -54,9 +57,13 @@ public:
     void onVideoFocusRequest(const aasdk::proto::messages::VideoFocusRequest& request) override;
     void onChannelError(const aasdk::error::Error& e) override;
 
+    VideoSignals::Pointer videoSignals_;
+
+
 private:
     using std::enable_shared_from_this<VideoService>::shared_from_this;
-    void sendVideoFocusIndication();
+    void sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor);
+    void sendVideoFocusLost(VIDEO_FOCUS_REQUESTOR requestor);
 
     boost::asio::io_service::strand strand_;
     aasdk::channel::av::VideoServiceChannel::Pointer channel_;

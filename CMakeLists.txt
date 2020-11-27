@@ -41,6 +41,7 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(UDEV REQUIRED libudev)
 pkg_check_modules(DBUS REQUIRED dbus-1)
 pkg_check_modules(DBUS_C++ REQUIRED dbus-c++-1)
+pkg_check_modules(SIGC++ REQUIRED sigc++-2.0)
 
 if(WIN32)
     set(WINSOCK2_LIBRARIES "ws2_32")
@@ -66,7 +67,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${include_directory}
                     ${ALSA_INCLUDE_DIRS}
                     ${DBUS_C++_INCLUDE_DIRS}
-                    ${DBUS_C++-GLIB_INCLUDE_DIRS})
+                    ${DBUS_C++-GLIB_INCLUDE_DIRS}
+                    ${SIGC++_INCLUDE_DIRS})
 								
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
@@ -90,7 +92,10 @@ target_link_libraries(autoapp
                         ${CMAKE_SYSROOT}/usr/lib/libaasdk.so
                         OpenSSL::Crypto
                         OpenSSL::SSL
-                        -static-libstdc++)
+                        -static-libstdc++
+                        ${SIGC++_LIBRARIES}
+        ${CMAKE_SYSROOT}/usr/lib/libdbus-c++-1.a
+        ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a)
 
 set(btservice_sources_directory ${sources_directory}/btservice)
 set(btservice_include_directory ${include_directory}/f1x/openauto/btservice)

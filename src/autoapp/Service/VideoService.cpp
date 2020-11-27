@@ -29,11 +29,12 @@ namespace autoapp
 namespace service
 {
 
-VideoService::VideoService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput)
+VideoService::VideoService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput, VideoSignals::Pointer videoSignals)
     : strand_(ioService)
     , channel_(std::make_shared<aasdk::channel::av::VideoServiceChannel>(strand_, std::move(messenger)))
     , videoOutput_(std::move(videoOutput))
     , session_(-1)
+    , videoSignals_(std::move(videoSignals))
 {
 
 }
@@ -50,6 +51,7 @@ void VideoService::stop()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
         OPENAUTO_LOG(info) << "[VideoService] stop.";
+        videoSignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO);
         videoOutput_->stop();
     });
 }
@@ -72,6 +74,8 @@ void VideoService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpe
 {
     OPENAUTO_LOG(info) << "[VideoService] open request, priority: " << request.priority();
     const aasdk::proto::enums::Status::Enum status = videoOutput_->open() ? aasdk::proto::enums::Status::OK : aasdk::proto::enums::Status::FAIL;
+    videoSignals_->focusRequest.connect(sigc::mem_fun(*this, &VideoService::sendVideoFocusIndication));
+    videoSignals_->focusRelease.connect(sigc::mem_fun(*this, &VideoService::sendVideoFocusLost));
     OPENAUTO_LOG(info) << "[VideoService] open status: " << status;
 
     aasdk::proto::messages::ChannelOpenResponse response;
@@ -90,13 +94,15 @@ void VideoService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChann
     const aasdk::proto::enums::AVChannelSetupStatus::Enum status = videoOutput_->init() ? aasdk::proto::enums::AVChannelSetupStatus::OK : aasdk::proto::enums::AVChannelSetupStatus::FAIL;
     OPENAUTO_LOG(info) << "[VideoService] setup status: " << status;
 
+    videoSignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO);
+
     aasdk::proto::messages::AVChannelSetupResponse response;
     response.set_media_status(status);
     response.set_max_unacked(1);
     response.add_configs(0);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then(std::bind(&VideoService::sendVideoFocusIndication, this->shared_from_this()),
+    promise->then(std::bind(&VideoService::sendVideoFocusIndication, this->shared_from_this(), VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO),
                  std::bind(&VideoService::onChannelError, this->shared_from_this(), std::placeholders::_1));
     channel_->sendAVChannelSetupResponse(response, std::move(promise));
     channel_->receive(this->shared_from_this());
@@ -179,6 +185,8 @@ void VideoService::onVideoFocusRequest(const aasdk::proto::messages::VideoFocusR
                        << ", focus mode: " << request.focus_mode()
                        << ", focus reason: " << request.focus_reason();
 
+    videoSignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO);
+
     // stop video service on go back to openauto
 //    if (request.focus_mode() == 2) {
 //        OPENAUTO_LOG(info) << "[VideoService] Back to CSNG...";
@@ -191,11 +199,11 @@ void VideoService::onVideoFocusRequest(const aasdk::proto::messages::VideoFocusR
 //        }
 //    }
 
-    this->sendVideoFocusIndication();
+//    this->sendVideoFocusIndication();
     channel_->receive(this->shared_from_this());
 }
 
-void VideoService::sendVideoFocusIndication()
+void VideoService::sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor)
 {
     OPENAUTO_LOG(info) << "[VideoService] video focus indication.";
 
@@ -207,6 +215,19 @@ void VideoService::sendVideoFocusIndication()
     promise->then([]() {}, std::bind(&VideoService::onChannelError, this->shared_from_this(), std::placeholders::_1));
     channel_->sendVideoFocusIndication(videoFocusIndication, std::move(promise));
 }
+
+void VideoService::sendVideoFocusLost(VIDEO_FOCUS_REQUESTOR requestor)
+    {
+        OPENAUTO_LOG(info) << "[VideoService] video focus indication.";
+
+        aasdk::proto::messages::VideoFocusIndication videoFocusIndication;
+        videoFocusIndication.set_focus_mode(aasdk::proto::enums::VideoFocusMode::UNFOCUSED);
+        videoFocusIndication.set_unrequested(false);
+
+        auto promise = aasdk::channel::SendPromise::defer(strand_);
+        promise->then([]() {}, std::bind(&VideoService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+        channel_->sendVideoFocusIndication(videoFocusIndication, std::move(promise));
+    }
 
 
 }

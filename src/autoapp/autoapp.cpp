@@ -17,6 +17,9 @@
 */
 
 #include <thread>
+
+#include <dbus-c++/dbus.h>
+
 #include <f1x/aasdk/USB/USBHub.hpp>
 #include <f1x/aasdk/USB/ConnectedAccessoriesEnumerator.hpp>
 #include <f1x/aasdk/USB/AccessoryModeQueryChain.hpp>
@@ -30,8 +33,8 @@
 #include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
 #include <f1x/openauto/autoapp/Configuration/Configuration.hpp>
 #include <f1x/openauto/Common/Log.hpp>
-#include <gst/gst.h>
-
+#include <f1x/openauto/autoapp/Signals/Signals.hpp>
+#include <f1x/openauto/autoapp/Managers/VideoManager.hpp>
 
 namespace aasdk = f1x::aasdk;
 namespace autoapp = f1x::openauto::autoapp;
@@ -66,6 +69,12 @@ void startIOServiceWorkers(boost::asio::io_service& ioService, ThreadPool& threa
     threadPool.emplace_back(ioServiceWorker);
 }
 
+DBus::BusDispatcher dispatcher;
+
+void dbus_dispatcher() {
+    dispatcher.enter();
+}
+
 int main(int argc, char* argv[])
 {
     libusb_context* usbContext;
@@ -75,6 +84,16 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+#define HMI_BUS_ADDRESS "unix:path=/tmp/dbus_hmi_socket"
+#define SERVICE_BUS_ADDRESS "unix:path=/tmp/dbus_service_socket"
+    DBus::default_dispatcher = &dispatcher;
+    DBus::Connection hmiBus(HMI_BUS_ADDRESS, true);
+    hmiBus.register_bus();
+
+//    DBus::Connection serviceBus(SERVICE_BUS_ADDRESS, true);
+//    serviceBus.register_bus();
+
+
     boost::asio::io_service ioService;
     boost::asio::io_service::work work(ioService);
     std::vector<std::thread> threadPool;
@@ -82,6 +101,10 @@ int main(int argc, char* argv[])
     startIOServiceWorkers(ioService, threadPool);
 
     auto configuration = std::make_shared<autoapp::configuration::Configuration>();
+    auto signals = std::make_shared<Signals>();
+
+    VideoManager videoManager(hmiBus, signals->videoSignals);
+    std::thread dbus_thread(dbus_dispatcher);
 
     autoapp::configuration::RecentAddressesList recentAddressesList(7);
     recentAddressesList.read();
@@ -91,9 +114,8 @@ int main(int argc, char* argv[])
     aasdk::usb::USBWrapper usbWrapper(usbContext);
     aasdk::usb::AccessoryModeQueryFactory queryFactory(usbWrapper, ioService);
     aasdk::usb::AccessoryModeQueryChainFactory queryChainFactory(usbWrapper, ioService, queryFactory);
-    autoapp::service::ServiceFactory serviceFactory(ioService, configuration);
+    autoapp::service::ServiceFactory serviceFactory(ioService, configuration, signals);
     autoapp::service::AndroidAutoEntityFactory androidAutoEntityFactory(ioService, configuration, serviceFactory);
-
     auto usbHub(std::make_shared<aasdk::usb::USBHub>(usbWrapper, ioService, queryChainFactory));
     auto connectedAccessoriesEnumerator(std::make_shared<aasdk::usb::ConnectedAccessoriesEnumerator>(usbWrapper, ioService, queryChainFactory));
     auto app = std::make_shared<autoapp::App>(ioService, usbWrapper, tcpWrapper, androidAutoEntityFactory, std::move(usbHub), std::move(connectedAccessoriesEnumerator));
@@ -103,6 +125,8 @@ int main(int argc, char* argv[])
     while(true){
         sleep(1);
     }
+    dispatcher.leave();
+    dbus_thread.join();
 
     std::for_each(threadPool.begin(), threadPool.end(), std::bind(&std::thread::join, std::placeholders::_1));
 
