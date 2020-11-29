@@ -6,7 +6,9 @@
 #include <f1x/openauto/autoapp/Service/VideoService.hpp>
 #include <f1x/openauto/autoapp/Signals/VideoSignals.hpp>
 
-#include "generated_cmu.h"
+#include <Mazda/Dbus/com.jci.nativeguictrl.h>
+#include <Mazda/Dbus/com.jci.nativeguictrl.h>
+
 
 class NativeGUICtrlClient : public com::jci::nativeguictrl_proxy,
                             public DBus::ObjectProxy {

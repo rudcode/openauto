@@ -2,10 +2,12 @@
 
 #include <string>
 #include <future>
-#include "generated_cmu.h"
 #include <aasdk_proto/WifiInfoRequestMessage.pb.h>
 #include <aasdk_proto/WifiInfoResponseMessage.pb.h>
 #include <aasdk_proto/WifiSecurityResponseMessage.pb.h>
+
+#include <Mazda/Dbus/com.jci.bds.h>
+#include <Mazda/Dbus/com.jci.bca.h>
 
 class BDSClient : public com::jci::bds_proxy, public DBus::ObjectProxy
 {
