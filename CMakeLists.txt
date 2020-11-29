@@ -37,6 +37,12 @@ pkg_check_modules(DBUS REQUIRED dbus-1)
 pkg_check_modules(DBUS_C++ REQUIRED dbus-c++-1)
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0)
 
+message("CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}")
+message("CMAKE_CURRENT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}")
+message("CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR}")
+
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/Mazda/Dbus/)
 file(GLOB_RECURSE dbus_xml ${include_directory}/Mazda/Dbus/XML/*.xml)
 set(GEN_DBUS_HEADER_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/dbusxx-xml2cpp)
 foreach (header ${dbus_xml})
@@ -45,11 +51,11 @@ foreach (header ${dbus_xml})
     add_custom_command( #TARGET dbus_proxy_headers POST_BUILD
             OUTPUT "Mazda/Dbus/${header_out}.h"
             COMMAND ${GEN_DBUS_HEADER_COMMAND} ${header} --proxy="${header_out}.h"
-            WORKING_DIRECTORY ${include_directory}/Mazda/Dbus/
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/Mazda/Dbus/
             COMMENT "Generating" ${dbus_xml})
 endforeach ()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR}
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR}
         ${LIBUSB_1_INCLUDE_DIRS}
         ${PROTOBUF_INCLUDE_DIR}
         ${OPENSSL_INCLUDE_DIR}
@@ -76,12 +82,8 @@ add_executable(autoapp
         ${sources_directory}/easylogging++.cc
         "Mazda/Dbus/com.jci.nativeguictrl.h"
         "Mazda/Dbus/com.jci.bucpsa.h")
-target_include_directories(autoapp PUBLIC ${include_directory}/Mazda/Dbus ${common_include_directory})
+target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/ ${common_include_directory})
 target_include_directories(autoapp PRIVATE ${include_directory})
-
-message("${SIGC++_STATIC_LIBRARIES}")
-
-
 
 target_link_libraries(autoapp
         libsigc-2.0.a
