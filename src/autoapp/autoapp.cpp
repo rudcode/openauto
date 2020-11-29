@@ -31,7 +31,7 @@
 #include <f1x/openauto/autoapp/Service/AndroidAutoEntityFactory.hpp>
 #include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
 #include <f1x/openauto/autoapp/Configuration/Configuration.hpp>
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Signals/Signals.hpp>
 #include <f1x/openauto/autoapp/Managers/VideoManager.hpp>
 
@@ -74,12 +74,15 @@ void dbus_dispatcher() {
     dispatcher.enter();
 }
 
+INITIALIZE_EASYLOGGINGPP
+
 int main(int argc, char* argv[])
 {
+    LOG(INFO) << "[OpenAuto] starting";
     libusb_context* usbContext;
     if(libusb_init(&usbContext) != 0)
     {
-        OPENAUTO_LOG(error) << "[OpenAuto] libusb init failed.";
+        LOG(ERROR) << "[OpenAuto] libusb init failed.";
         return 1;
     }
 

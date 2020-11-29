@@ -1,4 +1,4 @@
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Projection/AlsaAudioInput.hpp>
 #include <unistd.h>
 #include <pthread.h>
@@ -32,7 +32,7 @@ namespace f1x {
                     *canceled = false;
                     while (true) {
                         if (poll(pfds, polldescs + 1, -1) <= 0) {
-                            OPENAUTO_LOG(error) << "poll failed";
+                            LOG(ERROR) << "poll failed";
                             break;
                         }
 
@@ -60,24 +60,24 @@ namespace f1x {
                     int err = 0;
                     if ((err = snd_pcm_open(&mic_handle, micDevice.c_str(), SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK)) <
                         0) {
-                        OPENAUTO_LOG(error) << "Playback open error: " << snd_strerror(err);
+                        LOG(ERROR) << "Playback open error: " << snd_strerror(err);
                         return;
                     }
 
                     if ((err = snd_pcm_set_params(mic_handle, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED, 1,
                                                   16000, 1, 250000)) < 0) {   /* 0.25sec */
-                        OPENAUTO_LOG(error) << "Playback open error: "<< snd_strerror(err);
+                        LOG(ERROR) << "Playback open error: "<< snd_strerror(err);
                         snd_pcm_close(mic_handle);
                         return;
                     }
                     if ((err = snd_pcm_prepare(mic_handle)) < 0) {
-                        OPENAUTO_LOG(error) << "snd_pcm_prepare: " << snd_strerror(err);
+                        LOG(ERROR) << "snd_pcm_prepare: " << snd_strerror(err);
                         snd_pcm_close(mic_handle);
                         return;
                     }
 
                     if ((err = snd_pcm_start(mic_handle)) < 0) {
-                        OPENAUTO_LOG(error) << "snd_pcm_start: " << snd_strerror(err);
+                        LOG(ERROR) << "snd_pcm_start: " << snd_strerror(err);
                         snd_pcm_close(mic_handle);
                         return;
                     }
@@ -93,7 +93,7 @@ namespace f1x {
                             if (frames == -ESTRPIPE) {
                                 frames = snd_pcm_recover(mic_handle, frames, 0);
                                 if (frames < 0) {
-                                    OPENAUTO_LOG(error) << "recover failed";
+                                    LOG(ERROR) << "recover failed";
                                 } else {
                                     frames = read_mic_cancelable(mic_handle, tempBuffer, bufferFrameCount, &canceled);
                                 }
@@ -131,7 +131,7 @@ namespace f1x {
                     }
 
                     if ((err = snd_pcm_drop(mic_handle)) < 0) {
-                        OPENAUTO_LOG(error) << "snd_pcm_drop: " << snd_strerror(err);
+                        LOG(ERROR) << "snd_pcm_drop: " << snd_strerror(err);
                     }
 
                     snd_pcm_close(mic_handle);
@@ -140,7 +140,7 @@ namespace f1x {
                 AlsaAudioInput::AlsaAudioInput(const std::string &micDevice) : micDevice(micDevice) {
 //                    int cancelPipe[2];
 //                    if (pipe(cancelPipe) < 0) {
-//                        OPENAUTO_LOG(error) << "pipe failed";
+//                        LOG(ERROR) << "pipe failed";
 //                    }
 //                    cancelPipeRead = cancelPipe[0];
 //                    cancelPipeWrite = cancelPipe[1];

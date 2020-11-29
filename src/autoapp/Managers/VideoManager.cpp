@@ -1,5 +1,5 @@
 #include "f1x/openauto/autoapp/Managers/VideoManager.hpp"
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 
 
 BucpsaClient::BucpsaClient(DBus::Connection& hmiBus, VideoSignals::Pointer videosignals)
@@ -32,13 +32,13 @@ void VideoManager::requestFocus(VIDEO_FOCUS_REQUESTOR requestor)
 //        sleep(1);
 //        waitsForFocus = false;
 //    }
-    OPENAUTO_LOG(debug) << "Setting focus, requested by " << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
+    LOG(DEBUG) << "Setting focus, requested by " << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
     gui.SetRequiredSurfacesByEnum({NativeGUICtrlClient::TV_TOUCH_SURFACE}, true);
 }
 
 void VideoManager::releaseFocus(VIDEO_FOCUS_REQUESTOR requestor)
 {
-    OPENAUTO_LOG(debug) << "Releasing focus, requested by " << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
+    LOG(DEBUG) << "Releasing focus, requested by " << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
     gui.SetRequiredSurfacesByEnum({NativeGUICtrlClient::JCI_OPERA_PRIMARY}, true);
 }
 

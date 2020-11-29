@@ -17,7 +17,7 @@
 */
 
 #include <aasdk_proto/DrivingStatusEnum.pb.h>
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/SensorService.hpp>
 #include <fstream>
 #include <cmath>
@@ -44,11 +44,11 @@ void SensorService::start()
     strand_.dispatch([this, self = this->shared_from_this()]() {
 //        if (gps_open("127.0.0.1", "2947", &this->gpsData_))
 //        {
-//            OPENAUTO_LOG(warning) << "[SensorService] can't connect to GPSD.";
+//            LOG(WARNING) << "[SensorService] can't connect to GPSD.";
 //        }
 //        else
 //        {
-//            OPENAUTO_LOG(info) << "[SensorService] Connected to GPSD.";
+//            LOG(INFO) << "[SensorService] Connected to GPSD.";
 //            gps_stream(&this->gpsData_, WATCH_ENABLE | WATCH_JSON, NULL);
 //            this->gpsEnabled_ = true;
 //        }
@@ -58,7 +58,7 @@ void SensorService::start()
         }
         this->sensorPolling();
 
-        OPENAUTO_LOG(info) << "[SensorService] start.";
+        LOG(INFO) << "[SensorService] start.";
         channel_->receive(this->shared_from_this());
     });
 
@@ -76,27 +76,27 @@ void SensorService::stop()
 //            this->gpsEnabled_ = false;
 //        }
 
-        OPENAUTO_LOG(info) << "[SensorService] stop.";
+        LOG(INFO) << "[SensorService] stop.";
     });
 }
 
 void SensorService::pause()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[SensorService] pause.";
+        LOG(INFO) << "[SensorService] pause.";
     });
 }
 
 void SensorService::resume()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[SensorService] resume.";
+        LOG(INFO) << "[SensorService] resume.";
     });
 }
 
 void SensorService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
 {
-    OPENAUTO_LOG(info) << "[SensorService] fill features.";
+    LOG(INFO) << "[SensorService] fill features.";
 
     auto* channelDescriptor = response.add_channels();
     channelDescriptor->set_channel_id(static_cast<uint32_t>(channel_->getId()));
@@ -109,9 +109,9 @@ void SensorService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryRespons
 
 void SensorService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request)
 {
-    OPENAUTO_LOG(info) << "[SensorService] open request, priority: " << request.priority();
+    LOG(INFO) << "[SensorService] open request, priority: " << request.priority();
     const aasdk::proto::enums::Status::Enum status = aasdk::proto::enums::Status::OK;
-    OPENAUTO_LOG(info) << "[SensorService] open status: " << status;
+    LOG(INFO) << "[SensorService] open status: " << status;
 
     aasdk::proto::messages::ChannelOpenResponse response;
     response.set_status(status);
@@ -125,7 +125,7 @@ void SensorService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOp
 
 void SensorService::onSensorStartRequest(const aasdk::proto::messages::SensorStartRequestMessage& request)
 {
-    OPENAUTO_LOG(info) << "[SensorService] sensor start request, type: " << request.sensor_type();
+    LOG(INFO) << "[SensorService] sensor start request, type: " << request.sensor_type();
 
     aasdk::proto::messages::SensorStartResponseMessage response;
     response.set_status(aasdk::proto::enums::Status::OK);
@@ -166,10 +166,10 @@ void SensorService::sendNightData()
     aasdk::proto::messages::SensorEventIndication indication;
 
     if (SensorService::isNight) {
-        OPENAUTO_LOG(info) << "[SensorService] Mode night triggered";
+        LOG(INFO) << "[SensorService] Mode night triggered";
         indication.add_night_mode()->set_is_night(true);
     } else {
-        OPENAUTO_LOG(info) << "[SensorService] Mode day triggered";
+        LOG(INFO) << "[SensorService] Mode day triggered";
         indication.add_night_mode()->set_is_night(false);
     }
 
@@ -252,7 +252,7 @@ bool SensorService::is_file_exist(const char *fileName)
 
 void SensorService::onChannelError(const aasdk::error::Error& e)
 {
-    OPENAUTO_LOG(error) << "[SensorService] channel error: " << e.what();
+    LOG(ERROR) << "[SensorService] channel error: " << e.what();
 }
 
 }

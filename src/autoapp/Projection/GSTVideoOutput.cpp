@@ -1,7 +1,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <f1x/openauto/autoapp/Projection/GSTVideoOutput.hpp>
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 
 void gst_thread(GstElement *vid_pipeline){
     GstBus *bus = gst_pipeline_get_bus(GST_PIPELINE(vid_pipeline));
@@ -19,7 +19,7 @@ void gst_thread(GstElement *vid_pipeline){
                     GError *err;
 
                     gst_message_parse_error(message, &err, &debug);
-                    OPENAUTO_LOG(error) << "Error " << err->message;
+                    LOG(ERROR) << "Error " << err->message;
                     g_error_free(err);
                     g_free(debug);
                 }
@@ -31,18 +31,18 @@ void gst_thread(GstElement *vid_pipeline){
                     gchar *name;
 
                     gst_message_parse_warning(message, &err, &debug);
-                    OPENAUTO_LOG(warning) << "Warning " << err->message << "Debug " << debug;
+                    LOG(WARNING) << "Warning " << err->message << "Debug " << debug;
 
                     name = (gchar *) GST_MESSAGE_SRC_NAME(message);
 
-                    OPENAUTO_LOG(warning) <<"Name of src " << ( name ? name : "nil");
+                    LOG(WARNING) <<"Name of src " << ( name ? name : "nil");
                     g_error_free(err);
                     g_free(debug);
                 }
                     break;
 
                 case GST_MESSAGE_EOS:
-                    OPENAUTO_LOG(info) <<"End of stream";
+                    LOG(INFO) <<"End of stream";
                     loop = false;
                     break;
 
@@ -77,13 +77,13 @@ namespace f1x {
                     const char *vid_pipeline_launch = "appsrc name=mysrc is-live=true block=false max-latency=1000000 do-timestamp=true ! queue ! h264parse ! vpudec low-latency=true framedrop=true framedrop-level-mask=0x200 frame-plus=1 ! mfw_isink name=mysink "
                                                       "axis-left=0 axis-top=0 disp-width=800 disp-height=480"
                                                       " max-lateness=1000000000 sync=false async=false";
-                    OPENAUTO_LOG(debug) << vid_pipeline_launch;
+                    LOG(DEBUG) << vid_pipeline_launch;
 
                     GError *error = nullptr;
                     vid_pipeline = gst_parse_launch(vid_pipeline_launch, &error);
 
                     if (error != nullptr) {
-                        OPENAUTO_LOG(error) <<"could not construct pipeline: " << error->message;
+                        LOG(ERROR) <<"could not construct pipeline: " << error->message;
                         g_clear_error(&error);
                         return false;
                     }

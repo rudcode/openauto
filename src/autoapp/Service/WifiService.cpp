@@ -16,7 +16,7 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/WifiService.hpp>
 #include <fstream>
 //#include <QString>
@@ -54,7 +54,7 @@ void WifiService::resume()
 
 void WifiService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
 {
-    OPENAUTO_LOG(info) << "[WifiService] fill features.";
+    LOG(INFO) << "[WifiService] fill features.";
 
     auto* channelDescriptor = response.add_channels();
     channelDescriptor->set_channel_id(14);

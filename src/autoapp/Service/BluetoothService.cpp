@@ -16,7 +16,7 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/BluetoothService.hpp>
 
 namespace f1x
@@ -39,7 +39,7 @@ BluetoothService::BluetoothService(asio::io_service& ioService, aasdk::messenger
 void BluetoothService::start()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[BluetoothService] start.";
+        LOG(INFO) << "[BluetoothService] start.";
         channel_->receive(this->shared_from_this());
     });
 }
@@ -47,7 +47,7 @@ void BluetoothService::start()
 void BluetoothService::stop()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[BluetoothService] stop.";
+        LOG(INFO) << "[BluetoothService] stop.";
         bluetoothDevice_->stop();
     });
 }
@@ -55,24 +55,24 @@ void BluetoothService::stop()
 void BluetoothService::pause()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[BluetoothService] pause.";
+        LOG(INFO) << "[BluetoothService] pause.";
     });
 }
 
 void BluetoothService::resume()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[BluetoothService] resume.";
+        LOG(INFO) << "[BluetoothService] resume.";
     });
 }
 
 void BluetoothService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
 {
-    OPENAUTO_LOG(info) << "[BluetoothService] fill features";
+    LOG(INFO) << "[BluetoothService] fill features";
 
     if(bluetoothDevice_->isAvailable())
     {
-        OPENAUTO_LOG(info) << "[BluetoothService] sending local adapter adress: " << bluetoothDevice_->getLocalAddress();
+        LOG(INFO) << "[BluetoothService] sending local adapter adress: " << bluetoothDevice_->getLocalAddress();
 
         auto* channelDescriptor = response.add_channels();
         channelDescriptor->set_channel_id(static_cast<uint32_t>(channel_->getId()));
@@ -85,9 +85,9 @@ void BluetoothService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResp
 
 void BluetoothService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request)
 {
-    OPENAUTO_LOG(info) << "[BluetoothService] open request, priority: " << request.priority();
+    LOG(INFO) << "[BluetoothService] open request, priority: " << request.priority();
     const aasdk::proto::enums::Status::Enum status = aasdk::proto::enums::Status::OK;
-    OPENAUTO_LOG(info) << "[BluetoothService] open status: " << status;
+    LOG(INFO) << "[BluetoothService] open status: " << status;
 
     aasdk::proto::messages::ChannelOpenResponse response;
     response.set_status(status);
@@ -101,7 +101,7 @@ void BluetoothService::onChannelOpenRequest(const aasdk::proto::messages::Channe
 
 void BluetoothService::onBluetoothPairingRequest(const aasdk::proto::messages::BluetoothPairingRequest& request)
 {
-    OPENAUTO_LOG(info) << "[BluetoothService] pairing request, address: " << request.phone_address();
+    LOG(INFO) << "[BluetoothService] pairing request, address: " << request.phone_address();
 
     aasdk::proto::messages::BluetoothPairingResponse response;
 
@@ -118,7 +118,7 @@ void BluetoothService::onBluetoothPairingRequest(const aasdk::proto::messages::B
 
 void BluetoothService::onChannelError(const aasdk::error::Error& e)
 {
-    OPENAUTO_LOG(error) << "[BluetoothService] channel error: " << e.what();
+    LOG(ERROR) << "[BluetoothService] channel error: " << e.what();
 }
 
 }

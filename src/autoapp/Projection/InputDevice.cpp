@@ -23,7 +23,7 @@
 #define EVENT_DEVICE_UI "/dev/uinput"
 
 
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Projection/IInputDeviceEventHandler.hpp>
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
 
@@ -48,47 +48,47 @@ namespace f1x {
                 void InputDevice::start(IInputDeviceEventHandler &eventHandler) {
                     std::lock_guard<decltype(mutex_)> lock(mutex_);
 
-                    OPENAUTO_LOG(info) << "[InputDevice] start.";
+                    LOG(INFO) << "[InputDevice] start.";
                     eventHandler_ = &eventHandler;
 
                     /* Open Touchscreen Device */
                     touch_fd = open(EVENT_DEVICE_TS, O_RDONLY);
 
                     if (touch_fd < 0) {
-                        OPENAUTO_LOG(error) << EVENT_DEVICE_TS << " is not a vaild device";
+                        LOG(ERROR) << EVENT_DEVICE_TS << " is not a vaild device";
                     }
 
                     if (ioctl(touch_fd, EVIOCGRAB, 1) < 0) {
-                        OPENAUTO_LOG(error) << "EVIOCGRAB failed on " << EVENT_DEVICE_TS;
+                        LOG(ERROR) << "EVIOCGRAB failed on " << EVENT_DEVICE_TS;
                     }
 
                     kbd_fd = open(EVENT_DEVICE_KBD, O_RDONLY);
 
                     if (kbd_fd < 0) {
-                        OPENAUTO_LOG(error) << EVENT_DEVICE_KBD << " is not a vaild device";
+                        LOG(ERROR) << EVENT_DEVICE_KBD << " is not a vaild device";
                     }
 
                     if (ioctl(kbd_fd, EVIOCGRAB, 1) < 0) {
-                        OPENAUTO_LOG(error) << "EVIOCGRAB failed on " << EVENT_DEVICE_KBD;
+                        LOG(ERROR) << "EVIOCGRAB failed on " << EVENT_DEVICE_KBD;
                     }
 
                     ui_fd = open(EVENT_DEVICE_UI, O_WRONLY | O_NONBLOCK);
 
                     if (ui_fd < 0) {
-                        OPENAUTO_LOG(error) << EVENT_DEVICE_UI << " is not a vaild device";
+                        LOG(ERROR) << EVENT_DEVICE_UI << " is not a vaild device";
                     }
 
                     if (ioctl(ui_fd, UI_SET_EVBIT, EV_KEY) < 0) {
-                        OPENAUTO_LOG(error) << "UI_SET_EVBIT failed on " << EV_KEY;
+                        LOG(ERROR) << "UI_SET_EVBIT failed on " << EV_KEY;
                     }
                     if (ioctl(ui_fd, UI_SET_KEYBIT, KEY_LEFTBRACE) < 0) {
-                        OPENAUTO_LOG(error) << "UI_SET_KEYBIT failed on " << KEY_LEFTBRACE;
+                        LOG(ERROR) << "UI_SET_KEYBIT failed on " << KEY_LEFTBRACE;
                     }
                     if (ioctl(ui_fd, UI_SET_KEYBIT, KEY_RIGHTBRACE) < 0) {
-                        OPENAUTO_LOG(error) << "UI_SET_KEYBIT failed on " << KEY_RIGHTBRACE;
+                        LOG(ERROR) << "UI_SET_KEYBIT failed on " << KEY_RIGHTBRACE;
                     }
                     if (ioctl(ui_fd, UI_SET_KEYBIT, KEY_E) < 0) {
-                        OPENAUTO_LOG(error) << "UI_SET_KEYBIT failed on " << KEY_E;
+                        LOG(ERROR) << "UI_SET_KEYBIT failed on " << KEY_E;
                     }
                     struct uinput_user_dev uidev;
                     memset(&uidev, 0, sizeof(uidev));
@@ -99,16 +99,16 @@ namespace f1x {
                     uidev.id.version = 1;
 
                     if (write(ui_fd, &uidev, sizeof(uidev)) < 0) {
-                        OPENAUTO_LOG(error) << "Write uidev failed";
+                        LOG(ERROR) << "Write uidev failed";
                     }
 
                     if (ioctl(ui_fd, UI_DEV_CREATE) < 0) {
-                        OPENAUTO_LOG(error) << "UI_DEV_CREATE failed on %s\n" << EVENT_DEVICE_UI;
+                        LOG(ERROR) << "UI_DEV_CREATE failed on %s\n" << EVENT_DEVICE_UI;
                     }
 
                     int quitpiperw[2];
                     if (pipe(quitpiperw) < 0) {
-                        OPENAUTO_LOG(error) << "Pipe failed";
+                        LOG(ERROR) << "Pipe failed";
                     }
                     input_thread_quit_pipe_read = quitpiperw[0];
                     input_thread_quit_pipe_write = quitpiperw[1];
@@ -120,7 +120,7 @@ namespace f1x {
                 void InputDevice::stop() {
                     std::lock_guard<decltype(mutex_)> lock(mutex_);
 
-                    OPENAUTO_LOG(info) << "[InputDevice] stop.";
+                    LOG(INFO) << "[InputDevice] stop.";
                     eventHandler_ = nullptr;
 
 
@@ -195,7 +195,7 @@ namespace f1x {
                         unblocked = select(maxfdPlus1, &set, NULL, NULL, NULL);
 
                         if (unblocked == -1) {
-                            OPENAUTO_LOG(error) << "Error in read...";
+                            LOG(ERROR) << "Error in read...";
                             break;
                         } else if (unblocked > 0 && FD_ISSET(input_thread_quit_pipe_read, &set)) {
                             break;
@@ -211,7 +211,7 @@ namespace f1x {
                                 break;
 
                             if (size < sizeof(input_event)) {
-                                OPENAUTO_LOG(error) << "Error size when reading";
+                                LOG(ERROR) << "Error size when reading";
                                 break;
                             }
 
@@ -250,7 +250,7 @@ namespace f1x {
                                         break;
                                 }
                                 eventHandler_->onTouchEvent({mTouch.action, static_cast<uint32_t>(mTouch.x), static_cast<uint32_t>(mTouch.y), static_cast<uint32_t>(get_timestamp(event))});
-                                OPENAUTO_LOG(debug) << "Touch Event x:" << mTouch.x << " y:" << mTouch.y << " Action: " << mTouch.action;
+                                LOG(DEBUG) << "Touch Event x:" << mTouch.x << " y:" << mTouch.y << " Action: " << mTouch.action;
                             }
                         }
 
@@ -261,7 +261,7 @@ namespace f1x {
                                 break;
 
                             if (size < sizeof(input_event)) {
-                                OPENAUTO_LOG(error) << "Error size when reading";
+                                LOG(ERROR) << "Error size when reading";
                                 break;
                             }
 
@@ -293,7 +293,7 @@ namespace f1x {
 //                            scanCode = HUIB_MUSIC;
 //                            break;
                                         case KEY_LEFTBRACE:
-                                            OPENAUTO_LOG(info) << "KEY_LEFTBRACE (next track with media focus: "
+                                            LOG(INFO) << "KEY_LEFTBRACE (next track with media focus: "
                                                                << (hasMediaAudioFocus ? 1 : 0) << ")";
                                             if (hasMediaAudioFocus) {
                                                 scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_NEXT;
@@ -302,7 +302,7 @@ namespace f1x {
                                             }
                                             break;
                                         case KEY_RIGHTBRACE:
-                                            OPENAUTO_LOG(info) << "KEY_RIGHTBRACE (prev track with media focus: "
+                                            LOG(INFO) << "KEY_RIGHTBRACE (prev track with media focus: "
                                                                << (hasMediaAudioFocus ? 1 : 0) << ")";
                                             if (hasMediaAudioFocus) {
                                                 scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_PREV;
@@ -311,53 +311,53 @@ namespace f1x {
                                             }
                                             break;
                                         case KEY_BACKSPACE:
-                                            OPENAUTO_LOG(info) << "KEY_BACKSPACE";
+                                            LOG(INFO) << "KEY_BACKSPACE";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_BACK;
                                             break;
                                         case KEY_ENTER:
-                                            OPENAUTO_LOG(info) << "KEY_ENTER";
+                                            LOG(INFO) << "KEY_ENTER";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_ENTER;
                                             break;
                                         case KEY_LEFT:
-                                            OPENAUTO_LOG(info) << "KEY_LEFT\n";
+                                            LOG(INFO) << "KEY_LEFT\n";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_LEFT;
                                             break;
                                         case KEY_RIGHT:
-                                            OPENAUTO_LOG(info) << "KEY_RIGHT";
+                                            LOG(INFO) << "KEY_RIGHT";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_RIGHT;
                                             break;
                                         case KEY_UP:
-                                            OPENAUTO_LOG(info) << "KEY_UP";
+                                            LOG(INFO) << "KEY_UP";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_UP;
                                             break;
                                         case KEY_DOWN:
-                                            OPENAUTO_LOG(info) << "KEY_DOWN";
+                                            LOG(INFO) << "KEY_DOWN";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_DOWN;
                                             break;
                                         case KEY_N:
-                                            OPENAUTO_LOG(info) << "KEY_N";
+                                            LOG(INFO) << "KEY_N";
                                             if (isPressed) {
                                                 eventType = ButtonEventType::NONE;
                                                 direction = WheelDirection::LEFT;
                                             }
                                             break;
                                         case KEY_M:
-                                            OPENAUTO_LOG(info) << "KEY_M";
+                                            LOG(INFO) << "KEY_M";
                                             if (isPressed) {
                                                 eventType = ButtonEventType::NONE;
                                                 direction = WheelDirection::RIGHT;
                                             }
                                             break;
                                         case KEY_HOME:
-                                            OPENAUTO_LOG(info) << "KEY_HOME";
+                                            LOG(INFO) << "KEY_HOME";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_HOME;
                                             break;
                                         case KEY_R: // NAV
-                                            OPENAUTO_LOG(info) << "KEY_R";
+                                            LOG(INFO) << "KEY_R";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_NAVIGATION;
                                             break;
                                         case KEY_Z: // CALL ANS
-                                            OPENAUTO_LOG(info) << "KEY_Z";
+                                            LOG(INFO) << "KEY_Z";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_PHONE;
                                             break;
                                         case KEY_X: // CALL END
@@ -366,7 +366,7 @@ namespace f1x {
                                         }
                                             break;
                                         case KEY_T: // FAV
-                                            OPENAUTO_LOG(info) << "KEY_T";
+                                            LOG(INFO) << "KEY_T";
                                             scanCode = f1x::aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY;
                                             break;
                                     }

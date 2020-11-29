@@ -18,7 +18,7 @@
 
 #include <f1x/aasdk/Channel/Control/ControlServiceChannel.hpp>
 #include <f1x/openauto/autoapp/Service/AndroidAutoEntity.hpp>
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 
 namespace f1x
 {
@@ -50,13 +50,13 @@ AndroidAutoEntity::AndroidAutoEntity(asio::io_service& ioService,
 
 AndroidAutoEntity::~AndroidAutoEntity()
 {
-    OPENAUTO_LOG(debug) << "[AndroidAutoEntity] destroy.";
+    LOG(DEBUG) << "[AndroidAutoEntity] destroy.";
 }
 
 void AndroidAutoEntity::start(IAndroidAutoEntityEventHandler& eventHandler)
 {
     strand_.dispatch([this, self = this->shared_from_this(), eventHandler = &eventHandler]() {
-        OPENAUTO_LOG(info) << "[AndroidAutoEntity] start.";
+        LOG(INFO) << "[AndroidAutoEntity] start.";
 
         eventHandler_ = eventHandler;
         std::for_each(serviceList_.begin(), serviceList_.end(), std::bind(&IService::start, std::placeholders::_1));
@@ -72,7 +72,7 @@ void AndroidAutoEntity::start(IAndroidAutoEntityEventHandler& eventHandler)
 void AndroidAutoEntity::stop()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[AndroidAutoEntity] stop.";
+        LOG(INFO) << "[AndroidAutoEntity] stop.";
 
         try {
             eventHandler_ = nullptr;
@@ -82,7 +82,7 @@ void AndroidAutoEntity::stop()
             transport_->stop();
             cryptor_->deinit();
         } catch (...) {
-            OPENAUTO_LOG(info) << "[AndroidAutoEntity] exception in stop.";
+            LOG(INFO) << "[AndroidAutoEntity] exception in stop.";
         }
     });
 }
@@ -90,12 +90,12 @@ void AndroidAutoEntity::stop()
 void AndroidAutoEntity::pause()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[AndroidAutoEntity] pause.";
+        LOG(INFO) << "[AndroidAutoEntity] pause.";
 
         try {
             std::for_each(serviceList_.begin(), serviceList_.end(), std::bind(&IService::pause, std::placeholders::_1));
         } catch (...) {
-            OPENAUTO_LOG(info) << "[AndroidAutoEntity] exception in pause.";
+            LOG(INFO) << "[AndroidAutoEntity] exception in pause.";
         }
     });
 }
@@ -103,30 +103,30 @@ void AndroidAutoEntity::pause()
 void AndroidAutoEntity::resume()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[AndroidAutoEntity] resume.";
+        LOG(INFO) << "[AndroidAutoEntity] resume.";
 
         try {
             std::for_each(serviceList_.begin(), serviceList_.end(), std::bind(&IService::resume, std::placeholders::_1));
         } catch (...) {
-            OPENAUTO_LOG(info) << "[AndroidAutoEntity] exception in resume.";
+            LOG(INFO) << "[AndroidAutoEntity] exception in resume.";
         }
     });
 }
 
 void AndroidAutoEntity::onVersionResponse(uint16_t majorCode, uint16_t minorCode, aasdk::proto::enums::VersionResponseStatus::Enum status)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] version response, version: " << majorCode
+    LOG(INFO) << "[AndroidAutoEntity] version response, version: " << majorCode
                        << "." << minorCode
                        << ", status: " << status;
 
     if(status == aasdk::proto::enums::VersionResponseStatus::MISMATCH)
     {
-        OPENAUTO_LOG(error) << "[AndroidAutoEntity] version mismatch.";
+        LOG(ERROR) << "[AndroidAutoEntity] version mismatch.";
         this->triggerQuit();
     }
     else
     {
-        OPENAUTO_LOG(info) << "[AndroidAutoEntity] Begin handshake.";
+        LOG(INFO) << "[AndroidAutoEntity] Begin handshake.";
 
         try
         {
@@ -146,7 +146,7 @@ void AndroidAutoEntity::onVersionResponse(uint16_t majorCode, uint16_t minorCode
 
 void AndroidAutoEntity::onHandshake(const aasdk::common::DataConstBuffer& payload)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] Handshake, size: " << payload.size;
+    LOG(INFO) << "[AndroidAutoEntity] Handshake, size: " << payload.size;
 
     try
     {
@@ -154,7 +154,7 @@ void AndroidAutoEntity::onHandshake(const aasdk::common::DataConstBuffer& payloa
 
         if(!cryptor_->doHandshake())
         {
-            OPENAUTO_LOG(info) << "[AndroidAutoEntity] continue handshake.";
+            LOG(INFO) << "[AndroidAutoEntity] continue handshake.";
 
             auto handshakePromise = aasdk::channel::SendPromise::defer(strand_);
             handshakePromise->then([]() {}, std::bind(&AndroidAutoEntity::onChannelError, this->shared_from_this(), std::placeholders::_1));
@@ -162,7 +162,7 @@ void AndroidAutoEntity::onHandshake(const aasdk::common::DataConstBuffer& payloa
         }
         else
         {
-            OPENAUTO_LOG(info) << "[AndroidAutoEntity] Auth completed.";
+            LOG(INFO) << "[AndroidAutoEntity] Auth completed.";
 
             aasdk::proto::messages::AuthCompleteIndication authCompleteIndication;
             authCompleteIndication.set_status(aasdk::proto::enums::Status::OK);
@@ -182,7 +182,7 @@ void AndroidAutoEntity::onHandshake(const aasdk::common::DataConstBuffer& payloa
 
 void AndroidAutoEntity::onServiceDiscoveryRequest(const aasdk::proto::messages::ServiceDiscoveryRequest& request)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] Discovery request, device name: " << request.device_name()
+    LOG(INFO) << "[AndroidAutoEntity] Discovery request, device name: " << request.device_name()
                        << ", brand: " << request.device_brand();
 
     aasdk::proto::messages::ServiceDiscoveryResponse serviceDiscoveryResponse;
@@ -209,13 +209,13 @@ void AndroidAutoEntity::onServiceDiscoveryRequest(const aasdk::proto::messages::
 
 void AndroidAutoEntity::onAudioFocusRequest(const aasdk::proto::messages::AudioFocusRequest& request)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] requested audio focus, type: " << request.audio_focus_type();
+    LOG(INFO) << "[AndroidAutoEntity] requested audio focus, type: " << request.audio_focus_type();
 
     aasdk::proto::enums::AudioFocusState::Enum audioFocusState =
             request.audio_focus_type() == aasdk::proto::enums::AudioFocusType::RELEASE ? aasdk::proto::enums::AudioFocusState::LOSS
                                                                                        : aasdk::proto::enums::AudioFocusState::GAIN;
 
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] audio focus state: " << audioFocusState;
+    LOG(INFO) << "[AndroidAutoEntity] audio focus state: " << audioFocusState;
 
     aasdk::proto::messages::AudioFocusResponse response;
     response.set_audio_focus_state(audioFocusState);
@@ -228,7 +228,7 @@ void AndroidAutoEntity::onAudioFocusRequest(const aasdk::proto::messages::AudioF
 
 void AndroidAutoEntity::onShutdownRequest(const aasdk::proto::messages::ShutdownRequest& request)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] Shutdown request, reason: " << request.reason();
+    LOG(INFO) << "[AndroidAutoEntity] Shutdown request, reason: " << request.reason();
 
     aasdk::proto::messages::ShutdownResponse response;
     auto promise = aasdk::channel::SendPromise::defer(strand_);
@@ -240,13 +240,13 @@ void AndroidAutoEntity::onShutdownRequest(const aasdk::proto::messages::Shutdown
 
 void AndroidAutoEntity::onShutdownResponse(const aasdk::proto::messages::ShutdownResponse&)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] Shutdown response ";
+    LOG(INFO) << "[AndroidAutoEntity] Shutdown response ";
     this->triggerQuit();
 }
 
 void AndroidAutoEntity::onNavigationFocusRequest(const aasdk::proto::messages::NavigationFocusRequest& request)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] navigation focus request, type: " << request.type();
+    LOG(INFO) << "[AndroidAutoEntity] navigation focus request, type: " << request.type();
 
     aasdk::proto::messages::NavigationFocusResponse response;
     response.set_type(2);
@@ -259,14 +259,14 @@ void AndroidAutoEntity::onNavigationFocusRequest(const aasdk::proto::messages::N
 
 void AndroidAutoEntity::onPingResponse(const aasdk::proto::messages::PingResponse& response)
 {
-    OPENAUTO_LOG(info) << "[AndroidAutoEntity] Ping response, timestamp: "  << response.timestamp();
+    LOG(INFO) << "[AndroidAutoEntity] Ping response, timestamp: "  << response.timestamp();
     pinger_->pong();
     controlServiceChannel_->receive(this->shared_from_this());
 }
 
 void AndroidAutoEntity::onChannelError(const aasdk::error::Error& e)
 {
-    OPENAUTO_LOG(error) << "[AndroidAutoEntity] channel error: " << e.what();
+    LOG(ERROR) << "[AndroidAutoEntity] channel error: " << e.what();
     this->triggerQuit();
 }
 
@@ -289,7 +289,7 @@ void AndroidAutoEntity::schedulePing()
         if(error != aasdk::error::ErrorCode::OPERATION_ABORTED &&
            error != aasdk::error::ErrorCode::OPERATION_IN_PROGRESS)
         {
-            OPENAUTO_LOG(error) << "[AndroidAutoEntity] ping timer exceeded.";
+            LOG(ERROR) << "[AndroidAutoEntity] ping timer exceeded.";
             this->triggerQuit();
         }
     });

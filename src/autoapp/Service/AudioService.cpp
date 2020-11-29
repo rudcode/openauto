@@ -16,7 +16,7 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/AudioService.hpp>
 
 namespace f1x
@@ -40,7 +40,7 @@ AudioService::AudioService(asio::io_service& ioService, aasdk::channel::av::IAud
 void AudioService::start()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[AudioService] start, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+        LOG(INFO) << "[AudioService] start, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
         channel_->receive(this->shared_from_this());
     });
 }
@@ -48,7 +48,7 @@ void AudioService::start()
 void AudioService::stop()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[AudioService] stop, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+        LOG(INFO) << "[AudioService] stop, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
         audioOutput_->stop();
     });
 }
@@ -56,20 +56,20 @@ void AudioService::stop()
 void AudioService::pause()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[AudioService] pause.";
+        LOG(INFO) << "[AudioService] pause.";
     });
 }
 
 void AudioService::resume()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[AudioService] resume.";
+        LOG(INFO) << "[AudioService] resume.";
     });
 }
 
 void AudioService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
 {
-    OPENAUTO_LOG(info) << "[AudioService] fill features, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+    LOG(INFO) << "[AudioService] fill features, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
 
     auto* channelDescriptor = response.add_channels();
     channelDescriptor->set_channel_id(static_cast<uint32_t>(channel_->getId()));
@@ -104,17 +104,17 @@ void AudioService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse
 
 void AudioService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request)
 {
-    OPENAUTO_LOG(info) << "[AudioService] open request"
+    LOG(INFO) << "[AudioService] open request"
                        << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
                        << ", priority: " << request.priority();
 
-    OPENAUTO_LOG(debug) << "[AudioService] channel: " << aasdk::messenger::channelIdToString(channel_->getId())
+    LOG(DEBUG) << "[AudioService] channel: " << aasdk::messenger::channelIdToString(channel_->getId())
                         << " audio output sample rate: " << audioOutput_->getSampleRate()
                         << ", sample size: " << audioOutput_->getSampleSize()
                         << ", channel count: " << audioOutput_->getChannelCount();
 
     const aasdk::proto::enums::Status::Enum status = audioOutput_->open() ? aasdk::proto::enums::Status::OK : aasdk::proto::enums::Status::FAIL;
-    OPENAUTO_LOG(info) << "[AudioService] open status: " << status
+    LOG(INFO) << "[AudioService] open status: " << status
                        << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
 
     aasdk::proto::messages::ChannelOpenResponse response;
@@ -128,11 +128,11 @@ void AudioService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpe
 
 void AudioService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChannelSetupRequest& request)
 {
-    OPENAUTO_LOG(info) << "[AudioService] setup request"
+    LOG(INFO) << "[AudioService] setup request"
                        << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
                        << ", config index: " << request.config_index();
     const aasdk::proto::enums::AVChannelSetupStatus::Enum status = aasdk::proto::enums::AVChannelSetupStatus::OK;
-    OPENAUTO_LOG(info) << "[AudioService] setup status: " << status
+    LOG(INFO) << "[AudioService] setup status: " << status
                        << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
 
     aasdk::proto::messages::AVChannelSetupResponse response;
@@ -148,7 +148,7 @@ void AudioService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChann
 
 void AudioService::onAVChannelStartIndication(const aasdk::proto::messages::AVChannelStartIndication& indication)
 {
-    OPENAUTO_LOG(info) << "[AudioService] start indication"
+    LOG(INFO) << "[AudioService] start indication"
                        << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
                        << ", session: " << indication.session();
     session_ = indication.session();
@@ -158,7 +158,7 @@ void AudioService::onAVChannelStartIndication(const aasdk::proto::messages::AVCh
 
 void AudioService::onAVChannelStopIndication(const aasdk::proto::messages::AVChannelStopIndication& indication)
 {
-    OPENAUTO_LOG(info) << "[AudioService] stop indication"
+    LOG(INFO) << "[AudioService] stop indication"
                        << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
                        << ", session: " << session_;
     session_ = -1;
@@ -186,7 +186,7 @@ void AudioService::onAVMediaIndication(const aasdk::common::DataConstBuffer& buf
 
 void AudioService::onChannelError(const aasdk::error::Error& e)
 {
-    OPENAUTO_LOG(error) << "[AudioService] channel error: " << e.what()
+    LOG(ERROR) << "[AudioService] channel error: " << e.what()
                         << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
 }
 

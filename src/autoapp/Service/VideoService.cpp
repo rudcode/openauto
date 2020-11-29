@@ -16,7 +16,7 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/VideoService.hpp>
 #include <fstream>
 
@@ -42,7 +42,7 @@ VideoService::VideoService(asio::io_service& ioService, aasdk::messenger::IMesse
 void VideoService::start()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[VideoService] start.";
+        LOG(INFO) << "[VideoService] start.";
         channel_->receive(this->shared_from_this());
     });
 }
@@ -50,7 +50,7 @@ void VideoService::start()
 void VideoService::stop()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[VideoService] stop.";
+        LOG(INFO) << "[VideoService] stop.";
         videoSignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO);
         videoOutput_->stop();
     });
@@ -59,24 +59,24 @@ void VideoService::stop()
 void VideoService::pause()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[VideoService] pause.";
+        LOG(INFO) << "[VideoService] pause.";
     });
 }
 
 void VideoService::resume()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[VideoService] resume.";
+        LOG(INFO) << "[VideoService] resume.";
     });
 }
 
 void VideoService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request)
 {
-    OPENAUTO_LOG(info) << "[VideoService] open request, priority: " << request.priority();
+    LOG(INFO) << "[VideoService] open request, priority: " << request.priority();
     const aasdk::proto::enums::Status::Enum status = videoOutput_->open() ? aasdk::proto::enums::Status::OK : aasdk::proto::enums::Status::FAIL;
     videoSignals_->focusRequest.connect(sigc::mem_fun(*this, &VideoService::sendVideoFocusIndication));
     videoSignals_->focusRelease.connect(sigc::mem_fun(*this, &VideoService::sendVideoFocusLost));
-    OPENAUTO_LOG(info) << "[VideoService] open status: " << status;
+    LOG(INFO) << "[VideoService] open status: " << status;
 
     aasdk::proto::messages::ChannelOpenResponse response;
     response.set_status(status);
@@ -90,9 +90,9 @@ void VideoService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpe
 
 void VideoService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChannelSetupRequest& request)
 {
-    OPENAUTO_LOG(info) << "[VideoService] setup request, config index: " << request.config_index();
+    LOG(INFO) << "[VideoService] setup request, config index: " << request.config_index();
     const aasdk::proto::enums::AVChannelSetupStatus::Enum status = videoOutput_->init() ? aasdk::proto::enums::AVChannelSetupStatus::OK : aasdk::proto::enums::AVChannelSetupStatus::FAIL;
-    OPENAUTO_LOG(info) << "[VideoService] setup status: " << status;
+    LOG(INFO) << "[VideoService] setup status: " << status;
 
     videoSignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO);
 
@@ -110,7 +110,7 @@ void VideoService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChann
 
 void VideoService::onAVChannelStartIndication(const aasdk::proto::messages::AVChannelStartIndication& indication)
 {
-    OPENAUTO_LOG(info) << "[VideoService] start indication, session: " << indication.session();
+    LOG(INFO) << "[VideoService] start indication, session: " << indication.session();
     session_ = indication.session();
 
     channel_->receive(this->shared_from_this());
@@ -118,7 +118,7 @@ void VideoService::onAVChannelStartIndication(const aasdk::proto::messages::AVCh
 
 void VideoService::onAVChannelStopIndication(const aasdk::proto::messages::AVChannelStopIndication& indication)
 {
-    OPENAUTO_LOG(info) << "[VideoService] stop indication, session: " << session_;
+    LOG(INFO) << "[VideoService] stop indication, session: " << session_;
 
     channel_->receive(this->shared_from_this());
 }
@@ -155,12 +155,12 @@ void VideoService::onAVMediaIndication(const aasdk::common::DataConstBuffer& buf
 
 void VideoService::onChannelError(const aasdk::error::Error& e)
 {
-    OPENAUTO_LOG(error) << "[VideoService] channel error: " << e.what();
+    LOG(ERROR) << "[VideoService] channel error: " << e.what();
 }
 
 void VideoService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
 {
-    OPENAUTO_LOG(info) << "[VideoService] fill features.";
+    LOG(INFO) << "[VideoService] fill features.";
 
     auto* channelDescriptor = response.add_channels();
     channelDescriptor->set_channel_id(static_cast<uint32_t>(channel_->getId()));
@@ -181,7 +181,7 @@ void VideoService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse
 
 void VideoService::onVideoFocusRequest(const aasdk::proto::messages::VideoFocusRequest& request)
 {
-    OPENAUTO_LOG(info) << "[VideoService] video focus request, display index: " << request.disp_index()
+    LOG(INFO) << "[VideoService] video focus request, display index: " << request.disp_index()
                        << ", focus mode: " << request.focus_mode()
                        << ", focus reason: " << request.focus_reason();
 
@@ -189,13 +189,13 @@ void VideoService::onVideoFocusRequest(const aasdk::proto::messages::VideoFocusR
 
     // stop video service on go back to openauto
 //    if (request.focus_mode() == 2) {
-//        OPENAUTO_LOG(info) << "[VideoService] Back to CSNG...";
+//        LOG(INFO) << "[VideoService] Back to CSNG...";
 //        try {
 //            if (!std::ifstream("/tmp/entityexit")) {
 //                std::ofstream("/tmp/entityexit");
 //            }
 //        } catch (...) {
-//            OPENAUTO_LOG(error) << "[VideoService] Error in creating entityexit";
+//            LOG(ERROR) << "[VideoService] Error in creating entityexit";
 //        }
 //    }
 
@@ -205,7 +205,7 @@ void VideoService::onVideoFocusRequest(const aasdk::proto::messages::VideoFocusR
 
 void VideoService::sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor)
 {
-    OPENAUTO_LOG(info) << "[VideoService] video focus indication.";
+    LOG(INFO) << "[VideoService] video focus indication.";
 
     aasdk::proto::messages::VideoFocusIndication videoFocusIndication;
     videoFocusIndication.set_focus_mode(aasdk::proto::enums::VideoFocusMode::FOCUSED);
@@ -218,7 +218,7 @@ void VideoService::sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor)
 
 void VideoService::sendVideoFocusLost(VIDEO_FOCUS_REQUESTOR requestor)
     {
-        OPENAUTO_LOG(info) << "[VideoService] video focus indication.";
+        LOG(INFO) << "[VideoService] video focus indication.";
 
         aasdk::proto::messages::VideoFocusIndication videoFocusIndication;
         videoFocusIndication.set_focus_mode(aasdk::proto::enums::VideoFocusMode::UNFOCUSED);

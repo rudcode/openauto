@@ -17,7 +17,7 @@
 */
 
 #include <aasdk_proto/InputEventIndicationMessage.pb.h>
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/InputService.hpp>
 
 namespace f1x
@@ -40,7 +40,7 @@ InputService::InputService(asio::io_service& ioService, aasdk::messenger::IMesse
 void InputService::start()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[InputService] start.";
+        LOG(INFO) << "[InputService] start.";
         channel_->receive(this->shared_from_this());
     });
 }
@@ -48,7 +48,7 @@ void InputService::start()
 void InputService::stop()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[InputService] stop.";
+        LOG(INFO) << "[InputService] stop.";
         inputDevice_->stop();
     });
 }
@@ -56,20 +56,20 @@ void InputService::stop()
 void InputService::pause()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[InputService] pause.";
+        LOG(INFO) << "[InputService] pause.";
     });
 }
 
 void InputService::resume()
 {
     strand_.dispatch([this, self = this->shared_from_this()]() {
-        OPENAUTO_LOG(info) << "[InputService] resume.";
+        LOG(INFO) << "[InputService] resume.";
     });
 }
 
 void InputService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
 {
-    OPENAUTO_LOG(info) << "[InputService] fill features.";
+    LOG(INFO) << "[InputService] fill features.";
 
     auto* channelDescriptor = response.add_channels();
     channelDescriptor->set_channel_id(static_cast<uint32_t>(channel_->getId()));
@@ -95,9 +95,9 @@ void InputService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse
 
 void InputService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request)
 {
-    OPENAUTO_LOG(info) << "[InputService] open request, priority: " << request.priority();
+    LOG(INFO) << "[InputService] open request, priority: " << request.priority();
     const aasdk::proto::enums::Status::Enum status = aasdk::proto::enums::Status::OK;
-    OPENAUTO_LOG(info) << "[InputService] open status: " << status;
+    LOG(INFO) << "[InputService] open status: " << status;
 
     aasdk::proto::messages::ChannelOpenResponse response;
     response.set_status(status);
@@ -111,7 +111,7 @@ void InputService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpe
 
 void InputService::onBindingRequest(const aasdk::proto::messages::BindingRequest& request)
 {
-    OPENAUTO_LOG(info) << "[InputService] binding request, scan codes count: " << request.scan_codes_size();
+    LOG(INFO) << "[InputService] binding request, scan codes count: " << request.scan_codes_size();
 
     aasdk::proto::enums::Status::Enum status = aasdk::proto::enums::Status::OK;
     const auto& supportedButtonCodes = inputDevice_->getSupportedButtonCodes();
@@ -120,7 +120,7 @@ void InputService::onBindingRequest(const aasdk::proto::messages::BindingRequest
     {
         if(std::find(supportedButtonCodes.begin(), supportedButtonCodes.end(), request.scan_codes(i)) == supportedButtonCodes.end())
         {
-            OPENAUTO_LOG(error) << "[InputService] binding request, scan code: " << request.scan_codes(i)
+            LOG(ERROR) << "[InputService] binding request, scan code: " << request.scan_codes(i)
                                 << " is not supported.";
 
             status = aasdk::proto::enums::Status::FAIL;
@@ -136,7 +136,7 @@ void InputService::onBindingRequest(const aasdk::proto::messages::BindingRequest
         inputDevice_->start(*this);
     }
 
-    OPENAUTO_LOG(info) << "[InputService] binding request, status: " << status;
+    LOG(INFO) << "[InputService] binding request, status: " << status;
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
     promise->then([]() {}, std::bind(&InputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
@@ -146,7 +146,7 @@ void InputService::onBindingRequest(const aasdk::proto::messages::BindingRequest
 
 void InputService::onChannelError(const aasdk::error::Error& e)
 {
-    OPENAUTO_LOG(error) << "[SensorService] channel error: " << e.what();
+    LOG(ERROR) << "[SensorService] channel error: " << e.what();
 }
 
 void InputService::onButtonEvent(const projection::ButtonEvent& event)

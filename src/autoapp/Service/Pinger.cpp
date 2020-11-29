@@ -17,7 +17,7 @@
 */
 
 #include <f1x/openauto/autoapp/Service/Pinger.hpp>
-#include <f1x/openauto/Common/Log.hpp>
+#include <easylogging++.h>
 
 namespace f1x
 {
