@@ -1,0 +1,195 @@
+<?xml version="1.0" ?>
+<node>
+   <interface name="com.jci.obs.aha.svc">
+      
+		
+      <annotation name="com.jci.def_struct_names.AhaArrayOfMapStringsType" value="ahaArrayOfMapStrings"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.AhaArrayOfMapStringsType" value="AhaMapStringsType"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.AhaMapStringsType" value="id, name"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.AhaMapStringsType" value="u, s"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.AhaVehicleInfoType" value="vehicleMake, vehicleModel, headUnitSerialNumber, headUnitModel, modelYear, vin"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.AhaVehicleInfoType" value="s, s, s, s, s, s"/>
+      
+		
+      <method name="ConnectUsingPseudoTerminal">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <annotation name="com.jci.type_ref.VehicleInfo" value="AhaVehicleInfoType"/>
+         
+			
+         <arg direction="in" name="pseudoTerminal" type="s"/>
+         
+			
+         <arg direction="in" name="sessionName" type="s"/>
+         
+			
+         <arg direction="in" name="vehicleInfo" type="(ssssss)"/>
+         
+			
+         <arg direction="in" name="shoutFormat" type="y"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+			
+         <arg direction="out" name="sessionId" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="Disconnect">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="sessionId" type="u"/>
+         
+			
+         <arg direction="in" name="reasonId" type="u"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="ChangeClientPlaybackState">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="sessionId" type="u"/>
+         
+			
+         <arg direction="in" name="playbackState" type="y"/>
+         
+			
+         <arg direction="out" name="contentId" type="t"/>
+         
+			
+         <arg direction="out" name="playState" type="y"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="SelectContentForPlayback">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="sessionId" type="u"/>
+         
+			
+         <arg direction="in" name="contentId" type="t"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="SelectStationForPlayback">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="sessionId" type="u"/>
+         
+			
+         <arg direction="in" name="stationId" type="t"/>
+         
+			
+         <arg direction="in" name="playbackFromBegin" type="y"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="TimeShiftContent">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="sessionId" type="u"/>
+         
+			
+         <arg direction="in" name="nOSecondsToTimeShift" type="n"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="PerformAction">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="sessionId" type="u"/>
+         
+			
+         <arg direction="in" name="actionId" type="u"/>
+         
+			
+         <arg direction="in" name="contentId" type="t"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="PostNewRecording">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="sessionId" type="u"/>
+         
+			
+         <arg direction="in" name="file" type="s"/>
+         
+			
+         <arg direction="out" name="status" type="i"/>
+         
+		
+      </method>
+      
+	
+   </interface>
+   
+	
+</node>

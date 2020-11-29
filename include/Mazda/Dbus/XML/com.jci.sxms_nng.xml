@@ -1,0 +1,588 @@
+<?xml version="1.0" ?>
+<node>
+   <interface name="com.jci.sxms_nng">
+      
+		
+      <annotation name="def_struct_names.SXMS_NNG_DataSubscriptions_st" value="service, subcription"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_NNG_DataSubscriptions_st" value="u, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_NNG_DataSubscriptionArr_st" value="dataSubscriptions"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_NNG_DataSubscriptionArr_st" value="SXMS_NNG_DataSubscriptions_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_NNG_Coordinates_st" value="latitude, longitude"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_NNG_Coordinates_st" value="d, d"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_NNG_CoordinatesArr_st" value="coOrdinates"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_NNG_CoordinatesArr_st" value="SXMS_NNG_Coordinates_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWNowRad_Message_st" value="timestamp, NWPoint, SEPoint, width, height, filename, byte_size"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWNowRad_Message_st" value="u, SXMS_NNG_Coordinates_st, SXMS_NNG_Coordinates_st, u, u, s, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWFront_Message_st" value="frontType, numPoints, coOrdinates, timestamp"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWFront_Message_st" value="u, u, SXMS_NNG_CoordinatesArr_st, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWIsobar_Message_st" value="numPoints, coOrdinates, pressure, timestamp"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWIsobar_Message_st" value="u, SXMS_NNG_CoordinatesArr_st, d, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWPressureCenter_Message_st" value="numPoints, coOrdinates, pressureType, pressure, timestamp"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWPressureCenter_Message_st" value="u, SXMS_NNG_CoordinatesArr_st, u, d, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWStormAttributes_Message_st" value="numPoints, coOrdinates, stormID, speed, observationTime, direction, echoTop, flags"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWStormAttributes_Message_st" value="u, SXMS_NNG_CoordinatesArr_st, s, d, u, d, d, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_stormPosInfo_st" value="direction, pressure, gust, speed, maxSusWinds"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_stormPosInfo_st" value="d, d, d, d, d"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWWindRadii_st" value="numPoints, coOrdinates, windSpeed"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWWindRadii_st" value="u, SXMS_NNG_CoordinatesArr_st, d"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWWindRadiiArr_st" value="windRadiiData"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWWindRadiiArr_st" value="SXMS_AGWWindRadii_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_AGWStormPosition_Message_st" value="numPoints, coOrdinates, stormID, stormName, sequenceId, posData, posType, stormType, observationTime, windRadii"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_AGWStormPosition_Message_st" value="u, SXMS_NNG_CoordinatesArr_st, s, s, u, SXMS_stormPosInfo_st, u, u, u, SXMS_AGWWindRadiiArr_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_MBR_st" value="lowerLeft, upperRight"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_MBR_st" value="SXMS_NNG_Coordinates_st, SXMS_NNG_Coordinates_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_BSA_Ref_st" value="bsaRef"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_BSA_Ref_st" value="u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_BSA_RefList_st" value="bsaRefList"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_BSA_RefList_st" value="SXMS_BSA_Ref_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_SpeedFlow_st" value="dir1, dir2"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_SpeedFlow_st" value="y, y"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_SpeedFlowArr_st" value="data"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_SpeedFlowArr_st" value="SXMS_SpeedFlow_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_FlowVectorLinear_st" value="tmc_start, tmc_end, speed, flow, valid"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_FlowVectorLinear_st" value="u, u, SXMS_SpeedFlowArr_st, SXMS_SpeedFlowArr_st, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_FlowVectorBSA_st" value="bsa, BSAFlowVector"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_FlowVectorBSA_st" value="u, SXMS_FlowVectorLinear_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_FlowVector_st" value="flowVector"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_FlowVector_st" value="SXMS_FlowVectorBSA_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_CongestionLevel_st" value="congestionLevel"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_CongestionLevel_st" value="y"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_RampTMC_st" value="tmc"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_RampTMC_st" value="u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_CongestionLevelArr_st" value="data"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_CongestionLevelArr_st" value="SXMS_CongestionLevel_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_RampTMCArr_st" value="data"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_RampTMCArr_st" value="SXMS_RampTMC_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_RampVectorLinear_st" value="rampFlow, tmc, valid"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_RampVectorLinear_st" value="SXMS_CongestionLevelArr_st, SXMS_RampTMCArr_st, u"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_RampVectorBSA_st" value="bsa, BSARampVector"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_RampVectorBSA_st" value="u, SXMS_RampVectorLinear_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_RampVector_st" value="rampVector"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_RampVector_st" value="SXMS_RampVectorBSA_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_RampFlow_st" value="bsa, rampFlow"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_RampFlow_st" value="u, SXMS_CongestionLevel_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_RampFlowArr_st" value="rampData"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_RampFlowArr_st" value="SXMS_RampFlow_st"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_TmcLoc_st" value="tmc, seg_offset, direction, extent, start_tmc, start_offset"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_TmcLoc_st" value="u, y, y, y, u, y"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_GeoLoc_st" value="geo, desc"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_GeoLoc_st" value="SXMS_NNG_Coordinates_st, s"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_CI_Message_st" value="bsaref, event, type, tmc_loc, geo_reference, severity, free_text"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_CI_Message_st" value="u, u, y, SXMS_TmcLoc_st, SXMS_GeoLoc_st, y, s"/>
+      
+		
+      <annotation name="def_struct_names.SXMS_CI_MessageArr_st" value="ciData"/>
+      
+		
+      <annotation name="def_struct_types.SXMS_CI_MessageArr_st" value="SXMS_CI_Message_st"/>
+      
+		
+      <method name="GetDataServiceSubscriptions">
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="Apogee_CreateCollectionReq">
+         
+			
+         <annotation name="type_ref.mbr" value="SXMS_MBR_st"/>
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="in" name="mbr" type="((dd)(dd))"/>
+         
+			
+         <arg direction="in" name="types" type="u"/>
+         
+			
+         <arg direction="out" name="collectionID" type="u"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="Apogee_ModifyCollectionReq">
+         
+			
+         <annotation name="type_ref.mbr" value="SXMS_MBR_st"/>
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="in" name="collectionID" type="u"/>
+         
+			
+         <arg direction="in" name="mbr" type="((dd)(dd))"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="Apogee_RemoveCollectionReq">
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="in" name="collectionID" type="u"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="Apogee_GetBSAList">
+         
+			
+         <annotation name="type_ref.mbr" value="SXMS_MBR_st"/>
+         
+			
+         <annotation name="type_ref.bsaList" value="SXMS_BSA_RefList_st"/>
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="in" name="mbr" type="((dd)(dd))"/>
+         
+			
+         <arg direction="out" name="bsaList" type="(a(u))"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="Apogee_SetExtractionFilter">
+         
+			
+         <annotation name="type_ref.mbr" value="SXMS_MBR_st"/>
+         
+			
+         <annotation name="type_ref.bsaList" value="SXMS_BSA_RefList_st"/>
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="in" name="collectionID" type="u"/>
+         
+			
+         <arg direction="in" name="mbr" type="((dd)(dd))"/>
+         
+			
+         <arg direction="in" name="bsaList" type="(a(u))"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="Apogee_ExtractData">
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="in" name="collectionID" type="u"/>
+         
+			
+         <arg direction="in" name="type" type="u"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="AGWeather_GetData">
+         
+			
+         <annotation name="async_client" value="true"/>
+         
+			
+         <arg direction="in" name="type" type="u"/>
+         
+			
+         <arg direction="out" name="return_value" type="u"/>
+         
+		
+      </method>
+      
+		
+      <signal name="Apogee_DataAvailable">
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="types" type="u"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="Apogee_RealTimeFlowData">
+         
+			
+         <annotation name="type_ref.flowVector" value="SXMS_FlowVector_st"/>
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="flowVector" type="(a(ua(uu(a(yy))(a(yy))u)))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="Apogee_P1FlowData">
+         
+			
+         <annotation name="type_ref.flowVector" value="SXMS_FlowVector_st"/>
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="flowVector" type="(a(ua(uu(a(yy))(a(yy))u)))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="Apogee_P2FlowData">
+         
+			
+         <annotation name="type_ref.flowVector" value="SXMS_FlowVector_st"/>
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="flowVector" type="(a(ua(uu(a(yy))(a(yy))u)))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="Apogee_P3FlowData">
+         
+			
+         <annotation name="type_ref.flowVector" value="SXMS_FlowVector_st"/>
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="flowVector" type="(a(ua(uu(a(yy))(a(yy))u)))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="Apogee_P4FlowData">
+         
+			
+         <annotation name="type_ref.flowVector" value="SXMS_FlowVector_st"/>
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="flowVector" type="(a(ua(uu(a(yy))(a(yy))u)))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="Apogee_RampData">
+         
+			
+         <annotation name="type_ref.rampData" value="SXMS_RampVector_st"/>
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="rampData" type="(a(u((a(y))(a(u))u)))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="Apogee_ConstructionIncidentData">
+         
+			
+         <annotation name="type_ref.ciData" value="SXMS_CI_MessageArr_st"/>
+         
+			
+         <arg name="collectionID" type="u"/>
+         
+			
+         <arg name="ciData" type="(a(uuy(uyyyuy)((dd)s)ys))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="DataServiceSubscription">
+         
+			
+         <annotation name="type_ref.dataSubscriptions" value="SXMS_NNG_DataSubscriptionArr_st"/>
+         
+			
+         <arg name="dataSubscriptions" type="(a(uu))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_DatasetStart">
+         
+			
+         <arg name="product" type="u"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_NowRadData">
+         
+			
+         <annotation name="type_ref.nowRadData" value="SXMS_AGWNowRad_Message_st"/>
+         
+			
+         <arg name="nowRadData" type="(u(dd)(dd)uusu)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_FrontData">
+         
+			
+         <annotation name="type_ref.frontData" value="SXMS_AGWFront_Message_st"/>
+         
+			
+         <arg name="frontData" type="(uu(a(dd))u)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_SurfaceIsobar">
+         
+			
+         <annotation name="type_ref.isobarData" value="SXMS_AGWIsobar_Message_st"/>
+         
+			
+         <arg name="isobarData" type="(u(a(dd))du)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_PressureCenter">
+         
+			
+         <annotation name="type_ref.pressureCenterData" value="SXMS_AGWPressureCenter_Message_st"/>
+         
+			
+         <arg name="pressureCenterData" type="(u(a(dd))udu)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_StormAttributes">
+         
+			
+         <annotation name="type_ref.stormAttributesData" value="SXMS_AGWStormAttributes_Message_st"/>
+         
+			
+         <arg name="stormAttributesData" type="(u(a(dd))sduddu)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_StormPosition">
+         
+			
+         <annotation name="type_ref.stormPositionData" value="SXMS_AGWStormPosition_Message_st"/>
+         
+			
+         <arg name="stormPositionData" type="(u(a(dd))ssu(ddddd)uuu(a(u(a(dd))d)))"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AGweather_DatasetStop">
+         
+			
+         <arg name="product" type="u"/>
+         
+		
+      </signal>
+      
+	
+   </interface>
+   
+	
+</node>

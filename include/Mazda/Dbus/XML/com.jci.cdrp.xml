@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<node>
+   <interface name="com.jci.cdrp">
+      
+		
+      <annotation name="com.jci.force_interface_visibility" value="client"/>
+      
+		
+      <method name="SetConfirmationDialogResult">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="index" type="u"/>
+         
+			
+         <arg direction="in" name="serialId" type="s"/>
+         
+			
+         <arg direction="in" name="size" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="SetDeviceSettings">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="index" type="u"/>
+         
+			
+         <arg direction="in" name="serialId" type="s"/>
+         
+			
+         <arg direction="in" name="size" type="u"/>
+         
+		
+      </method>
+      
+		
+      <method name="GetConfirmationDialogRequest">
+         
+			
+         <annotation name="com.jci.async" value="both"/>
+         
+			
+         <arg direction="in" name="index" type="u"/>
+         
+		
+      </method>
+      
+		
+      <signal name="ConnectedDeviceSignal">
+         
+			
+         <annotation name="typedef_callback" value="CDRP_ConnectedDeviceSignal_callback_t"/>
+         
+			
+         <annotation name="always_broadcast" value="yes"/>
+         
+			
+         <arg name="index" type="u"/>
+         
+			
+         <arg name="serialId" type="s"/>
+         
+			
+         <arg name="size" type="u"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="ConfirmationDialogSignal">
+         
+			
+         <annotation name="typedef_callback" value="CDRP_ConfirmationDialogSignal_callback_t"/>
+         
+			
+         <annotation name="always_broadcast" value="yes"/>
+         
+			
+         <arg name="friendName" type="s"/>
+         
+			
+         <arg name="friendNameSize" type="u"/>
+         
+			
+         <arg name="serialId" type="s"/>
+         
+			
+         <arg name="serialIdSize" type="u"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="ErrorNotificationSignal">
+         
+			
+         <annotation name="typedef_callback" value="CDRP_ErrorNotificationSignal_callback_t"/>
+         
+			
+         <annotation name="always_broadcast" value="yes"/>
+         
+			
+         <arg name="errorType" type="u"/>
+         
+		
+      </signal>
+      
+	
+   </interface>
+   
+	
+</node>

@@ -1,0 +1,612 @@
+<?xml version="1.0" ?>
+<node>
+   <interface name="com.jci.usbm">
+      
+		
+      <annotation name="com.jci.force_interface_visibility" value="client"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_dev_info_t" value="id, type, name, new_dev, normal_data, dev_ready, normalization_completed, dev_selected, port, resume_data, identifier, last_mod_time"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_dev_info_t" value="u,  u,    s,    u,       u,           b,             b,                      b,          u,    u,           s,         s"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_dev_list_t" value="dev_info"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_dev_list_t" value="usbm_dev_info_t"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_select_device_t" value="device_id"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_select_device_t" value="u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_select_device_reply_t" value="device_id_out, result"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_select_device_reply_t" value="u,             u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_filter_t" value="filter_enum, id_level1, id_level2, id_level3, sort_order"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_filter_t" value="i,           u,         u,         u,         i"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_play_context_t" value="device_id, filter,        playlist_name, obj_index"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_play_context_t" value="u,         usbm_filter_t, s,             u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_play_context_reply_t" value="repeat_mode, shuffle_mode, result"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_play_context_reply_t" value="u,           u,            u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_playback_command_t" value="device_id, command_type, command_count"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_playback_command_t" value="u,         u,            u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_obj_info_t" value="obj_index, title, artist, album, genre"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_obj_info_t" value="u,         s,     s,      s,     s"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_get_current_object_info_reply_t" value="obj_info,        result"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_get_current_object_info_reply_t" value="usbm_obj_info_t, u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_device_error_t" value="device_id, dev_error"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_device_error_t" value="u,         u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_playback_info_t" value="device_id, elapsed_time_sec, duration_sec, folder_name, playlist_name, track_id_offset_in_list, track_info,      play_state, repeat_mode, shuffle_mode, is_track_changed"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_playback_info_t" value="u,         u,                u,            s,           s,             u,                       usbm_obj_info_t, u,          u,           u,            b"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_dbupdate_t" value="device_id, updateCause, numFiles"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_dbupdate_t" value="u,         u,           u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_album_art_ready_t" value="device_id"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_album_art_ready_t" value="u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_album_art_t" value="device_id, track_id"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_album_art_t" value="u,         u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_album_art_reply_t" value="file_name, track_id, result"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_album_art_reply_t" value="s,         u,        u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_more_like_this_reply_t" value="pl_name, result"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_more_like_this_reply_t" value="s,       u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_play_resume_t" value="device_id, type"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_play_resume_t" value="u,         u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_play_resume_reply_t" value="filters,       repeat_mode, shuffle_mode, playlist_name, result"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_play_resume_reply_t" value="usbm_filter_t, u,           u,            s,             u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_updated_dev_info_t" value="device_id, type, identifier, content_changed"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_updated_dev_info_t" value="u,         u,    s,          u"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_filenum_updated_dev_info_t" value="device_id, type, identifier, content_changed, is_empty, is_empty_radio"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_filenum_updated_dev_info_t" value="u,         u,    s,          u,               b,        b"/>
+      
+		
+      <annotation name="com.jci.def_struct_names.usbm_playback_interrupted_info_t" value="playback_info,        state"/>
+      
+		
+      <annotation name="com.jci.def_struct_types.usbm_playback_interrupted_info_t" value="usbm_playback_info_t, u"/>
+      
+		
+      <method name="GetAlbumArt">
+         
+			
+         <annotation name="com.jci.type_ref.album_art" value="usbm_album_art_t"/>
+         
+			
+         <annotation name="com.jci.type_ref.album_art_reply" value="usbm_album_art_reply_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="album_art" type="(uu)"/>
+         
+			
+         <arg direction="out" name="album_art_reply" type="(suu)"/>
+         
+		
+      </method>
+      
+		
+      <method name="SelectDevice">
+         
+			
+         <annotation name="com.jci.type_ref.select_device" value="usbm_select_device_t"/>
+         
+			
+         <annotation name="com.jci.type_ref.select_device_reply" value="usbm_select_device_reply_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="select_device" type="(u)"/>
+         
+			
+         <arg direction="out" name="select_device_reply" type="(uu)"/>
+         
+		
+      </method>
+      
+		
+      <method name="PlaybackCommand">
+         
+			
+         <annotation name="com.jci.type_ref.playback_command" value="usbm_playback_command_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="playback_command" type="(uuu)"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="PlayResume">
+         
+			
+         <annotation name="com.jci.type_ref.play_resume" value="usbm_play_resume_t"/>
+         
+			
+         <annotation name="com.jci.type_ref.play_resume_reply" value="usbm_play_resume_reply_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="play_resume" type="(uu)"/>
+         
+			
+         <arg direction="out" name="play_resume_reply" type="((iuuui)uusu)"/>
+         
+		
+      </method>
+      
+		
+      <method name="PlayContext">
+         
+			
+         <annotation name="com.jci.type_ref.play_context" value="usbm_play_context_t"/>
+         
+			
+         <annotation name="com.jci.type_ref.play_context_reply" value="usbm_play_context_reply_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="play_context" type="(u(iuuui)su)"/>
+         
+			
+         <arg direction="out" name="play_context_reply" type="(uuu)"/>
+         
+		
+      </method>
+      
+		
+      <method name="SetRepeatMode">
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="dev_id" type="u"/>
+         
+			
+         <arg direction="in" name="repeat_mode" type="u"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="SetShuffleMode">
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="dev_id" type="u"/>
+         
+			
+         <arg direction="in" name="shuffle_mode" type="u"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="GetDeviceList">
+         
+			
+         <annotation name="com.jci.type_ref.device_list" value="usbm_dev_list_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="out" name="device_list" type="(a(uusuubbbuuss))"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="GetCurrentObjectInfo">
+         
+			
+         <annotation name="com.jci.type_ref.obj_info" value="usbm_obj_info_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="out" name="obj_info" type="(ussss)"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="StartSeeking">
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="dev_id" type="u"/>
+         
+			
+         <arg direction="in" name="sec_step" type="u"/>
+         
+			
+         <arg direction="in" name="seek_dir" type="u"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="PlaybackJumpToPosition">
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="dev_id" type="u"/>
+         
+			
+         <arg direction="in" name="new_pb_position" type="u"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <method name="MoreLikeThis">
+         
+			
+         <annotation name="com.jci.type_ref.more_like_this_reply" value="usbm_more_like_this_reply_t"/>
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="device_id" type="u"/>
+         
+			
+         <arg direction="out" name="more_like_this_reply" type="(su)"/>
+         
+		
+      </method>
+      
+		
+      <method name="SetLanguage">
+         
+			
+         <annotation name="async" value="both"/>
+         
+			
+         <arg direction="in" name="sys_lang" type="i"/>
+         
+			
+         <arg direction="out" name="result" type="i"/>
+         
+		
+      </method>
+      
+		
+      <signal name="DeviceConnected">
+         
+			
+         <annotation name="com.jci.type_ref.dev_inf" value="usbm_dev_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="dev_inf" type="(uusuubbbuuss)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="DeviceDisconnected">
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="dev_id" type="u"/>
+         
+			
+         <arg name="reason" type="i"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="UpdateDeviceInfo">
+         
+			
+         <annotation name="com.jci.type_ref.dev_inf" value="usbm_dev_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="dev_inf" type="(uusuubbbuuss)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="PlayComplete">
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="reason" type="u"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="DeviceSelected">
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="dev_id" type="u"/>
+         
+			
+         <arg name="err_type" type="i"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="MetadataBrowsingPossible">
+         
+			
+         <annotation name="com.jci.type_ref.filenum_updated_dev_info" value="usbm_filenum_updated_dev_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg direction="in" name="filenum_updated_dev_info" type="(uusubb)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="MltPossible">
+         
+			
+         <annotation name="com.jci.type_ref.updated_dev_info" value="usbm_updated_dev_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg direction="in" name="updated_dev_info" type="(uusu)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="PlaybackPossible">
+         
+			
+         <annotation name="com.jci.type_ref.filenum_updated_dev_info" value="usbm_filenum_updated_dev_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg direction="in" name="filenum_updated_dev_info" type="(uusubb)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="FolderBrowsingPossible">
+         
+			
+         <annotation name="com.jci.type_ref.updated_dev_info" value="usbm_updated_dev_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg direction="in" name="updated_dev_info" type="(uusu)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="DeviceError">
+         
+			
+         <annotation name="com.jci.type_ref.device_error" value="usbm_device_error_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="device_error" type="(uu)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="PlaybackInfo">
+         
+			
+         <annotation name="com.jci.type_ref.playback_info" value="usbm_playback_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="playback_info" type="(uuussu(ussss)uuub)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="DbUpdate">
+         
+			
+         <annotation name="com.jci.type_ref.dbupdate" value="usbm_dbupdate_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="dbupdate" type="(uuu)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="AlbumArtReady">
+         
+			
+         <annotation name="com.jci.type_ref.album_art_ready" value="usbm_album_art_ready_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="album_art_ready" type="(u)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="CurrentObjectInfo">
+         
+			
+         <annotation name="com.jci.type_ref.obj_info" value="usbm_obj_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="obj_info" type="(ussss)"/>
+         
+		
+      </signal>
+      
+		
+      <signal name="PlaybackInterrupted">
+         
+			
+         <annotation name="com.jci.type_ref.playback_interrupted_info" value="usbm_playback_interrupted_info_t"/>
+         
+			
+         <annotation name="com.jci.always_broadcast" value="true"/>
+         
+			
+         <arg name="playback_interrupted_info" type="((uuussu(ussss)uuub)u)"/>
+         
+		
+      </signal>
+      
+	
+   </interface>
+   
+	
+</node>
