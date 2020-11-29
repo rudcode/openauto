@@ -8,7 +8,7 @@
 #include <aasdk_proto/VideoFPSEnum.pb.h>
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
 #include <f1x/aasdk/Common/Data.hpp>
-#include <f1x/openauto/autoapp/Projection/VideoOutput.hpp>
+#include <f1x/openauto/autoapp/Projection/IVideoOutput.hpp>
 #include <thread>
 
 #ifndef ASPECT_RATIO_FIX
@@ -20,14 +20,14 @@ namespace f1x {
         namespace autoapp {
             namespace projection {
 
-                class GSTVideoOutput : public VideoOutput {
+                class GSTVideoOutput : public IVideoOutput {
                     GstElement *vid_pipeline = nullptr;
                     GstAppSrc *vid_src = nullptr;
                     GstElement *vid_sink = nullptr;
                     std::thread *gloop;
 
                 public:
-                    explicit GSTVideoOutput(configuration::IConfiguration::Pointer configuration);
+                    explicit GSTVideoOutput();
 
                     ~GSTVideoOutput() override;
 

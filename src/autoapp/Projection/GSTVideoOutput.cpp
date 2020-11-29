@@ -63,7 +63,7 @@ namespace f1x {
         namespace autoapp {
             namespace projection {
 
-                GSTVideoOutput::GSTVideoOutput(configuration::IConfiguration::Pointer configuration)    : VideoOutput(std::move(configuration)), gloop(nullptr) {
+                GSTVideoOutput::GSTVideoOutput(): gloop(nullptr) {
                     gst_init(nullptr, nullptr);
                 }
 

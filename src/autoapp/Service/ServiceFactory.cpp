@@ -67,7 +67,7 @@ ServiceList ServiceFactory::create(aasdk::messenger::IMessenger::Pointer messeng
 
 IService::Pointer ServiceFactory::createVideoService(aasdk::messenger::IMessenger::Pointer messenger)
 {
-    projection::IVideoOutput::Pointer videoOutput(new projection::GSTVideoOutput(configuration_));
+    projection::IVideoOutput::Pointer videoOutput(new projection::GSTVideoOutput());
     return std::make_shared<VideoService>(ioService_, messenger, std::move(videoOutput), signals_->videoSignals);
 }
 
