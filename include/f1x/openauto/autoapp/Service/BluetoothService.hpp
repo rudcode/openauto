@@ -34,7 +34,7 @@ namespace service
 class BluetoothService: public aasdk::channel::bluetooth::IBluetoothServiceChannelEventHandler, public IService, public std::enable_shared_from_this<BluetoothService>
 {
 public:
-    BluetoothService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IBluetoothDevice::Pointer bluetoothDevice);
+    BluetoothService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IBluetoothDevice::Pointer bluetoothDevice);
     void start() override;
     void stop() override;
     void pause() override;
@@ -47,7 +47,7 @@ public:
 private:
     using std::enable_shared_from_this<BluetoothService>::shared_from_this;
 
-    boost::asio::io_service::strand strand_;
+    asio::io_service::strand strand_;
     aasdk::channel::bluetooth::BluetoothServiceChannel::Pointer channel_;
     projection::IBluetoothDevice::Pointer bluetoothDevice_;
 };

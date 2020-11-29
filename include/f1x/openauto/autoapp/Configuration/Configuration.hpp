@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <boost/property_tree/ini_parser.hpp>
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
 #include <iostream>
 #include <string>
@@ -117,9 +116,6 @@ public:
     void setAudioOutputBackendType(AudioOutputBackendType value) override;
 
 private:
-    void readButtonCodes(boost::property_tree::ptree& iniConfig);
-    void insertButtonCode(boost::property_tree::ptree& iniConfig, const std::string& buttonCodeKey, aasdk::proto::enums::ButtonCode::Enum buttonCode);
-    void writeButtonCodes(boost::property_tree::ptree& iniConfig);
 
     HandednessOfTrafficType handednessOfTrafficType_;
     bool showClock_;

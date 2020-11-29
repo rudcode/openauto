@@ -31,9 +31,9 @@ namespace autoapp
 namespace service
 {
 
-SensorService::SensorService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger)
+SensorService::SensorService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger)
     : strand_(ioService),
-      timer_(ioService),
+//      timer_(ioService),
       channel_(std::make_shared<aasdk::channel::sensor::SensorServiceChannel>(strand_, std::move(messenger)))
 {
 
@@ -238,8 +238,8 @@ void SensorService::sensorPolling()
 //                this->sendGPSLocationData();
 //            }
 
-            timer_.expires_from_now(boost::posix_time::milliseconds(250));
-            timer_.async_wait(strand_.wrap(std::bind(&SensorService::sensorPolling, this->shared_from_this())));
+//            timer_.expires_from_now(boost::posix_time::milliseconds(250));
+//            timer_.async_wait(strand_.wrap(std::bind(&SensorService::sensorPolling, this->shared_from_this())));
         });
     }
 }

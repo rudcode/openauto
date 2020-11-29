@@ -28,7 +28,6 @@
 #include <f1x/aasdk/TCP/TCPWrapper.hpp>
 #include <f1x/openauto/autoapp/App.hpp>
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
-#include <f1x/openauto/autoapp/Configuration/RecentAddressesList.hpp>
 #include <f1x/openauto/autoapp/Service/AndroidAutoEntityFactory.hpp>
 #include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
 #include <f1x/openauto/autoapp/Configuration/Configuration.hpp>
@@ -40,7 +39,7 @@ namespace aasdk = f1x::aasdk;
 namespace autoapp = f1x::openauto::autoapp;
 using ThreadPool = std::vector<std::thread>;
 
-void startUSBWorkers(boost::asio::io_service& ioService, libusb_context* usbContext, ThreadPool& threadPool)
+void startUSBWorkers(asio::io_service& ioService, libusb_context* usbContext, ThreadPool& threadPool)
 {
     auto usbWorker = [&ioService, usbContext]() {
         timeval libusbEventTimeout{180, 0};
@@ -57,7 +56,7 @@ void startUSBWorkers(boost::asio::io_service& ioService, libusb_context* usbCont
     threadPool.emplace_back(usbWorker);
 }
 
-void startIOServiceWorkers(boost::asio::io_service& ioService, ThreadPool& threadPool)
+void startIOServiceWorkers(asio::io_service& ioService, ThreadPool& threadPool)
 {
     auto ioServiceWorker = [&ioService]() {
         ioService.run();
@@ -94,8 +93,8 @@ int main(int argc, char* argv[])
 //    serviceBus.register_bus();
 
 
-    boost::asio::io_service ioService;
-    boost::asio::io_service::work work(ioService);
+    asio::io_service ioService;
+    asio::io_service::work work(ioService);
     std::vector<std::thread> threadPool;
     startUSBWorkers(ioService, usbContext, threadPool);
     startIOServiceWorkers(ioService, threadPool);
@@ -105,9 +104,6 @@ int main(int argc, char* argv[])
 
     VideoManager videoManager(hmiBus, signals->videoSignals);
     std::thread dbus_thread(dbus_dispatcher);
-
-    autoapp::configuration::RecentAddressesList recentAddressesList(7);
-    recentAddressesList.read();
 
     aasdk::tcp::TCPWrapper tcpWrapper;
 

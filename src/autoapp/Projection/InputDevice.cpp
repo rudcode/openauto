@@ -26,8 +26,6 @@
 #include <f1x/openauto/Common/Log.hpp>
 #include <f1x/openauto/autoapp/Projection/IInputDeviceEventHandler.hpp>
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
-#include <boost/bind/bind.hpp>
-
 
 struct TouchScreenState {
     int x;

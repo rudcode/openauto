@@ -34,7 +34,7 @@ namespace service
 class SensorService: public aasdk::channel::sensor::ISensorServiceChannelEventHandler, public IService, public std::enable_shared_from_this<SensorService>
 {
 public:
-    SensorService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger);
+    SensorService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger);
     bool isNight = false;
     bool previous = false;
     bool stopPolling = false;
@@ -57,8 +57,8 @@ private:
     void sensorPolling();
     bool firstRun = true;
 
-    boost::asio::deadline_timer timer_;
-    boost::asio::io_service::strand strand_;
+//    asio::deadline_timer timer_;
+    asio::io_service::strand strand_;
     aasdk::channel::sensor::SensorServiceChannel::Pointer channel_;
 //    struct gps_data_t gpsData_;
     bool gpsEnabled_ = false;

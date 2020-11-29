@@ -29,7 +29,7 @@ namespace autoapp
 namespace service
 {
 
-AudioInputService::AudioInputService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IAudioInput::Pointer audioInput)
+AudioInputService::AudioInputService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IAudioInput::Pointer audioInput)
     : strand_(ioService)
     , channel_(std::make_shared<aasdk::channel::av::AVInputServiceChannel>(strand_, std::move(messenger)))
     , audioInput_(std::move(audioInput))

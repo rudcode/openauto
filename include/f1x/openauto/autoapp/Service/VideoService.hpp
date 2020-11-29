@@ -41,7 +41,7 @@ class VideoService: public aasdk::channel::av::IVideoServiceChannelEventHandler,
 public:
     typedef std::shared_ptr<VideoService> Pointer;
 
-    VideoService(boost::asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput, VideoSignals::Pointer videoSignals);
+    VideoService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput, VideoSignals::Pointer videoSignals);
 
     void start() override;
     void stop() override;
@@ -65,7 +65,7 @@ private:
     void sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor);
     void sendVideoFocusLost(VIDEO_FOCUS_REQUESTOR requestor);
 
-    boost::asio::io_service::strand strand_;
+    asio::io_service::strand strand_;
     aasdk::channel::av::VideoServiceChannel::Pointer channel_;
     projection::IVideoOutput::Pointer videoOutput_;
     int32_t session_;

@@ -28,7 +28,7 @@ namespace autoapp
 namespace service
 {
 
-AudioService::AudioService(boost::asio::io_service& ioService, aasdk::channel::av::IAudioServiceChannel::Pointer channel, projection::IAudioOutput::Pointer audioOutput)
+AudioService::AudioService(asio::io_service& ioService, aasdk::channel::av::IAudioServiceChannel::Pointer channel, projection::IAudioOutput::Pointer audioOutput)
     : strand_(ioService)
     , channel_(std::move(channel))
     , audioOutput_(std::move(audioOutput))

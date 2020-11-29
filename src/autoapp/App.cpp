@@ -29,7 +29,7 @@ namespace openauto
 namespace autoapp
 {
 
-App::App(boost::asio::io_service& ioService, aasdk::usb::USBWrapper& usbWrapper, aasdk::tcp::ITCPWrapper& tcpWrapper, service::IAndroidAutoEntityFactory& androidAutoEntityFactory,
+App::App(asio::io_service& ioService, aasdk::usb::USBWrapper& usbWrapper, aasdk::tcp::ITCPWrapper& tcpWrapper, service::IAndroidAutoEntityFactory& androidAutoEntityFactory,
          aasdk::usb::IUSBHub::Pointer usbHub, aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator)
     : ioService_(ioService)
     , usbWrapper_(usbWrapper)
@@ -38,7 +38,7 @@ App::App(boost::asio::io_service& ioService, aasdk::usb::USBWrapper& usbWrapper,
     , androidAutoEntityFactory_(androidAutoEntityFactory)
     , usbHub_(std::move(usbHub))
     , connectedAccessoriesEnumerator_(std::move(connectedAccessoriesEnumerator))
-    , acceptor_(ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 30515 ))
+    , acceptor_(ioService, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 30515 ))
     , isStopped_(false)
 {
 
@@ -199,7 +199,7 @@ void App::waitForDevice()
 void App::startServerSocket() {
     strand_.dispatch([this, self = this->shared_from_this()]() {
         OPENAUTO_LOG(info) << "Listening for WIFI clients on port 5000";
-        auto socket = std::make_shared<boost::asio::ip::tcp::socket>(ioService_);
+        auto socket = std::make_shared<asio::ip::tcp::socket>(ioService_);
         acceptor_.async_accept(
                 *socket,
                 std::bind(&App::handleNewClient, this, socket, std::placeholders::_1)
@@ -207,7 +207,7 @@ void App::startServerSocket() {
     });
 }
 
-void App::handleNewClient(std::shared_ptr<boost::asio::ip::tcp::socket> socket, const boost::system::error_code &err) {
+void App::handleNewClient(std::shared_ptr<asio::ip::tcp::socket> socket, const asio::error_code &err) {
     OPENAUTO_LOG(info) << "WIFI Client connected";
     if (!err) {
         start(std::move(socket));
