@@ -7,7 +7,7 @@
 #include <f1x/openauto/autoapp/Signals/VideoSignals.hpp>
 
 #include <Mazda/Dbus/com.jci.nativeguictrl.h>
-#include <Mazda/Dbus/com.jci.nativeguictrl.h>
+#include <Mazda/Dbus/com.jci.bucpsa.h>
 
 
 class NativeGUICtrlClient : public com::jci::nativeguictrl_proxy,
