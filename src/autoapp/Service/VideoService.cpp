@@ -30,11 +30,11 @@ namespace service
 {
 
 VideoService::VideoService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput, VideoSignals::Pointer videoSignals)
-    : strand_(ioService)
+    : videoSignals_(std::move(videoSignals))
+    , strand_(ioService)
     , channel_(std::make_shared<aasdk::channel::av::VideoServiceChannel>(strand_, std::move(messenger)))
     , videoOutput_(std::move(videoOutput))
     , session_(-1)
-    , videoSignals_(std::move(videoSignals))
 {
 
 }

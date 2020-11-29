@@ -13,7 +13,7 @@ BucpsaClient::BucpsaClient(DBus::Connection& hmiBus, VideoSignals::Pointer video
 
 BucpsaClient::~BucpsaClient() = default;
 
-VideoManager::VideoManager(DBus::Connection &hmiBus, VideoSignals::Pointer videosignals):gui(hmiBus), bucpsa(hmiBus, videosignals), vs(std::move(videosignals)) {
+VideoManager::VideoManager(DBus::Connection &hmiBus, VideoSignals::Pointer videosignals):bucpsa(hmiBus, videosignals), gui(hmiBus), vs(std::move(videosignals)) {
     vs->focusRelease.connect(sigc::mem_fun(*this, &VideoManager::releaseFocus));
     vs->focusRequest.connect(sigc::mem_fun(*this, &VideoManager::requestFocus));
 }
