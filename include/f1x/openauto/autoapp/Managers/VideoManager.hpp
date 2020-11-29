@@ -39,7 +39,7 @@ public:
 
     void SetRequiredSurfacesByEnum(const int surface, bool fadeOpera)
     {
-        SetRequiredSurfaces(std::to_string(surface), fadeOpera ? 1 : 0);
+        SetRequiredSurfaces(std::to_string(surface), static_cast<int16_t>(fadeOpera ? 1 : 0));
     }
 };
 

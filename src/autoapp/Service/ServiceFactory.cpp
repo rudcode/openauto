@@ -30,6 +30,7 @@
 #include <f1x/openauto/autoapp/Projection/AlsaAudioInput.hpp>
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
 #include <f1x/openauto/autoapp/Projection/MazdaBluetooth.hpp>
+#include <f1x/openauto/autoapp/Service/SystemAudioService.hpp>
 
 
 namespace f1x
@@ -89,15 +90,15 @@ IService::Pointer ServiceFactory::createInputService(aasdk::messenger::IMessenge
 
 void ServiceFactory::createAudioServices(ServiceList& serviceList, aasdk::messenger::IMessenger::Pointer messenger)
 {
-        auto mediaAudioOutput = std::make_shared<projection::AlsaAudioOutput>(2, 48000, "entertainmentMl");
-        serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_, messenger, std::move(mediaAudioOutput)));
+    auto mediaAudioOutput = std::make_shared<projection::AlsaAudioOutput>(2, 48000, "entertainmentMl");
+    serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_, messenger, std::move(mediaAudioOutput)));
 
-        auto speechAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "entertainmentMl");
-        serviceList.emplace_back(std::make_shared<SpeechAudioService>(ioService_, messenger, std::move(speechAudioOutput)));
+    auto speechAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "entertainmentMl");
+    serviceList.emplace_back(std::make_shared<SpeechAudioService>(ioService_, messenger, std::move(speechAudioOutput)));
 
 
-//    auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "entertainmentMl");
-//    serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
+    auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "entertainmentMl");
+    serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
 }
 
 }

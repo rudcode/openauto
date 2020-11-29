@@ -15,9 +15,9 @@
 // Actual MAC: 88:c6:26:1b:82:f2
 
 // Cache the address if we need to retrieve it repeatedly;
-static std::string macAddress = "";
+static std::string macAddress;
 
-static uint32_t hexStrToInt(std::string hexStr) {
+static uint32_t hexStrToInt(const std::string& hexStr) {
     uint32_t x;
     std::stringstream ss;
     ss << std::hex << hexStr;
@@ -38,7 +38,7 @@ static std::string formatNumber(uint32_t num) {
 }
 
 std::string get_bluetooth_mac_address() {
-    if (macAddress != "") return macAddress;
+    if (!macAddress.empty()) return macAddress;
 
     std::ifstream macUpperFile("/sys/fsl_otp/HW_OCOTP_MAC1");
     std::ifstream macLowerFile("/sys/fsl_otp/HW_OCOTP_MAC0");

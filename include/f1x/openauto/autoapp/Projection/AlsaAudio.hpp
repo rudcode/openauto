@@ -18,7 +18,7 @@
 #pragma once
 
 #include <glib.h>
-#include <stdio.h>
+#include <cstdio>
 #include <alsa/asoundlib.h>
 #include <thread>
 
@@ -42,7 +42,7 @@ namespace f1x {
 
                     ~AlsaAudioOutput() override;
 
-                    bool open();
+                    bool open() override;
 
                     void write(f1x::aasdk::messenger::Timestamp::ValueType timestamp, const f1x::aasdk::common::DataConstBuffer &buffer) override;
 
