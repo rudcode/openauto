@@ -30,7 +30,6 @@
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
 #include <f1x/openauto/autoapp/Service/AndroidAutoEntityFactory.hpp>
 #include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
-#include <f1x/openauto/autoapp/Configuration/Configuration.hpp>
 #include <easylogging++.h>
 #include <f1x/openauto/autoapp/Signals/Signals.hpp>
 #include <f1x/openauto/autoapp/Managers/VideoManager.hpp>
@@ -102,7 +101,7 @@ int main(int argc, char* argv[])
     startUSBWorkers(ioService, usbContext, threadPool);
     startIOServiceWorkers(ioService, threadPool);
 
-    auto configuration = std::make_shared<autoapp::configuration::Configuration>();
+    auto configuration = nullptr;
     auto signals = std::make_shared<Signals>();
 
     VideoManager videoManager(hmiBus, signals->videoSignals);
