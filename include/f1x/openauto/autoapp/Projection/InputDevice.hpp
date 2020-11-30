@@ -17,11 +17,39 @@
 
 #pragma once
 
+#include <linux/input.h>
+#include <linux/uinput.h>
+
 #include <aasdk_proto/ButtonCodeEnum.pb.h>
 #include <aasdk_proto/TouchActionEnum.pb.h>
-#include <f1x/aasdk/IO/Promise.hpp>
+#include <aasdk/IO/Promise.hpp>
 #include <f1x/openauto/autoapp/Projection/IInputDevice.hpp>
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
+
+struct TouchScreenState {
+    int x;
+    int y;
+    aasdk::proto::enums::TouchAction::Enum action;
+    int action_recvd;
+};
+
+class input_device {
+private:
+    f1x::openauto::autoapp::projection::IInputDeviceEventHandler *eventHandler_;
+    asio::posix::stream_descriptor sd;
+    std::vector<input_event> events;
+    TouchScreenState mTouch{0, 0, (aasdk::proto::enums::TouchAction::Enum) 0, 0};
+    uint32_t pressScanCode;
+    time_t pressedSince;
+
+public:
+    input_device(int fd, asio::io_service& ioService, f1x::openauto::autoapp::projection::IInputDeviceEventHandler &eventHandler);
+    void handle_key(input_event &event);
+    void handle_touch(input_event &event);
+    void handle_input(asio::error_code ec, size_t bytes_transferred);
+
+    void readloop();
+};
 
 namespace f1x
 {
@@ -33,7 +61,7 @@ namespace f1x
                 class InputDevice: public IInputDevice {
 
                 public:
-                    InputDevice();
+                    InputDevice(asio::io_service& ioService);
 
                     void start(IInputDeviceEventHandler &eventHandler) override;
 
@@ -46,6 +74,9 @@ namespace f1x
                     TouchscreenSize getTouchscreenGeometry() const override;
 
                 private:
+                    asio::io_service& ioService_;
+                    input_device *touchscreen;
+                    input_device *keyboard;
                     IInputDeviceEventHandler *eventHandler_;
                     std::mutex mutex_;
                     std::thread input_thread;
