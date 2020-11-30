@@ -4,6 +4,7 @@
 #include <sigc++/sigc++.h>
 
 #include "VideoSignals.hpp"
+#include "AudioSignals.hpp"
 
 class Signals{
 public:
@@ -11,6 +12,7 @@ public:
 
 
     VideoSignals::Pointer videoSignals;
+    AudioSignals::Pointer audioSignals;
 
-    Signals(): videoSignals(std::make_shared<VideoSignals>()){};
+    Signals(): videoSignals(std::make_shared<VideoSignals>()), audioSignals(std::make_shared<AudioSignals>()){};
 };

@@ -92,9 +92,8 @@ int main(int argc, char* argv[])
     DBus::default_dispatcher = &dispatcher;
     DBus::Connection hmiBus(HMI_BUS_ADDRESS, true);
     hmiBus.register_bus();
-
-//    DBus::Connection serviceBus(SERVICE_BUS_ADDRESS, true);
-//    serviceBus.register_bus();
+    DBus::Connection serviceBus(SERVICE_BUS_ADDRESS, true);
+    serviceBus.register_bus();
 
 
     asio::io_service ioService;
@@ -106,6 +105,7 @@ int main(int argc, char* argv[])
     auto configuration = nullptr;
     auto signals = std::make_shared<Signals>();
 
+    AudioManagerClient audioManager(serviceBus, signals->audioSignals);
     VideoManager videoManager(hmiBus, signals->videoSignals);
     std::thread dbus_thread(dbus_dispatcher);
 

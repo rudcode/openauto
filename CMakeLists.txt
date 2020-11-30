@@ -81,7 +81,8 @@ add_executable(autoapp
         ${autoapp_source_files}
         ${sources_directory}/easylogging++.cc
         "Mazda/Dbus/com.jci.nativeguictrl.h"
-        "Mazda/Dbus/com.jci.bucpsa.h")
+        "Mazda/Dbus/com.jci.bucpsa.h"
+        "Mazda/Dbus/com.xsembedded.ServiceProvider.h")
 target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/ ${common_include_directory})
 target_include_directories(autoapp PRIVATE ${include_directory})
 
