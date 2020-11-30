@@ -101,7 +101,7 @@ namespace f1x {
                     return true;
                 }
 
-                void GSTVideoOutput::write(uint64_t timestamp, const f1x::aasdk::common::DataConstBuffer &buf) {
+                void GSTVideoOutput::write(uint64_t timestamp, const aasdk::common::DataConstBuffer &buf) {
                     GstBuffer *buffer = gst_buffer_new_and_alloc(buf.size);
                     memcpy(GST_BUFFER_DATA(buffer), buf.cdata, buf.size);
                     int ret = gst_app_src_push_buffer(vid_src, buffer);

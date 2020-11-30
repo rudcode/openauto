@@ -16,7 +16,7 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <f1x/aasdk/Channel/Control/ControlServiceChannel.hpp>
+#include <aasdk/Channel/Control/ControlServiceChannel.hpp>
 #include <f1x/openauto/autoapp/Service/AndroidAutoEntity.hpp>
 #include <easylogging++.h>
 
@@ -191,13 +191,13 @@ void AndroidAutoEntity::onServiceDiscoveryRequest(const aasdk::proto::messages::
     serviceDiscoveryResponse.set_car_model("Universal");
     serviceDiscoveryResponse.set_car_year("2018");
     serviceDiscoveryResponse.set_car_serial("20180301");
-    serviceDiscoveryResponse.set_left_hand_drive_vehicle(configuration_->getHandednessOfTrafficType() == configuration::HandednessOfTrafficType::LEFT_HAND_DRIVE);
+    serviceDiscoveryResponse.set_left_hand_drive_vehicle(true);
     serviceDiscoveryResponse.set_headunit_manufacturer("f1x");
     serviceDiscoveryResponse.set_headunit_model("Crankshaft-NG Autoapp");
     serviceDiscoveryResponse.set_sw_build("1");
     serviceDiscoveryResponse.set_sw_version("1.0");
     serviceDiscoveryResponse.set_can_play_native_media_during_vr(false);
-    serviceDiscoveryResponse.set_hide_clock(!configuration_->showClock());
+    serviceDiscoveryResponse.set_hide_clock(false);
 
     std::for_each(serviceList_.begin(), serviceList_.end(), std::bind(&IService::fillFeatures, std::placeholders::_1, std::ref(serviceDiscoveryResponse)));
 
@@ -256,6 +256,27 @@ void AndroidAutoEntity::onNavigationFocusRequest(const aasdk::proto::messages::N
     controlServiceChannel_->sendNavigationFocusResponse(response, std::move(promise));
     controlServiceChannel_->receive(this->shared_from_this());
 }
+
+    void AndroidAutoEntity::onVoiceSessionRequest(const aasdk::proto::messages::VoiceSessionRequest& request)
+    {
+        LOG(INFO) << "[AndroidAutoEntity] Voice session request, type: " << ((request.type() == 1) ? "START" : ((request.type() == 2) ? "STOP" : "UNKNOWN"));
+
+        auto promise = aasdk::channel::SendPromise::defer(strand_);
+        promise->then([]() {}, std::bind(&AndroidAutoEntity::onChannelError, this->shared_from_this(), std::placeholders::_1));
+        controlServiceChannel_->receive(this->shared_from_this());
+    }
+
+    void AndroidAutoEntity::onPingRequest(const aasdk::proto::messages::PingRequest& request)
+    {
+        LOG(INFO) << "[AndroidAutoEntity] Ping Request";
+
+        aasdk::proto::messages::PingResponse response;
+        response.set_timestamp(request.timestamp());
+        auto promise = aasdk::channel::SendPromise::defer(strand_);
+        promise->then([]() {}, std::bind(&AndroidAutoEntity::onChannelError, this->shared_from_this(), std::placeholders::_1));
+        controlServiceChannel_->sendPingResponse(response, std::move(promise));
+        controlServiceChannel_->receive(this->shared_from_this());
+    }
 
 void AndroidAutoEntity::onPingResponse(const aasdk::proto::messages::PingResponse& response)
 {

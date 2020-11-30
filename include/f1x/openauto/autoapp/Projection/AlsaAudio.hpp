@@ -24,8 +24,8 @@
 
 
 #include <memory>
-#include <f1x/aasdk/Messenger/Timestamp.hpp>
-#include <f1x/aasdk/Common/Data.hpp>
+#include <aasdk/Messenger/Timestamp.hpp>
+#include <aasdk/Common/Data.hpp>
 #include <f1x/openauto/autoapp/Projection/IAudioOutput.hpp>
 
 namespace f1x {
@@ -44,7 +44,7 @@ namespace f1x {
 
                     bool open() override;
 
-                    void write(f1x::aasdk::messenger::Timestamp::ValueType timestamp, const f1x::aasdk::common::DataConstBuffer &buffer) override;
+                    void write(aasdk::messenger::Timestamp::ValueType timestamp, const aasdk::common::DataConstBuffer &buffer) override;
 
                     void start() override {};
 

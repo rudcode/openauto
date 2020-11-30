@@ -19,7 +19,7 @@
 #pragma once
 
 #include <f1x/openauto/autoapp/Projection/IBluetoothDevice.hpp>
-#include <f1x/aasdk/IO/Promise.hpp>
+#include <aasdk/IO/Promise.hpp>
 
 namespace f1x {
     namespace openauto {
@@ -27,7 +27,7 @@ namespace f1x {
             namespace projection {
                 class MazdaBluetooth : public IBluetoothDevice {
                 public:
-                    typedef f1x::aasdk::io::Promise<void, void> PairingPromise;
+                    typedef aasdk::io::Promise<void, void> PairingPromise;
 
                     void stop() override;
 

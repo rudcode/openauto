@@ -111,8 +111,8 @@ namespace f1x {
                                 continue;
                             }
 
-                            f1x::aasdk::common::Data data(1048576, 0);
-//            f1x::aasdk::common::DataBuffer buffer(data);
+                            aasdk::common::Data data(1048576, 0);
+//            aasdk::common::DataBuffer buffer(data);
                             auto readSize = snd_pcm_frames_to_bytes(mic_handle, frames);
                             data.reserve(readSize);
                             data.insert(data.begin(), tempBuffer, tempBuffer + readSize);

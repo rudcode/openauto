@@ -20,12 +20,12 @@
 
 #include <dbus-c++/dbus.h>
 
-#include <f1x/aasdk/USB/USBHub.hpp>
-#include <f1x/aasdk/USB/ConnectedAccessoriesEnumerator.hpp>
-#include <f1x/aasdk/USB/AccessoryModeQueryChain.hpp>
-#include <f1x/aasdk/USB/AccessoryModeQueryChainFactory.hpp>
-#include <f1x/aasdk/USB/AccessoryModeQueryFactory.hpp>
-#include <f1x/aasdk/TCP/TCPWrapper.hpp>
+#include <aasdk/USB/USBHub.hpp>
+#include <aasdk/USB/ConnectedAccessoriesEnumerator.hpp>
+#include <aasdk/USB/AccessoryModeQueryChain.hpp>
+#include <aasdk/USB/AccessoryModeQueryChainFactory.hpp>
+#include <aasdk/USB/AccessoryModeQueryFactory.hpp>
+#include <aasdk/TCP/TCPWrapper.hpp>
 #include <f1x/openauto/autoapp/App.hpp>
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
 #include <f1x/openauto/autoapp/Service/AndroidAutoEntityFactory.hpp>
@@ -33,8 +33,10 @@
 #include <easylogging++.h>
 #include <f1x/openauto/autoapp/Signals/Signals.hpp>
 #include <f1x/openauto/autoapp/Managers/VideoManager.hpp>
+#include <f1x/openauto/autoapp/Managers/AudioManager.hpp>
 
-namespace aasdk = f1x::aasdk;
+
+namespace aasdk = aasdk;
 namespace autoapp = f1x::openauto::autoapp;
 using ThreadPool = std::vector<std::thread>;
 

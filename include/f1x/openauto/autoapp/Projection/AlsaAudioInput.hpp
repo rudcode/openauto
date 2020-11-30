@@ -18,8 +18,8 @@
 #pragma once
 
 #include <memory>
-#include <f1x/aasdk/IO/Promise.hpp>
-#include <f1x/aasdk/Common/Data.hpp>
+#include <aasdk/IO/Promise.hpp>
+#include <aasdk/Common/Data.hpp>
 #include <f1x/openauto/autoapp/Projection/IAudioInput.hpp>
 
 #include <glib.h>
@@ -42,8 +42,8 @@ namespace f1x {
                     void MicThreadMain();
 
                 public:
-                    typedef f1x::aasdk::io::Promise<void, void> StartPromise;
-                    typedef f1x::aasdk::io::Promise<f1x::aasdk::common::Data, void> ReadPromise;
+                    typedef aasdk::io::Promise<void, void> StartPromise;
+                    typedef aasdk::io::Promise<aasdk::common::Data, void> ReadPromise;
 
                     explicit AlsaAudioInput(const std::string &micDevice = "default");
 

@@ -37,8 +37,8 @@ namespace f1x {
 
                 }
 
-                void AlsaAudioOutput::write(f1x::aasdk::messenger::Timestamp::ValueType timestamp,
-                                            const f1x::aasdk::common::DataConstBuffer &buffer) {
+                void AlsaAudioOutput::write(aasdk::messenger::Timestamp::ValueType timestamp,
+                                            const aasdk::common::DataConstBuffer &buffer) {
                     snd_pcm_sframes_t framecount = snd_pcm_bytes_to_frames(aud_handle, buffer.size);
                     snd_pcm_sframes_t frames = snd_pcm_writei(aud_handle, buffer.cdata, framecount);
                     if (frames < 0) {

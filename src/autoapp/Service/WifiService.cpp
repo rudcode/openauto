@@ -56,11 +56,11 @@ void WifiService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse&
 {
     LOG(INFO) << "[WifiService] fill features.";
 
-    auto* channelDescriptor = response.add_channels();
-    channelDescriptor->set_channel_id(14);
-
-    auto* channel = channelDescriptor->mutable_wifi_channel();
-    channel->set_ssid(std::string("Mazda"));
+//    auto* channelDescriptor = response.add_channels();
+//    channelDescriptor->set_channel_id(14);
+//
+//    auto* channel = channelDescriptor->mutable_wifi_channel();
+//    channel->set_ssid(std::string("Mazda"));
 }
 
 }

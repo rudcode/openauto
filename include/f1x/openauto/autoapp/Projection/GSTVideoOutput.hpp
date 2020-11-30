@@ -7,7 +7,7 @@
 
 #include <aasdk_proto/VideoFPSEnum.pb.h>
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
-#include <f1x/aasdk/Common/Data.hpp>
+#include <aasdk/Common/Data.hpp>
 #include <f1x/openauto/autoapp/Projection/IVideoOutput.hpp>
 #include <thread>
 
@@ -36,13 +36,13 @@ namespace f1x {
 
                     bool init() override;
 
-                    void write(uint64_t timestamp, const f1x::aasdk::common::DataConstBuffer &buffer) override;
+                    void write(uint64_t timestamp, const aasdk::common::DataConstBuffer &buffer) override;
 
                     void stop() override;
 
-                    f1x::aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const override { return f1x::aasdk::proto::enums::VideoFPS::Enum::VideoFPS_Enum__30; }
+                    aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const override { return aasdk::proto::enums::VideoFPS::Enum::VideoFPS_Enum__30; }
 
-                    f1x::aasdk::proto::enums::VideoResolution::Enum getVideoResolution() const override { return f1x::aasdk::proto::enums::VideoResolution::Enum::VideoResolution_Enum__480p; }
+                    aasdk::proto::enums::VideoResolution::Enum getVideoResolution() const override { return aasdk::proto::enums::VideoResolution::Enum::VideoResolution_Enum__480p; }
 
                     size_t getScreenDPI() const override { return 140; }
 

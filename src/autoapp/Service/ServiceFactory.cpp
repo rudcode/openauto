@@ -16,7 +16,7 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <f1x/aasdk/Channel/AV/MediaAudioServiceChannel.hpp>
+#include <aasdk/Channel/AV/MediaAudioServiceChannel.hpp>
 #include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
 #include <f1x/openauto/autoapp/Service/VideoService.hpp>
 #include <f1x/openauto/autoapp/Service/MediaAudioService.hpp>
@@ -31,6 +31,7 @@
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
 #include <f1x/openauto/autoapp/Projection/MazdaBluetooth.hpp>
 #include <f1x/openauto/autoapp/Service/SystemAudioService.hpp>
+
 
 
 namespace f1x

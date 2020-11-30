@@ -50,32 +50,32 @@ void sendMessage(int fd, google::protobuf::MessageLite &message, uint16_t type) 
 }
 
 void handleWifiInfoRequest(int fd, uint8_t *buffer, uint16_t length) {
-    f1x::aasdk::proto::messages::WifiInfoRequest msg;
+    aasdk::proto::messages::WifiInfoRequest msg;
     msg.ParseFromArray(buffer, length);
     printf("WifiInfoRequest: %s", msg.DebugString().c_str());
 
-    f1x::aasdk::proto::messages::WifiInfoResponse response;
+    aasdk::proto::messages::WifiInfoResponse response;
     response.set_ip_address(IP_ADDRESS);
     response.set_port(30515);
-    response.set_status(f1x::aasdk::proto::messages::WifiInfoResponse_Status_STATUS_SUCCESS);
+    response.set_status(aasdk::proto::messages::WifiInfoResponse_Status_STATUS_SUCCESS);
 
     sendMessage(fd, response, 7);
 }
 
 void handleWifiSecurityRequest(int fd, __attribute__((unused)) uint8_t *buffer, __attribute__((unused)) uint16_t length) {
-    f1x::aasdk::proto::messages::WifiSecurityReponse response;
+    aasdk::proto::messages::WifiSecurityReponse response;
 
     response.set_ssid(hostapd_config("ssid").c_str());
     response.set_bssid(MAC_ADDRESS);
     response.set_key(hostapd_config("wpa_passphrase").c_str());
-    response.set_security_mode(f1x::aasdk::proto::messages::WifiSecurityReponse_SecurityMode_WPA2_PERSONAL);
-    response.set_access_point_type(f1x::aasdk::proto::messages::WifiSecurityReponse_AccessPointType_DYNAMIC);
+    response.set_security_mode(aasdk::proto::messages::WifiSecurityReponse_SecurityMode_WPA2_PERSONAL);
+    response.set_access_point_type(aasdk::proto::messages::WifiSecurityReponse_AccessPointType_DYNAMIC);
 
     sendMessage(fd, response, 3);
 }
 
 int handleWifiInfoRequestResponse(int  __attribute__((unused)) fd, uint8_t *buffer, uint16_t length) {
-    f1x::aasdk::proto::messages::WifiInfoResponse msg;
+    aasdk::proto::messages::WifiInfoResponse msg;
     msg.ParseFromArray(buffer, length);
     printf("WifiInfoResponse: %s", msg.DebugString().c_str());
     return msg.status();
@@ -85,7 +85,7 @@ void handle_connect(char *pty){
     char buf[100];
     printf("\tPTY: %s", pty);
     int fd = open(pty, O_RDWR | O_NOCTTY | O_SYNC);
-    f1x::aasdk::proto::messages::WifiInfoRequest request;
+    aasdk::proto::messages::WifiInfoRequest request;
     request.set_ip_address(IP_ADDRESS);
     request.set_port(30515);
 
