@@ -2,6 +2,7 @@
 
 #include <f1x/openauto/autoapp/Signals/AudioSignals.hpp>
 
+
 #include <Mazda/Dbus/com.xsembedded.ServiceProvider.h>
 
 class AudioManagerClient : public com::xsembedded::ServiceProvider_proxy,
@@ -29,9 +30,9 @@ public:
     bool canSwitchAudio();
 
     //calling requestAudioFocus directly doesn't work on the audio mgr
-    void audioMgrRequestAudioFocus(FocusType type);
+    void audioMgrRequestAudioFocus(aasdk::proto::enums::AudioFocusType_Enum aa_type);
 
     void audioMgrReleaseAudioFocus();
 
-    virtual void Notify(const std::string &signalName, const std::string &payload) override;
+    void Notify(const std::string &signalName, const std::string &payload) override;
 };

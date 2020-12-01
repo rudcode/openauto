@@ -1,51 +1,10 @@
 #include <f1x/openauto/autoapp/Managers/AudioManager.hpp>
 #include <json.hpp>
 #include <easylogging++.h>
+#include <map>
 
 using json = nlohmann::json;
 
-//void MazdaEventCallbacks::AudioFocusRequest(int chan, const HU::AudioFocusRequest &request)  {
-//
-//    run_on_main_thread([this, request](){
-//        //The chan passed here is always AA_CH_CTR but internally we pass the channel AA means
-//        if (request.focus_type() == HU::AudioFocusRequest::AUDIO_FOCUS_RELEASE) {
-//            audioMgrClient->audioMgrReleaseAudioFocus();
-//        } else {
-//            if (!inCall) {
-//                if (request.focus_type() == HU::AudioFocusRequest::AUDIO_FOCUS_GAIN_TRANSIENT) { // || request.focus_type() == HU::AudioFocusRequest::AUDIO_FOCUS_GAIN_NAVI) {
-//                    audioMgrClient->audioMgrRequestAudioFocus(AudioManagerClient::FocusType::TRANSIENT); //assume media
-//                } else if (request.focus_type() == HU::AudioFocusRequest::AUDIO_FOCUS_GAIN) {
-//                    audioMgrClient->audioMgrRequestAudioFocus(AudioManagerClient::FocusType::PERMANENT); //assume media
-//                }
-//            } else {
-//                logw("Tried to request focus %i but was in a call", (int)request.focus_type());
-//            }
-//        }
-//
-//        return false;
-//    });
-//}
-//
-//void MazdaEventCallbacks::AudioFocusHappend(AudioManagerClient::FocusType type) {
-//    printf("AudioFocusHappend(%i)\n", int(type));
-//    audioFocus = type;
-//    HU::AudioFocusResponse response;
-//    switch(type) {
-//        case AudioManagerClient::FocusType::NONE:
-//            response.set_focus_type(HU::AudioFocusResponse::AUDIO_FOCUS_STATE_LOSS);
-//            break;
-//        case AudioManagerClient::FocusType::PERMANENT:
-//            response.set_focus_type(HU::AudioFocusResponse::AUDIO_FOCUS_STATE_GAIN);
-//            break;
-//        case AudioManagerClient::FocusType::TRANSIENT:
-//            response.set_focus_type(HU::AudioFocusResponse::AUDIO_FOCUS_STATE_GAIN_TRANSIENT);
-//            break;
-//    }
-//    g_hu->hu_queue_command([response](IHUConnectionThreadInterface & s) {
-//        s.hu_aap_enc_send_message(0, AA_CH_CTR, HU_PROTOCOL_MESSAGE::AudioFocusResponse, response);
-//    });
-//    logd("Sent channel %i HU_PROTOCOL_MESSAGE::AudioFocusResponse %s\n", AA_CH_CTR,  HU::AudioFocusResponse::AUDIO_FOCUS_STATE_Name(response.focus_type()).c_str());
-//}
 
 void AudioManagerClient::aaRegisterStream() {
     // First open a new Stream
@@ -195,6 +154,10 @@ AudioManagerClient::AudioManagerClient(DBus::Connection &connection, AudioSignal
     {
         LOG(ERROR) << "Can't find audio stream. Audio will not work";
     }
+    else {
+        as->focusRelease.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrReleaseAudioFocus));
+        as->focusRequest.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrRequestAudioFocus));
+    }
 }
 
 AudioManagerClient::~AudioManagerClient()
@@ -219,17 +182,37 @@ AudioManagerClient::~AudioManagerClient()
 
 bool AudioManagerClient::canSwitchAudio() { return aaSessionID >= 0 && aaTransientSessionID >= 0; }
 
-void AudioManagerClient::audioMgrRequestAudioFocus(FocusType type)
+std::map<FocusType, aasdk::proto::enums::AudioFocusState_Enum> FocusTypeToAudioState = {
+        {FocusType::NONE, aasdk::proto::enums::AudioFocusState_Enum_NONE},
+        {FocusType::TRANSIENT, aasdk::proto::enums::AudioFocusState_Enum_GAIN_TRANSIENT},
+        {FocusType::PERMANENT, aasdk::proto::enums::AudioFocusState_Enum_GAIN}
+};
+
+std::map<aasdk::proto::enums::AudioFocusType_Enum, FocusType> AAFocusToFocusType = {
+        {aasdk::proto::enums::AudioFocusType_Enum_NONE, FocusType::NONE},
+        {aasdk::proto::enums::AudioFocusType_Enum_GAIN_TRANSIENT, FocusType::TRANSIENT},
+        {aasdk::proto::enums::AudioFocusType_Enum_GAIN, FocusType::PERMANENT}
+};
+
+std::map<aasdk::proto::enums::AudioFocusType_Enum, aasdk::proto::enums::AudioFocusState_Enum> TypeToState = {
+        {aasdk::proto::enums::AudioFocusType_Enum_NONE, aasdk::proto::enums::AudioFocusState_Enum_NONE},
+        {aasdk::proto::enums::AudioFocusType_Enum_GAIN_TRANSIENT, aasdk::proto::enums::AudioFocusState_Enum_GAIN_TRANSIENT},
+        {aasdk::proto::enums::AudioFocusType_Enum_GAIN, aasdk::proto::enums::AudioFocusState_Enum_GAIN}
+};
+
+void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::proto::enums::AudioFocusType_Enum aa_type)
 {
+    // TODO: Handle call state
+    FocusType type = AAFocusToFocusType[aa_type];
     if (type == FocusType::NONE)
     {
         audioMgrReleaseAudioFocus();
         return;
     }
-    printf("audioMgrRequestAudioFocus(%i)\n", int(type));
+    LOG(INFO) << "audioMgrRequestAudioFocus(" << int(type) << ")";
     if (currentFocus == type)
     {
-        as->focusChanged.emit(currentFocus);
+        as->focusChanged.emit(TypeToState[aa_type]);
         return;
     }
 
@@ -239,43 +222,59 @@ void AudioManagerClient::audioMgrRequestAudioFocus(FocusType type)
         previousSessionID = -1;
     }
     json args = { { "sessionId", type == FocusType::TRANSIENT ? aaTransientSessionID : aaSessionID } };
-    std::string result = Request("requestAudioFocus", args.dump());
-    LOG(DEBUG) << "requestAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str() << "\n";
+    try{
+        std::string result = Request("requestAudioFocus", args.dump());
+        LOG(DEBUG) << "requestAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str();
+    }
+    catch (DBus::Error &e) {
+        LOG(ERROR) << e.what();
+    }
 }
 
 void AudioManagerClient::audioMgrReleaseAudioFocus()
 {
-    printf("audioMgrReleaseAudioFocus()\n");
+    // TODO: Handle call state
+    LOG(INFO) << "audioMgrReleaseAudioFocus()";
+    std::string method;
+    json args;
     if (currentFocus == FocusType::NONE)
     {
         //nothing to do
-        as->focusChanged.emit(currentFocus);
+        as->focusChanged.emit(aasdk::proto::enums::AudioFocusState_Enum_LOSS);
     }
     else if (currentFocus == FocusType::PERMANENT && previousSessionID >= 0)
     {
         //We released the last one, give up audio focus for real
-        json args = { { "sessionId", previousSessionID } };
-        std::string result = Request("requestAudioFocus", args.dump());
-        LOG(DEBUG) << "requestAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str() << "\n";
+        args = { { "sessionId", previousSessionID } };
+        method = "requestAudioFocus";
         previousSessionID = -1;
     }
     else if (currentFocus == FocusType::TRANSIENT)
     {
-        json args = { { "sessionId", aaTransientSessionID } };
-        std::string result = Request("abandonAudioFocus", args.dump());
-        LOG(DEBUG) << "abandonAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str() << "\n";
+        args = { { "sessionId", aaTransientSessionID } };
+        method = "abandonAudioFocus";
         previousSessionID = -1;
     }
     else
     {
         currentFocus = FocusType::NONE;
-        as->focusChanged.emit(currentFocus);
+        as->focusChanged.emit(aasdk::proto::enums::AudioFocusState_Enum_LOSS);
+    }
+    if(!method.empty()){
+        try{
+            std::string result = Request(method, args.dump());
+            LOG(DEBUG) << method <<"(" << args.dump() << ")\n" << result;
+
+        }
+        catch (DBus::Error &e) {
+            LOG(ERROR) << e.what();
+        }
     }
 }
 
 void AudioManagerClient::Notify(const std::string &signalName, const std::string &payload)
 {
-    printf("AudioManagerClient::Notify signalName=%s payload=%s\n", signalName.c_str(), payload.c_str());
+    LOG(INFO) << "AudioManagerClient::Notify signalName=" << signalName.c_str() << " payload=" << payload.c_str();
     if (signalName == "audioFocusChangeEvent")
     {
         try
@@ -345,7 +344,19 @@ void AudioManagerClient::Notify(const std::string &signalName, const std::string
                 if (currentFocus != newFocusType)
                 {
                     currentFocus = newFocusType;
-                    as->focusChanged.emit(currentFocus);
+                    aasdk::proto::enums::AudioFocusState_Enum currentstate;
+                    switch(currentFocus) {
+                        case FocusType::NONE:
+                            currentstate = aasdk::proto::enums::AudioFocusState_Enum_LOSS;
+                            break;
+                        case FocusType::PERMANENT:
+                            currentstate = aasdk::proto::enums::AudioFocusState_Enum_GAIN;
+                            break;
+                        case FocusType::TRANSIENT:
+                            currentstate = aasdk::proto::enums::AudioFocusState_Enum_GAIN_TRANSIENT;
+                            break;
+                    }
+                    as->focusChanged.emit(currentstate);
                 }
             }
         }

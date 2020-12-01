@@ -27,6 +27,7 @@
 #include <f1x/openauto/autoapp/Service/IAndroidAutoEntity.hpp>
 #include <f1x/openauto/autoapp/Service/IService.hpp>
 #include <f1x/openauto/autoapp/Service/IPinger.hpp>
+#include <f1x/openauto/autoapp/Signals/Signals.hpp>
 
 namespace f1x
 {
@@ -46,7 +47,8 @@ public:
                       aasdk::messenger::IMessenger::Pointer messenger,
                       configuration::IConfiguration::Pointer configuration,
                       ServiceList serviceList,
-                      IPinger::Pointer pinger);
+                      IPinger::Pointer pinger,
+                      Signals::Pointer signals);
     ~AndroidAutoEntity() override;
 
     void start(IAndroidAutoEntityEventHandler& eventHandler) override;
@@ -57,6 +59,7 @@ public:
     void onHandshake(const aasdk::common::DataConstBuffer& payload) override;
     void onServiceDiscoveryRequest(const aasdk::proto::messages::ServiceDiscoveryRequest& request) override;
     void onAudioFocusRequest(const aasdk::proto::messages::AudioFocusRequest& request) override;
+    void onAudioFocusResponse(const aasdk::proto::enums::AudioFocusState_Enum state);
     void onShutdownRequest(const aasdk::proto::messages::ShutdownRequest& request) override;
     void onShutdownResponse(const aasdk::proto::messages::ShutdownResponse& response) override;
     void onNavigationFocusRequest(const aasdk::proto::messages::NavigationFocusRequest& request) override;
@@ -80,6 +83,7 @@ private:
     ServiceList serviceList_;
     IPinger::Pointer pinger_;
     IAndroidAutoEntityEventHandler* eventHandler_;
+    Signals::Pointer signals_;
 };
 
 }

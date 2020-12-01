@@ -35,7 +35,8 @@ AndroidAutoEntity::AndroidAutoEntity(asio::io_service& ioService,
                                      aasdk::messenger::IMessenger::Pointer messenger,
                                      configuration::IConfiguration::Pointer configuration,
                                      ServiceList serviceList,
-                                     IPinger::Pointer pinger)
+                                     IPinger::Pointer pinger,
+                                     Signals::Pointer signals)
     : strand_(ioService)
     , cryptor_(std::move(cryptor))
     , transport_(std::move(transport))
@@ -44,6 +45,7 @@ AndroidAutoEntity::AndroidAutoEntity(asio::io_service& ioService,
     , configuration_(std::move(configuration))
     , serviceList_(std::move(serviceList))
     , pinger_(std::move(pinger))
+    , signals_(std::move(signals))
     , eventHandler_(nullptr)
 {
 }
@@ -61,6 +63,8 @@ void AndroidAutoEntity::start(IAndroidAutoEntityEventHandler& eventHandler)
         eventHandler_ = eventHandler;
         std::for_each(serviceList_.begin(), serviceList_.end(), std::bind(&IService::start, std::placeholders::_1));
         //this->schedulePing();
+
+        signals_->audioSignals->focusChanged.connect(sigc::mem_fun(*this, &AndroidAutoEntity::onAudioFocusResponse));
 
         auto versionRequestPromise = aasdk::channel::SendPromise::defer(strand_);
         versionRequestPromise->then([]() {}, std::bind(&AndroidAutoEntity::onChannelError, this->shared_from_this(), std::placeholders::_1));
@@ -209,16 +213,25 @@ void AndroidAutoEntity::onServiceDiscoveryRequest(const aasdk::proto::messages::
 
 void AndroidAutoEntity::onAudioFocusRequest(const aasdk::proto::messages::AudioFocusRequest& request)
 {
-    LOG(INFO) << "[AndroidAutoEntity] requested audio focus, type: " << request.audio_focus_type();
+    LOG(INFO) << "[AndroidAutoEntity] requested audio focus, type: " << aasdk::proto::enums::AudioFocusType_Enum_Name(request.audio_focus_type());
 
     aasdk::proto::enums::AudioFocusState::Enum audioFocusState =
             request.audio_focus_type() == aasdk::proto::enums::AudioFocusType::RELEASE ? aasdk::proto::enums::AudioFocusState::LOSS
                                                                                        : aasdk::proto::enums::AudioFocusState::GAIN;
+    if(request.audio_focus_type() == aasdk::proto::enums::AudioFocusType::RELEASE){
+        signals_->audioSignals->focusRelease();
+    }
+    else{
+        signals_->audioSignals->focusRequest(request.audio_focus_type());
+    }
+}
 
-    LOG(INFO) << "[AndroidAutoEntity] audio focus state: " << audioFocusState;
+void AndroidAutoEntity::onAudioFocusResponse(const aasdk::proto::enums::AudioFocusState_Enum state)
+{
+    LOG(INFO) << "[AndroidAutoEntity] audio focus state: " << aasdk::proto::enums::AudioFocusState_Enum_Name(state);
 
     aasdk::proto::messages::AudioFocusResponse response;
-    response.set_audio_focus_state(audioFocusState);
+    response.set_audio_focus_state(state);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
     promise->then([]() {}, std::bind(&AndroidAutoEntity::onChannelError, this->shared_from_this(), std::placeholders::_1));

@@ -39,10 +39,11 @@ namespace service
 
 AndroidAutoEntityFactory::AndroidAutoEntityFactory(asio::io_service& ioService,
                                                    configuration::IConfiguration::Pointer configuration,
-                                                   IServiceFactory& serviceFactory)
+                                                   IServiceFactory& serviceFactory, Signals::Pointer signals)
     : ioService_(ioService)
     , configuration_(std::move(configuration))
     , serviceFactory_(serviceFactory)
+    , signals_(std::move(signals))
 {
 
 }
@@ -71,7 +72,7 @@ IAndroidAutoEntity::Pointer AndroidAutoEntityFactory::create(aasdk::transport::I
 
     auto serviceList = serviceFactory_.create(messenger);
     auto pinger(std::make_shared<Pinger>(ioService_, 5000));
-    return std::make_shared<AndroidAutoEntity>(ioService_, std::move(cryptor), std::move(transport), std::move(messenger), configuration_, std::move(serviceList), std::move(pinger));
+    return std::make_shared<AndroidAutoEntity>(ioService_, std::move(cryptor), std::move(transport), std::move(messenger), configuration_, std::move(serviceList), std::move(pinger), std::move(signals_));
 }
 
 }
