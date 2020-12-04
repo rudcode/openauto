@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include <glib.h>
 #include <cstdio>
 #include <alsa/asoundlib.h>
 #include <thread>

@@ -22,7 +22,6 @@
 #include <aasdk/Common/Data.hpp>
 #include <f1x/openauto/autoapp/Projection/IAudioInput.hpp>
 
-#include <glib.h>
 #include <cstdio>
 #include <alsa/asoundlib.h>
 #include <thread>
