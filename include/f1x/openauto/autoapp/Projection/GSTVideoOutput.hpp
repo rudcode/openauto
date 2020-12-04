@@ -1,10 +1,3 @@
-//This gets defined by SDL and breaks the protobuf headers
-#undef Status
-
-#include <glib.h>
-#include <gst/gst.h>
-#include <gst/app/gstappsrc.h>
-
 #include <aasdk_proto/VideoFPSEnum.pb.h>
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
 #include <aasdk/Common/Data.hpp>
@@ -21,10 +14,7 @@ namespace f1x {
             namespace projection {
 
                 class GSTVideoOutput : public IVideoOutput {
-                    GstElement *vid_pipeline = nullptr;
-                    GstAppSrc *vid_src = nullptr;
-                    GstElement *vid_sink = nullptr;
-                    std::thread *gloop;
+                    FILE *gst_file;
 
                 public:
                     explicit GSTVideoOutput();
