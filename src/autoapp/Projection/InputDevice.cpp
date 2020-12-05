@@ -127,6 +127,10 @@ namespace f1x {
                     std::lock_guard<decltype(mutex_)> lock(mutex_);
 
                     LOG(INFO) << "[InputDevice] stop.";
+                    touchscreen->cancel();
+                    touchscreen->close();
+                    keyboard->cancel();
+                    keyboard->close();
                     eventHandler_ = nullptr;
 
                     ioctl(ui_fd, UI_DEV_DESTROY);
