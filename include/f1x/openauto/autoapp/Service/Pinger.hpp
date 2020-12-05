@@ -44,7 +44,7 @@ private:
     void onTimerExceeded(const asio::error_code& error);
 
     asio::io_service::strand strand_;
-//    asio::deadline_timer timer_;
+    asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
     time_t duration_;
     bool cancelled_;
     Promise::Pointer promise_;

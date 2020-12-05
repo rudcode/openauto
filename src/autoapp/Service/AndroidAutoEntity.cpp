@@ -81,7 +81,7 @@ void AndroidAutoEntity::stop()
         try {
             eventHandler_ = nullptr;
             std::for_each(serviceList_.begin(), serviceList_.end(), std::bind(&IService::stop, std::placeholders::_1));
-            //pinger_->cancel();
+            pinger_->cancel();
             messenger_->stop();
             transport_->stop();
             cryptor_->deinit();
