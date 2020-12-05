@@ -31,6 +31,7 @@
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
 #include <f1x/openauto/autoapp/Projection/MazdaBluetooth.hpp>
 #include <f1x/openauto/autoapp/Service/SystemAudioService.hpp>
+#include <utility>
 
 
 
@@ -43,10 +44,10 @@ namespace autoapp
 namespace service
 {
 
-ServiceFactory::ServiceFactory(asio::io_service& ioService, const configuration::IConfiguration::Pointer& configuration, const Signals::Pointer& signals)
+ServiceFactory::ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer  configuration, Signals::Pointer  signals)
     : ioService_(ioService)
-    , configuration_(configuration)
-    , signals_(signals)
+    , configuration_(std::move(configuration))
+    , signals_(std::move(signals))
 {
 
 }

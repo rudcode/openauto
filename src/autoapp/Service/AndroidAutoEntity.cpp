@@ -45,8 +45,8 @@ AndroidAutoEntity::AndroidAutoEntity(asio::io_service& ioService,
     , configuration_(std::move(configuration))
     , serviceList_(std::move(serviceList))
     , pinger_(std::move(pinger))
-    , signals_(std::move(signals))
     , eventHandler_(nullptr)
+    , signals_(std::move(signals))
 {
 }
 

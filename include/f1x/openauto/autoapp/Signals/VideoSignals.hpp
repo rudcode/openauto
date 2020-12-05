@@ -1,8 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <sigc++/sigc++.h>
 
-enum class VIDEO_FOCUS_REQUESTOR : u_int8_t {
+enum class VIDEO_FOCUS_REQUESTOR : uint8_t {
     HEADUNIT = 0, // headunit (we) has requested video focus
     ANDROID_AUTO = 1, // AA phone app has requested video focus
     BACKUP_CAMERA = 2 // CMU requested screen for backup camera

@@ -192,7 +192,7 @@ namespace f1x {
                 void InputDevice::handle_key(asio::error_code ec, size_t bytes_transferred) {
                     if (!ec) {
                         auto const n = bytes_transferred / sizeof(input_event);
-                        for (int i = 0; i < n; i++) {
+                        for (size_t i = 0; i < n; i++) {
                             auto &event = key_events[i];
                             if (event.type == EV_KEY && (event.value == 1 || event.value == 0)) {
                                 aasdk::proto::enums::ButtonCode::Enum scanCode;
@@ -256,7 +256,7 @@ namespace f1x {
                 void InputDevice::handle_touch(asio::error_code ec, size_t bytes_transferred) {
                     if (!ec) {
                         auto const n = bytes_transferred / sizeof(input_event);
-                        for (int i = 0; i < n; i++) {
+                        for (size_t i = 0; i < n; i++) {
                             auto &event = touch_events[i];
                             switch (event.type) {
                                 case EV_ABS:
