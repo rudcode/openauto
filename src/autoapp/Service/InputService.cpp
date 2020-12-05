@@ -103,7 +103,7 @@ void InputService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpe
     response.set_status(status);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, std::bind(&InputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendChannelOpenResponse(response, std::move(promise));
 
     channel_->receive(this->shared_from_this());
@@ -139,7 +139,7 @@ void InputService::onBindingRequest(const aasdk::proto::messages::BindingRequest
     LOG(INFO) << "[InputService] binding request, status: " << status;
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, std::bind(&InputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendBindingResponse(response, std::move(promise));
     channel_->receive(this->shared_from_this());
 }
@@ -173,7 +173,7 @@ void InputService::onButtonEvent(const projection::ButtonEvent& event)
         }
 
         auto promise = aasdk::channel::SendPromise::defer(strand_);
-        promise->then([]() {}, std::bind(&InputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+        promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
         channel_->sendInputEventIndication(inputEventIndication, std::move(promise));
     });
 }
@@ -194,7 +194,7 @@ void InputService::onTouchEvent(const projection::TouchEvent& event)
         touchLocation->set_pointer_id(0);
 
         auto promise = aasdk::channel::SendPromise::defer(strand_);
-        promise->then([]() {}, std::bind(&InputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+        promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
         channel_->sendInputEventIndication(inputEventIndication, std::move(promise));
     });
 }

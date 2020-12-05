@@ -19,6 +19,7 @@
 #include <ctime>
 #include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/AudioInputService.hpp>
+#include <utility>
 
 namespace f1x
 {
@@ -94,7 +95,7 @@ void AudioInputService::onChannelOpenRequest(const aasdk::proto::messages::Chann
     response.set_status(status);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, std::bind(&AudioInputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendChannelOpenResponse(response, std::move(promise));
 
     channel_->receive(this->shared_from_this());
@@ -113,7 +114,7 @@ void AudioInputService::onAVChannelSetupRequest(const aasdk::proto::messages::AV
     response.add_configs(0);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, std::bind(&AudioInputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendAVChannelSetupResponse(response, std::move(promise));
 
     channel_->receive(this->shared_from_this());
@@ -129,7 +130,7 @@ void AudioInputService::onAVInputOpenRequest(const aasdk::proto::messages::AVInp
     if(request.open())
     {
         auto startPromise = projection::IAudioInput::StartPromise::defer(strand_);
-        startPromise->then(std::bind(&AudioInputService::onAudioInputOpenSucceed, this->shared_from_this()),
+        startPromise->then([this](){onAudioInputOpenSucceed();},
             [this, self = this->shared_from_this()]() {
                 LOG(ERROR) << "[AudioInputService] audio input open failed.";
 
@@ -138,7 +139,7 @@ void AudioInputService::onAVInputOpenRequest(const aasdk::proto::messages::AVInp
                 response.set_value(1);
 
                 auto sendPromise = aasdk::channel::SendPromise::defer(strand_);
-                sendPromise->then([]() {}, std::bind(&AudioInputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+                sendPromise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
                 channel_->sendAVInputOpenResponse(response, std::move(sendPromise));
             });
 
@@ -153,7 +154,7 @@ void AudioInputService::onAVInputOpenRequest(const aasdk::proto::messages::AVInp
         response.set_value(0);
 
         auto sendPromise = aasdk::channel::SendPromise::defer(strand_);
-        sendPromise->then([]() {}, std::bind(&AudioInputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+        sendPromise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
         channel_->sendAVInputOpenResponse(response, std::move(sendPromise));
     }
 
@@ -179,7 +180,7 @@ void AudioInputService::onAudioInputOpenSucceed()
     response.set_value(0);
 
     auto sendPromise = aasdk::channel::SendPromise::defer(strand_);
-    sendPromise->then([]() {}, std::bind(&AudioInputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    sendPromise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendAVInputOpenResponse(response, std::move(sendPromise));
 
     this->readAudioInput();
@@ -188,8 +189,8 @@ void AudioInputService::onAudioInputOpenSucceed()
 void AudioInputService::onAudioInputDataReady(aasdk::common::Data data)
 {
     auto sendPromise = aasdk::channel::SendPromise::defer(strand_);
-    sendPromise->then(std::bind(&AudioInputService::readAudioInput, this->shared_from_this()),
-                     std::bind(&AudioInputService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    sendPromise->then([&](){readAudioInput();},
+                      [&](const aasdk::error::Error &e){onChannelError(e);});
 
     auto timestamp = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch());
     channel_->sendAVMediaWithTimestampIndication(timestamp.count(), std::move(data), std::move(sendPromise));
@@ -200,7 +201,7 @@ void AudioInputService::readAudioInput()
     if(audioInput_->isActive())
     {
         auto readPromise = projection::IAudioInput::ReadPromise::defer(strand_);
-        readPromise->then(std::bind(&AudioInputService::onAudioInputDataReady, this->shared_from_this(), std::placeholders::_1),
+        readPromise->then([&](aasdk::common::Data data){onAudioInputDataReady(std::move(data));},
                          [this, self = this->shared_from_this()]() {
                             LOG(INFO) << "[AudioInputService] audio input read rejected.";
                          });

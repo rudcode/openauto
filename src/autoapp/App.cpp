@@ -34,11 +34,11 @@ App::App(asio::io_service& ioService, aasdk::usb::USBWrapper& usbWrapper, aasdk:
     : ioService_(ioService)
     , usbWrapper_(usbWrapper)
     , tcpWrapper_(tcpWrapper)
+    , acceptor_(ioService, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 30515 ))
     , strand_(ioService_)
     , androidAutoEntityFactory_(androidAutoEntityFactory)
     , usbHub_(std::move(usbHub))
     , connectedAccessoriesEnumerator_(std::move(connectedAccessoriesEnumerator))
-    , acceptor_(ioService, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 30515 ))
     , isStopped_(false)
 {
 
@@ -156,7 +156,7 @@ void App::aoapDeviceHandler(aasdk::usb::DeviceHandle deviceHandle)
             LOG(INFO) << "[App] Start Android Auto allowed - let's go.";
             connectedAccessoriesEnumerator_->cancel();
 
-            auto aoapDevice(aasdk::usb::AOAPDevice::create(usbWrapper_, ioService_, deviceHandle));
+            auto aoapDevice(aasdk::usb::AOAPDevice::create(usbWrapper_, ioService_, std::move(deviceHandle)));
             androidAutoEntity_ = androidAutoEntityFactory_.create(std::move(aoapDevice));
             androidAutoEntity_->start(*this);
         } else {
@@ -175,10 +175,10 @@ void App::aoapDeviceHandler(aasdk::usb::DeviceHandle deviceHandle)
 void App::enumerateDevices()
 {
     auto promise = aasdk::usb::IConnectedAccessoriesEnumerator::Promise::defer(strand_);
-    promise->then([this, self = this->shared_from_this()](auto result) {
+    promise->then([](auto result) {
             LOG(INFO) << "[App] Devices enumeration result: " << result;
         },
-        [this, self = this->shared_from_this()](auto e) {
+        [](auto e) {
             LOG(ERROR) << "[App] Devices enumeration failed: " << e.what();
         });
 
@@ -190,8 +190,8 @@ void App::waitForDevice()
     LOG(INFO) << "[App] Waiting for device...";
 
     auto promise = aasdk::usb::IUSBHub::Promise::defer(strand_);
-    promise->then(std::bind(&App::aoapDeviceHandler, this->shared_from_this(), std::placeholders::_1),
-                  std::bind(&App::onUSBHubError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([&](aasdk::usb::DeviceHandle deviceHandle){aoapDeviceHandler(std::move(deviceHandle));},
+                  [&](const aasdk::error::Error &e){onUSBHubError(e);} );
     usbHub_->start(std::move(promise));
     startServerSocket();
 }
@@ -202,7 +202,7 @@ void App::startServerSocket() {
         auto socket = std::make_shared<asio::ip::tcp::socket>(ioService_);
         acceptor_.async_accept(
                 *socket,
-                std::bind(&App::handleNewClient, this, socket, std::placeholders::_1)
+                [&](const asio::error_code &err){handleNewClient(socket, err);}
         );
     });
 }

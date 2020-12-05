@@ -121,7 +121,7 @@ void AudioService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpe
     response.set_status(status);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, std::bind(&AudioService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendChannelOpenResponse(response, std::move(promise));
     channel_->receive(this->shared_from_this());
 }
@@ -141,7 +141,7 @@ void AudioService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChann
     response.add_configs(0);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, std::bind(&AudioService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendAVChannelSetupResponse(response, std::move(promise));
     channel_->receive(this->shared_from_this());
 }
@@ -174,7 +174,7 @@ void AudioService::onAVMediaWithTimestampIndication(aasdk::messenger::Timestamp:
     indication.set_value(1);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, std::bind(&AudioService::onChannelError, this->shared_from_this(), std::placeholders::_1));
+    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
     channel_->sendAVMediaAckIndication(indication, std::move(promise));
     channel_->receive(this->shared_from_this());
 }

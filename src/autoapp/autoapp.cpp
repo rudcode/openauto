@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
     dispatcher.leave();
     dbus_thread.join();
 
-    std::for_each(threadPool.begin(), threadPool.end(), std::bind(&std::thread::join, std::placeholders::_1));
+    std::for_each(threadPool.begin(), threadPool.end(), [](std::thread &thread){thread.join();});
 
     libusb_exit(usbContext);
     return 0;
