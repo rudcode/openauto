@@ -22,9 +22,7 @@
 #include <aasdk_proto/VideoFPSEnum.pb.h>
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
 #include <aasdk_proto/ButtonCodeEnum.pb.h>
-#include <f1x/openauto/autoapp/Configuration/BluetootAdapterType.hpp>
 #include <f1x/openauto/autoapp/Configuration/HandednessOfTrafficType.hpp>
-#include <f1x/openauto/autoapp/Configuration/AudioOutputBackendType.hpp>
 
 namespace f1x
 {
@@ -107,17 +105,10 @@ public:
     virtual ButtonCodes getButtonCodes() const = 0;
     virtual void setButtonCodes(const ButtonCodes& value) = 0;
 
-    virtual BluetoothAdapterType getBluetoothAdapterType() const = 0;
-    virtual void setBluetoothAdapterType(BluetoothAdapterType value) = 0;
-    virtual std::string getBluetoothRemoteAdapterAddress() const = 0;
-    virtual void setBluetoothRemoteAdapterAddress(const std::string& value) = 0;
-
     virtual bool musicAudioChannelEnabled() const = 0;
     virtual void setMusicAudioChannelEnabled(bool value) = 0;
     virtual bool speechAudioChannelEnabled() const = 0;
     virtual void setSpeechAudioChannelEnabled(bool value) = 0;
-    virtual AudioOutputBackendType getAudioOutputBackendType() const = 0;
-    virtual void setAudioOutputBackendType(AudioOutputBackendType value) = 0;
 };
 
 }

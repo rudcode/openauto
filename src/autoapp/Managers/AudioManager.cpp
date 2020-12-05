@@ -1,7 +1,6 @@
 #include <f1x/openauto/autoapp/Managers/AudioManager.hpp>
 #include <json.hpp>
 #include <easylogging++.h>
-#include <map>
 
 using json = nlohmann::json;
 
@@ -180,13 +179,7 @@ AudioManagerClient::~AudioManagerClient()
     }
 }
 
-bool AudioManagerClient::canSwitchAudio() { return aaSessionID >= 0 && aaTransientSessionID >= 0; }
-
-std::map<FocusType, aasdk::proto::enums::AudioFocusState_Enum> FocusTypeToAudioState = {
-        {FocusType::NONE, aasdk::proto::enums::AudioFocusState_Enum_NONE},
-        {FocusType::TRANSIENT, aasdk::proto::enums::AudioFocusState_Enum_GAIN_TRANSIENT},
-        {FocusType::PERMANENT, aasdk::proto::enums::AudioFocusState_Enum_GAIN}
-};
+bool AudioManagerClient::canSwitchAudio() const { return aaSessionID >= 0 && aaTransientSessionID >= 0; }
 
 std::map<aasdk::proto::enums::AudioFocusType_Enum, FocusType> AAFocusToFocusType = {
         {aasdk::proto::enums::AudioFocusType_Enum_NONE, FocusType::NONE},

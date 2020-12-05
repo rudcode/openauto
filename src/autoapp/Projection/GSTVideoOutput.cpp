@@ -7,8 +7,7 @@ namespace f1x {
         namespace autoapp {
             namespace projection {
 
-                GSTVideoOutput::GSTVideoOutput() {
-                }
+                GSTVideoOutput::GSTVideoOutput() = default;
 
 
                 bool GSTVideoOutput::open() {
@@ -30,7 +29,7 @@ namespace f1x {
                     return true;
                 }
 
-                void GSTVideoOutput::write(uint64_t timestamp, const aasdk::common::DataConstBuffer &buf) {
+                void GSTVideoOutput::write(__attribute__((unused)) uint64_t timestamp, const aasdk::common::DataConstBuffer &buf) {
                     fwrite(buf.cdata, sizeof(buf.cdata[0]), buf.size, gst_file);
                 }
 
@@ -38,8 +37,7 @@ namespace f1x {
                     pclose(gst_file);
                 }
 
-                GSTVideoOutput::~GSTVideoOutput() {
-                }
+                GSTVideoOutput::~GSTVideoOutput() = default;
 
                 VideoMargins GSTVideoOutput::getVideoMargins() const {
                     VideoMargins margins(0, 0);

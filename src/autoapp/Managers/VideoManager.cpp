@@ -5,10 +5,11 @@
 BucpsaClient::BucpsaClient(DBus::Connection& hmiBus, VideoSignals::Pointer videosignals)
         : DBus::ObjectProxy(hmiBus, "/com/jci/bucpsa", "com.jci.bucpsa"), _videosignals(std::move(videosignals))
 {
-    uint32_t currentDisplayMode;
+    uint32_t DisplayMode;
+    currentDisplayMode = (bool)DisplayMode;
     int32_t returnValue;
     // check if backup camera is not visible at the moment and get output only when not
-    GetDisplayMode(currentDisplayMode, returnValue);
+    GetDisplayMode(DisplayMode, returnValue);
 }
 
 BucpsaClient::~BucpsaClient() = default;
@@ -33,7 +34,7 @@ void VideoManager::requestFocus(VIDEO_FOCUS_REQUESTOR requestor)
 //        waitsForFocus = false;
 //    }
     LOG(DEBUG) << "Setting focus, requested by " << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
-    gui.SetRequiredSurfacesByEnum({NativeGUICtrlClient::TV_TOUCH_SURFACE}, true);
+    gui.SetRequiredSurfacesByEnum(NativeGUICtrlClient::TV_TOUCH_SURFACE, true);
 }
 
 void VideoManager::releaseFocus(VIDEO_FOCUS_REQUESTOR requestor)

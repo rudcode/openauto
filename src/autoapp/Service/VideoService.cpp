@@ -18,7 +18,6 @@
 
 #include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/VideoService.hpp>
-#include <fstream>
 
 namespace f1x
 {
@@ -203,7 +202,7 @@ void VideoService::onVideoFocusRequest(const aasdk::proto::messages::VideoFocusR
     channel_->receive(this->shared_from_this());
 }
 
-void VideoService::sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor)
+void VideoService::sendVideoFocusIndication(__attribute__((unused)) VIDEO_FOCUS_REQUESTOR requestor)
 {
     LOG(INFO) << "[VideoService] video focus indication.";
 
@@ -216,7 +215,7 @@ void VideoService::sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor)
     channel_->sendVideoFocusIndication(videoFocusIndication, std::move(promise));
 }
 
-void VideoService::sendVideoFocusLost(VIDEO_FOCUS_REQUESTOR requestor)
+void VideoService::sendVideoFocusLost(__attribute__((unused)) VIDEO_FOCUS_REQUESTOR requestor)
     {
         LOG(INFO) << "[VideoService] video focus indication.";
 

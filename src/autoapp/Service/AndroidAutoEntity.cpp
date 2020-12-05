@@ -215,9 +215,6 @@ void AndroidAutoEntity::onAudioFocusRequest(const aasdk::proto::messages::AudioF
 {
     LOG(INFO) << "[AndroidAutoEntity] requested audio focus, type: " << aasdk::proto::enums::AudioFocusType_Enum_Name(request.audio_focus_type());
 
-    aasdk::proto::enums::AudioFocusState::Enum audioFocusState =
-            request.audio_focus_type() == aasdk::proto::enums::AudioFocusType::RELEASE ? aasdk::proto::enums::AudioFocusState::LOSS
-                                                                                       : aasdk::proto::enums::AudioFocusState::GAIN;
     if(request.audio_focus_type() == aasdk::proto::enums::AudioFocusType::RELEASE){
         signals_->audioSignals->focusRelease();
     }

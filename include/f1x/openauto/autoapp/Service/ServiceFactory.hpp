@@ -35,14 +35,14 @@ namespace service
 class ServiceFactory: public IServiceFactory
 {
 public:
-    ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer configuration, Signals::Pointer signals);
+    ServiceFactory(asio::io_service& ioService, const configuration::IConfiguration::Pointer& configuration, const Signals::Pointer& signals);
     ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) override;
 
 private:
     IService::Pointer createVideoService(aasdk::messenger::IMessenger::Pointer messenger);
     IService::Pointer createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger);
     IService::Pointer createInputService(aasdk::messenger::IMessenger::Pointer messenger);
-    void createAudioServices(ServiceList& serviceList, aasdk::messenger::IMessenger::Pointer messenger);
+    void createAudioServices(ServiceList& serviceList, const aasdk::messenger::IMessenger::Pointer& messenger);
 
     asio::io_service& ioService_;
     configuration::IConfiguration::Pointer configuration_;

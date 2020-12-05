@@ -23,7 +23,6 @@
 #include <easylogging++.h>
 #include <f1x/openauto/autoapp/Projection/IInputDeviceEventHandler.hpp>
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
-#include <map>
 
 static void emit(int fd, int type, int code, int val) {
     struct input_event ie{};
@@ -263,10 +262,12 @@ namespace f1x {
                                 case EV_ABS:
                                     switch (event.code) {
                                         case ABS_MT_POSITION_X:
-                                            mTouch.x = event.value * 800 / 4095;
+                                            mTouch.x = static_cast<uint32_t>(event.value * 800 / 4095);
                                             break;
                                         case ABS_MT_POSITION_Y:
-                                            mTouch.y = event.value * 480 / 4095;
+                                            mTouch.y = static_cast<uint32_t>(event.value * 480 / 4095);
+                                            break;
+                                        default:
                                             break;
                                     }
                                     break;

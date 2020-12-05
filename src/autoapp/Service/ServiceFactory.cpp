@@ -43,10 +43,10 @@ namespace autoapp
 namespace service
 {
 
-ServiceFactory::ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer configuration, Signals::Pointer signals)
+ServiceFactory::ServiceFactory(asio::io_service& ioService, const configuration::IConfiguration::Pointer& configuration, const Signals::Pointer& signals)
     : ioService_(ioService)
-    , configuration_(std::move(configuration))
-    , signals_(std::move(signals))
+    , configuration_(configuration)
+    , signals_(signals)
 {
 
 }
@@ -88,7 +88,7 @@ IService::Pointer ServiceFactory::createInputService(aasdk::messenger::IMessenge
     return std::make_shared<InputService>(ioService_, messenger, std::move(inputDevice));
 }
 
-void ServiceFactory::createAudioServices(ServiceList& serviceList, aasdk::messenger::IMessenger::Pointer messenger)
+void ServiceFactory::createAudioServices(ServiceList& serviceList, const aasdk::messenger::IMessenger::Pointer& messenger)
 {
     auto mediaAudioOutput = std::make_shared<projection::AlsaAudioOutput>(2, 48000, "entertainmentMl");
     serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_, messenger, std::move(mediaAudioOutput)));

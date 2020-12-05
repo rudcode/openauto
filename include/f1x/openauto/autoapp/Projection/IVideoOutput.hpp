@@ -33,27 +33,27 @@ namespace projection
 {
     class VideoMargins {
     private:
-        int32_t _height = 0;
-        int32_t _width = 0;
+        uint32_t _height = 0;
+        uint32_t _width = 0;
     public:
-        VideoMargins(int32_t height, int32_t width) {
+        VideoMargins(uint32_t height, uint32_t width) {
             _height = height;
             _width = width;
         }
 
-        int32_t height() const {
+        uint32_t height() const {
             return _height;
         }
 
-        int32_t width() const {
+        uint32_t width() const {
             return _width;
         }
 
-        void setHeight(int32_t height) {
+        void setHeight(uint32_t height) {
             _height = height;
         }
 
-        void setWidth(int32_t width) {
+        void setWidth(uint32_t width) {
             _width = width;
         }
     };

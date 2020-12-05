@@ -31,7 +31,6 @@
 #include <f1x/openauto/autoapp/Service/AndroidAutoEntityFactory.hpp>
 #include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Signals/Signals.hpp>
 #include <f1x/openauto/autoapp/Managers/VideoManager.hpp>
 #include <f1x/openauto/autoapp/Managers/AudioManager.hpp>
 

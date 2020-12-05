@@ -1,7 +1,6 @@
 #include <f1x/openauto/autoapp/Projection/MazdaBluetooth.hpp>
 
 #include <iostream>
-#include <stdexcept>
 #include <iomanip>
 #include <fstream>
 

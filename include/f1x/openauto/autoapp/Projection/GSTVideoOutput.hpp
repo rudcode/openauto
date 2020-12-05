@@ -14,7 +14,7 @@ namespace f1x {
             namespace projection {
 
                 class GSTVideoOutput : public IVideoOutput {
-                    FILE *gst_file;
+                    FILE *gst_file = nullptr;
 
                 public:
                     explicit GSTVideoOutput();

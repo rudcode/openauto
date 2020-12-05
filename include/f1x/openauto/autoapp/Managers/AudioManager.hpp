@@ -25,9 +25,9 @@ private:
 public:
     AudioManagerClient(DBus::Connection &connection, AudioSignals::Pointer audioSignals);
 
-    ~AudioManagerClient();
+    ~AudioManagerClient() override;
 
-    bool canSwitchAudio();
+    bool canSwitchAudio() const;
 
     //calling requestAudioFocus directly doesn't work on the audio mgr
     void audioMgrRequestAudioFocus(aasdk::proto::enums::AudioFocusType_Enum aa_type);

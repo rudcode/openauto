@@ -12,7 +12,7 @@ namespace f1x {
                     _rate = rate;
                     LOG(INFO) << "snd_asoundlib_version: " << snd_asoundlib_version();
                     LOG(INFO) << "Device name " << outDev;
-                    int err = 0;
+                    int err;
                     if ((err = snd_pcm_open(&aud_handle, outDev, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
                         LOG(ERROR) << "Playback open error: " << snd_strerror(err);
                     }
@@ -20,7 +20,7 @@ namespace f1x {
 
 
                 bool AlsaAudioOutput::open() {
-                    int err = 0;
+                    int err;
                     if ((err = snd_pcm_set_params(aud_handle, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED,
                                                   _channels, _rate, 1, 1000000)) < 0) {   /* 1.0sec */
                         LOG(ERROR) << "Playback open error: " << snd_strerror(err);
@@ -37,16 +37,18 @@ namespace f1x {
 
                 }
 
-                void AlsaAudioOutput::write(aasdk::messenger::Timestamp::ValueType timestamp,
+                void AlsaAudioOutput::write(__attribute__((unused)) aasdk::messenger::Timestamp::ValueType timestamp,
                                             const aasdk::common::DataConstBuffer &buffer) {
                     snd_pcm_sframes_t framecount = snd_pcm_bytes_to_frames(aud_handle, buffer.size);
-                    snd_pcm_sframes_t frames = snd_pcm_writei(aud_handle, buffer.cdata, framecount);
+                    snd_pcm_sframes_t frames = snd_pcm_writei(aud_handle, buffer.cdata,
+                                                              static_cast<snd_pcm_uframes_t>(framecount));
                     if (frames < 0) {
                         frames = snd_pcm_recover(aud_handle, frames, 1);
                         if (frames < 0) {
                             LOG(ERROR) << "snd_pcm_recover failed: " << snd_strerror(frames);
                         } else {
-                            frames = snd_pcm_writei(aud_handle, buffer.cdata, framecount);
+                            frames = snd_pcm_writei(aud_handle, buffer.cdata,
+                                                    static_cast<snd_pcm_uframes_t>(framecount));
                         }
                     }
                     if (frames >= 0 && frames < framecount) {

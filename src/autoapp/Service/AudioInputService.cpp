@@ -16,7 +16,7 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <time.h>
+#include <ctime>
 #include <easylogging++.h>
 #include <f1x/openauto/autoapp/Service/AudioInputService.hpp>
 

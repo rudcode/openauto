@@ -72,7 +72,7 @@ private:
     BucpsaClient bucpsa;
     NativeGUICtrlClient gui;
     VideoSignals::Pointer vs;
-    bool waitsForFocus;
+    bool waitsForFocus = false;
 
 public:
     VideoManager(DBus::Connection &hmiBus,  VideoSignals::Pointer videosignals);
