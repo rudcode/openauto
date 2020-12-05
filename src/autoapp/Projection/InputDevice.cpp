@@ -15,9 +15,9 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define EVENT_DEVICE_TS    "/dev/input/filtered-touchscreen0"
+#define EVENT_DEVICE_TS  "/dev/input/filtered-touchscreen0"
 #define EVENT_DEVICE_KBD "/dev/input/filtered-keyboard0"
-#define EVENT_DEVICE_UI "/dev/uinput"
+#define EVENT_DEVICE_UI  "/dev/uinput"
 
 
 #include <easylogging++.h>
@@ -25,164 +25,14 @@
 #include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
 #include <map>
 
-input_device::input_device(int fd, asio::io_service &ioService,
-                           f1x::openauto::autoapp::projection::IInputDeviceEventHandler &eventHandler) : eventHandler_(
-        nullptr), sd(ioService, fd) {
-    eventHandler_ = &eventHandler;
-    readloop();
-}
-
-std::map<uint16_t, aasdk::proto::enums::ButtonCode_Enum> keymap = {
-        {KEY_G,          aasdk::proto::enums::ButtonCode_Enum_MICROPHONE_1},
-        {KEY_BACKSPACE,  aasdk::proto::enums::ButtonCode_Enum_BACK},
-        {KEY_ENTER,      aasdk::proto::enums::ButtonCode_Enum_ENTER},
-        {KEY_LEFT,       aasdk::proto::enums::ButtonCode_Enum_LEFT},
-        {KEY_RIGHT,      aasdk::proto::enums::ButtonCode_Enum_RIGHT},
-        {KEY_UP,         aasdk::proto::enums::ButtonCode_Enum_UP},
-        {KEY_DOWN,       aasdk::proto::enums::ButtonCode_Enum_DOWN},
-        {KEY_HOME,       aasdk::proto::enums::ButtonCode_Enum_HOME},
-        {KEY_R,          aasdk::proto::enums::ButtonCode_Enum_NAVIGATION},
-        {KEY_Z,          aasdk::proto::enums::ButtonCode_Enum_PHONE},
-        {KEY_X,          aasdk::proto::enums::ButtonCode_Enum_CALL_END},
-        {KEY_T,          aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY},
-        {KEY_LEFTBRACE,  aasdk::proto::enums::ButtonCode_Enum_NEXT},
-        {KEY_RIGHTBRACE, aasdk::proto::enums::ButtonCode_Enum_PREV},
-        {KEY_N,          aasdk::proto::enums::ButtonCode::SCROLL_WHEEL},
-        {KEY_M,          aasdk::proto::enums::ButtonCode::SCROLL_WHEEL},
-        {KEY_E,          aasdk::proto::enums::ButtonCode_Enum_NONE}
-};
-
-void input_device::handle_key(input_event &event) {
-    if (event.type == EV_KEY && (event.value == 1 || event.value == 0)) {
-        aasdk::proto::enums::ButtonCode::Enum scanCode;
-        f1x::openauto::autoapp::projection::WheelDirection direction = f1x::openauto::autoapp::projection::WheelDirection::NONE;
-        f1x::openauto::autoapp::projection::ButtonEventType eventType = (event.value == 1)
-                                                                        ? f1x::openauto::autoapp::projection::ButtonEventType::PRESS
-                                                                        : f1x::openauto::autoapp::projection::ButtonEventType::RELEASE;
-        bool isPressed = (event.value == 1);
-        bool longPress = false;
-        //AudioManagerClient::FocusType audioFocus = callbacks->audioFocus;
-        bool hasMediaAudioFocus = true; // = audioFocus == AudioManagerClient::FocusType::PERMANENT;
-        bool hasAudioFocus = true; // audioFocus != AudioManagerClient::FocusType::NONE;
-
-        scanCode = keymap[event.code];
-        if (scanCode == aasdk::proto::enums::ButtonCode_Enum_NEXT ||
-            scanCode == aasdk::proto::enums::ButtonCode_Enum_PREV) {
-            if (!hasMediaAudioFocus) {
-                scanCode = aasdk::proto::enums::ButtonCode_Enum_NONE;
-                //pass_key_to_mzd(event.type, event.code, event.value);
-            }
-        }
-        if (scanCode == aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) {
-            eventType = f1x::openauto::autoapp::projection::ButtonEventType::NONE;
-            if (event.code == KEY_M) {
-                direction = f1x::openauto::autoapp::projection::WheelDirection::RIGHT;
-            } else if (event.code == KEY_N) {
-                direction = f1x::openauto::autoapp::projection::WheelDirection::LEFT;
-            }
-        }
-
-        if (isPressed) {
-            pressScanCode = scanCode;
-            time(&pressedSince);
-        } else {
-            //TODO: Implement this
-            time_t now = time(nullptr);
-            if (now - pressedSince >= 2) {
-                if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY) {
-                    //callbacks->releaseAudioFocus();
-                } else if (
-                        pressScanCode == aasdk::proto::enums::ButtonCode_Enum_BACK ||
-                        pressScanCode == aasdk::proto::enums::ButtonCode_Enum_CALL_END) {
-                    //callbacks->releaseVideoFocus();
-                } else if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_HOME) {
-                    //callbacks->takeVideoFocus();
-                }
-            }
-            pressScanCode = 0;
-        }
-
-        if (scanCode != 0 || direction != f1x::openauto::autoapp::projection::WheelDirection::NONE) {
-            eventHandler_->onButtonEvent({eventType, direction, scanCode});
-        }
-    }
-}
-
-void input_device::handle_touch(input_event &event) {
-    switch (event.type) {
-        case EV_ABS:
-            switch (event.code) {
-                case ABS_MT_POSITION_X:
-                    mTouch.x = event.value * 800 / 4095;
-                    break;
-                case ABS_MT_POSITION_Y:
-                    mTouch.y = event.value * 480 / 4095;
-                    break;
-            }
-            break;
-        case EV_KEY:
-            if (event.code == BTN_TOUCH) {
-                mTouch.action_recvd = 1;
-                if (event.value == 1) {
-                    mTouch.action = aasdk::proto::enums::TouchAction::PRESS;
-                } else {
-                    mTouch.action = aasdk::proto::enums::TouchAction::RELEASE;
-                }
-            }
-            break;
-        case EV_SYN:
-            if (mTouch.action_recvd == 0) {
-                mTouch.action = aasdk::proto::enums::TouchAction::DRAG;
-            } else {
-                mTouch.action_recvd = 0;
-            }
-            eventHandler_->onTouchEvent({
-                mTouch.action,
-                static_cast<uint32_t>(mTouch.x),
-                static_cast<uint32_t>(mTouch.y),
-                0
-            });
-            break;
-        default:
-            break;
-    }
-}
-
-void input_device::handle_input(asio::error_code ec, size_t bytes_transferred) {
-    if (!ec) {
-        auto const n = bytes_transferred / sizeof(input_event);
-        for (int i = 0; i < n; i++) {
-            auto &event = events[i];
-            switch (event.type) {
-                case EV_ABS:
-                    handle_touch(event);
-                    break;
-                case EV_KEY:
-                    if (event.code == BTN_TOUCH) {
-                        handle_touch(event);
-                    } else {
-                        handle_key(event);
-                    }
-                    break;
-                case EV_SYN:
-                    handle_touch(event);
-                    break;
-                default:
-                    LOG(ERROR) << "No handler for event type " << event.type;
-                    break;
-            }
-        }
-        readloop();
-    } else {
-        LOG(ERROR) << ec.message();
-    }
-}
-
-void input_device::readloop() {
-    events.resize(32);
-    sd.async_read_some(asio::buffer(events), [this](asio::error_code ec, size_t bytes_transferred) {
-        this->handle_input(ec, bytes_transferred);
-    });
+static void emit(int fd, int type, int code, int val) {
+    struct input_event ie{};
+    ie.type = static_cast<__u16>(type);
+    ie.code = static_cast<__u16>(code);
+    ie.value = val;
+    ie.time.tv_sec = 0;
+    ie.time.tv_usec = 0;
+    write(fd, &ie, sizeof(ie));
 }
 
 
@@ -190,7 +40,13 @@ namespace f1x {
     namespace openauto {
         namespace autoapp {
             namespace projection {
-                InputDevice::InputDevice(asio::io_service &ioService) : ioService_(ioService), eventHandler_(nullptr) {
+                InputDevice::InputDevice(asio::io_service &ioService, Signals::Pointer signals)
+                        : ioService_(ioService), signals_(std::move(signals)), eventHandler_(nullptr) {
+                    signals_->audioSignals->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
+                }
+
+                void InputDevice::audio_focus(aasdk::proto::enums::AudioFocusState_Enum state) {
+                    audiofocus = state;
                 }
 
                 void InputDevice::start(IInputDeviceEventHandler &eventHandler) {
@@ -254,9 +110,18 @@ namespace f1x {
                         LOG(ERROR) << "UI_DEV_CREATE failed on %s\n" << EVENT_DEVICE_UI;
                     }
 
-                    touchscreen = new input_device(touch_fd, ioService_, eventHandler);
-                    keyboard = new input_device(kbd_fd, ioService_, eventHandler);
-
+                    touchscreen = new asio::posix::stream_descriptor(ioService_, touch_fd);
+                    keyboard = new asio::posix::stream_descriptor(ioService_, kbd_fd);
+                    touch_events.resize(32);
+                    touchscreen->async_read_some(asio::buffer(touch_events),
+                                                 [this](asio::error_code ec, size_t bytes_transferred) {
+                                                     this->handle_touch(ec, bytes_transferred);
+                                                 });
+                    key_events.resize(32);
+                    keyboard->async_read_some(asio::buffer(key_events),
+                                              [this](asio::error_code ec, size_t bytes_transferred) {
+                                                  this->handle_key(ec, bytes_transferred);
+                                              });
                 }
 
                 void InputDevice::stop() {
@@ -302,24 +167,146 @@ namespace f1x {
 
 
                 TouchscreenSize InputDevice::getTouchscreenGeometry() const {
-                    return TouchscreenSize{.width =  480, .height = 800};
+                    return TouchscreenSize{480, 800};
                 }
 
-                static void emit(int fd, int type, int code, int val) {
-                    struct input_event ie{};
-                    ie.type = static_cast<__u16>(type);
-                    ie.code = static_cast<__u16>(code);
-                    ie.value = val;
-                    ie.time.tv_sec = 0;
-                    ie.time.tv_usec = 0;
-                    write(fd, &ie, sizeof(ie));
+                std::map<uint16_t, aasdk::proto::enums::ButtonCode_Enum> keymap = {
+                        {KEY_G,          aasdk::proto::enums::ButtonCode_Enum_MICROPHONE_1},
+                        {KEY_BACKSPACE,  aasdk::proto::enums::ButtonCode_Enum_BACK},
+                        {KEY_ENTER,      aasdk::proto::enums::ButtonCode_Enum_ENTER},
+                        {KEY_LEFT,       aasdk::proto::enums::ButtonCode_Enum_LEFT},
+                        {KEY_RIGHT,      aasdk::proto::enums::ButtonCode_Enum_RIGHT},
+                        {KEY_UP,         aasdk::proto::enums::ButtonCode_Enum_UP},
+                        {KEY_DOWN,       aasdk::proto::enums::ButtonCode_Enum_DOWN},
+                        {KEY_HOME,       aasdk::proto::enums::ButtonCode_Enum_HOME},
+                        {KEY_R,          aasdk::proto::enums::ButtonCode_Enum_NAVIGATION},
+                        {KEY_Z,          aasdk::proto::enums::ButtonCode_Enum_PHONE},
+                        {KEY_X,          aasdk::proto::enums::ButtonCode_Enum_CALL_END},
+                        {KEY_T,          aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY},
+                        {KEY_LEFTBRACE,  aasdk::proto::enums::ButtonCode_Enum_NEXT},
+                        {KEY_RIGHTBRACE, aasdk::proto::enums::ButtonCode_Enum_PREV},
+                        {KEY_N,          aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
+                        {KEY_M,          aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
+                        {KEY_E,          aasdk::proto::enums::ButtonCode_Enum_NONE}
+                };
+
+                void InputDevice::handle_key(asio::error_code ec, size_t bytes_transferred) {
+                    if (!ec) {
+                        auto const n = bytes_transferred / sizeof(input_event);
+                        for (int i = 0; i < n; i++) {
+                            auto &event = key_events[i];
+                            if (event.type == EV_KEY && (event.value == 1 || event.value == 0)) {
+                                aasdk::proto::enums::ButtonCode::Enum scanCode;
+                                WheelDirection direction = WheelDirection::NONE;
+                                ButtonEventType eventType = (event.value == 1) ? ButtonEventType::PRESS
+                                                                               : ButtonEventType::RELEASE;
+                                bool isPressed = (event.value == 1);
+                                bool hasMediaAudioFocus = audiofocus == aasdk::proto::enums::AudioFocusState_Enum_GAIN;
+
+                                scanCode = keymap[event.code];
+                                if (scanCode == aasdk::proto::enums::ButtonCode_Enum_NEXT ||
+                                    scanCode == aasdk::proto::enums::ButtonCode_Enum_PREV) {
+                                    if (!hasMediaAudioFocus) {
+                                        scanCode = aasdk::proto::enums::ButtonCode_Enum_NONE;
+                                        pass_key_to_mzd(event.type, event.code, event.value);
+                                    }
+                                }
+                                if (scanCode == aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) {
+                                    eventType = ButtonEventType::NONE;
+                                    if (event.code == KEY_M) {
+                                        direction = WheelDirection::RIGHT;
+                                    } else if (event.code == KEY_N) {
+                                        direction = WheelDirection::LEFT;
+                                    }
+                                }
+
+                                if (isPressed) {
+                                    pressScanCode = scanCode;
+                                    time(&pressedSince);
+                                } else {
+                                    time_t now = time(nullptr);
+                                    if (now - pressedSince >= 2) {
+                                        if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY) {
+                                            signals_->audioSignals->focusRelease.emit();
+                                        } else if (
+                                                pressScanCode == aasdk::proto::enums::ButtonCode_Enum_BACK ||
+                                                pressScanCode == aasdk::proto::enums::ButtonCode_Enum_CALL_END) {
+                                            signals_->videoSignals->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+                                        } else if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_HOME) {
+                                            signals_->videoSignals->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+                                        }
+                                    }
+                                    pressScanCode = 0;
+                                }
+
+                                if (scanCode != 0 || direction != WheelDirection::NONE) {
+                                    eventHandler_->onButtonEvent({eventType, direction, scanCode});
+                                }
+                            }
+                        }
+                        key_events.resize(32);
+                        keyboard->async_read_some(asio::buffer(key_events),
+                                                  [this](asio::error_code ec, size_t bytes_transferred) {
+                                                      this->handle_key(ec, bytes_transferred);
+                                                  });
+                    } else {
+                        LOG(ERROR) << ec.message();
+                    }
+                }
+
+                void InputDevice::handle_touch(asio::error_code ec, size_t bytes_transferred) {
+                    if (!ec) {
+                        auto const n = bytes_transferred / sizeof(input_event);
+                        for (int i = 0; i < n; i++) {
+                            auto &event = touch_events[i];
+                            switch (event.type) {
+                                case EV_ABS:
+                                    switch (event.code) {
+                                        case ABS_MT_POSITION_X:
+                                            mTouch.x = event.value * 800 / 4095;
+                                            break;
+                                        case ABS_MT_POSITION_Y:
+                                            mTouch.y = event.value * 480 / 4095;
+                                            break;
+                                    }
+                                    break;
+                                case EV_KEY:
+                                    if (event.code == BTN_TOUCH) {
+                                        mTouch.action_recvd = 1;
+                                        if (event.value == 1) {
+                                            mTouch.action = aasdk::proto::enums::TouchAction::PRESS;
+                                        } else {
+                                            mTouch.action = aasdk::proto::enums::TouchAction::RELEASE;
+                                        }
+                                    }
+                                    break;
+                                case EV_SYN:
+                                    if (mTouch.action_recvd == 0) {
+                                        mTouch.action = aasdk::proto::enums::TouchAction::DRAG;
+                                    } else {
+                                        mTouch.action_recvd = 0;
+                                    }
+                                    eventHandler_->onTouchEvent({mTouch.action, mTouch.x, mTouch.y, 0});
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        touch_events.resize(32);
+                        touchscreen->async_read_some(asio::buffer(touch_events),
+                                                     [this](asio::error_code ec, size_t bytes_transferred) {
+                                                         this->handle_touch(ec, bytes_transferred);
+                                                     });
+                    } else {
+                        LOG(ERROR) << ec.message();
+                    }
                 }
 
 /**
 * Passes the keystroke to MZD by "ungrabbing" the kbd on key-down, simulating the same keystroke with uinput,
 * then "re-grabbing" the kbd on key-up.
 */
-                void InputDevice::pass_key_to_mzd(int type, int code, int val) {
+                void InputDevice::pass_key_to_mzd(int type, int code, int val) const {
                     if (val && ioctl(kbd_fd, EVIOCGRAB, 0) < 0) {
                         fprintf(stderr, "EVIOCGRAB failed to release %s\n", EVENT_DEVICE_KBD);
                     }

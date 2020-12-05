@@ -83,7 +83,7 @@ IService::Pointer ServiceFactory::createBluetoothService(aasdk::messenger::IMess
 
 IService::Pointer ServiceFactory::createInputService(aasdk::messenger::IMessenger::Pointer messenger)
 {
-    projection::IInputDevice::Pointer inputDevice(std::make_shared<projection::InputDevice>(ioService_));
+    projection::IInputDevice::Pointer inputDevice(std::make_shared<projection::InputDevice>(ioService_, std::move(signals_)));
 
     return std::make_shared<InputService>(ioService_, messenger, std::move(inputDevice));
 }

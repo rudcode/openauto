@@ -25,30 +25,13 @@
 #include <aasdk/IO/Promise.hpp>
 #include <f1x/openauto/autoapp/Projection/IInputDevice.hpp>
 #include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
+#include <f1x/openauto/autoapp/Signals/Signals.hpp>
 
 struct TouchScreenState {
-    int x;
-    int y;
+    uint32_t x;
+    uint32_t y;
     aasdk::proto::enums::TouchAction::Enum action;
     int action_recvd;
-};
-
-class input_device {
-private:
-    f1x::openauto::autoapp::projection::IInputDeviceEventHandler *eventHandler_;
-    asio::posix::stream_descriptor sd;
-    std::vector<input_event> events;
-    TouchScreenState mTouch{0, 0, (aasdk::proto::enums::TouchAction::Enum) 0, 0};
-    uint32_t pressScanCode;
-    time_t pressedSince;
-
-public:
-    input_device(int fd, asio::io_service& ioService, f1x::openauto::autoapp::projection::IInputDeviceEventHandler &eventHandler);
-    void handle_key(input_event &event);
-    void handle_touch(input_event &event);
-    void handle_input(asio::error_code ec, size_t bytes_transferred);
-
-    void readloop();
 };
 
 namespace f1x
@@ -61,7 +44,7 @@ namespace f1x
                 class InputDevice: public IInputDevice {
 
                 public:
-                    InputDevice(asio::io_service& ioService);
+                    InputDevice(asio::io_service& ioService, Signals::Pointer signals);
 
                     void start(IInputDeviceEventHandler &eventHandler) override;
 
@@ -75,19 +58,22 @@ namespace f1x
 
                 private:
                     asio::io_service& ioService_;
-                    input_device *touchscreen;
-                    input_device *keyboard;
+                    Signals::Pointer signals_;
+                    asio::posix::stream_descriptor *touchscreen = nullptr;
+                    asio::posix::stream_descriptor *keyboard = nullptr;
+                    std::vector<input_event> touch_events;
+                    std::vector<input_event> key_events;
                     IInputDeviceEventHandler *eventHandler_;
                     std::mutex mutex_;
-                    std::thread input_thread;
-                    int input_thread_quit_pipe_read = -1;
-                    int input_thread_quit_pipe_write = -1;
                     int touch_fd = -1, kbd_fd = -1, ui_fd = -1;
-                    void input_thread_func();
-                    uint32_t pressScanCode;
-                    time_t pressedSince;
-                    void pass_key_to_mzd(int type, int code, int val);
-
+                    uint32_t pressScanCode = 0;
+                    time_t pressedSince = 0;
+                    aasdk::proto::enums::AudioFocusState_Enum audiofocus = aasdk::proto::enums::AudioFocusState_Enum_NONE;
+                    TouchScreenState mTouch{0, 0, (aasdk::proto::enums::TouchAction::Enum) 0, 0};
+                    void pass_key_to_mzd(int type, int code, int val) const;
+                    void handle_key(asio::error_code ec, size_t bytes_transferred);
+                    void handle_touch(asio::error_code ec, size_t bytes_transferred);
+                    void audio_focus(aasdk::proto::enums::AudioFocusState_Enum state);
                 };
             }
         }
