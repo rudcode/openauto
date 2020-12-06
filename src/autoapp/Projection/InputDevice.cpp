@@ -40,7 +40,9 @@ namespace f1x {
         namespace autoapp {
             namespace projection {
                 InputDevice::InputDevice(asio::io_service &ioService, Signals::Pointer signals)
-                        : ioService_(ioService), signals_(std::move(signals)), eventHandler_(nullptr) {
+                        : ioService_(ioService)
+                        , signals_(std::move(signals))
+                        , eventHandler_(nullptr) {
                     signals_->audioSignals->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
                 }
 
