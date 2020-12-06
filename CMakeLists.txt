@@ -22,7 +22,7 @@ SET(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_INIT} -Wall -pedantic -Wno-psabi")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-g -O3")
-
+add_compile_definitions(ELPP_THREAD_SAFE)
 
 message("CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}")
 
