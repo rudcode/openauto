@@ -202,7 +202,7 @@ void App::startServerSocket() {
         auto socket = std::make_shared<asio::ip::tcp::socket>(ioService_);
         acceptor_.async_accept(
                 *socket,
-                [&](const asio::error_code &err){handleNewClient(socket, err);}
+                std::bind(&App::handleNewClient, this, socket, std::placeholders::_1)
         );
     });
 }
