@@ -32,19 +32,12 @@ namespace f1x {
             namespace projection {
                 class AlsaAudioInput: public IAudioInput {
                     std::string micDevice;
-                    std::thread mic_readthread;
-                    int cancelPipeRead = -1, cancelPipeWrite = -1;
-
-                    snd_pcm_sframes_t
-                    read_mic_cancelable(snd_pcm_t *mic_handle, void *buffer, snd_pcm_uframes_t size, bool *canceled);
-
-                    void MicThreadMain();
 
                 public:
                     typedef aasdk::io::Promise<void, void> StartPromise;
                     typedef aasdk::io::Promise<aasdk::common::Data, void> ReadPromise;
 
-                    explicit AlsaAudioInput(const std::string &micDevice = "default");
+                    explicit AlsaAudioInput(asio::io_service& ioService, const std::string &micDevice = "default");
 
                     ~AlsaAudioInput() override;
 
@@ -65,8 +58,14 @@ namespace f1x {
                     uint32_t getSampleRate() const override { return 16000; };
 
                 private:
+                    asio::io_service& ioService_;
                     ReadPromise::Pointer readPromise_;
                     mutable std::mutex mutex_;
+                    snd_pcm_t *pcm_handle = nullptr;
+                    snd_pcm_uframes_t buffer_size = 256;
+                    snd_pcm_uframes_t period_size = 16;
+                    asio::posix::stream_descriptor *sd = nullptr;
+                    void handler(asio::error_code ec);
                 };
 
             }
