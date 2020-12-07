@@ -43,6 +43,7 @@ namespace f1x {
                     snd_pcm_sframes_t frames = snd_pcm_writei(aud_handle, buffer.cdata,
                                                               static_cast<snd_pcm_uframes_t>(framecount));
                     if (frames < 0) {
+                        LOG(ERROR) << "snd_pcm_writei:  " << snd_strerror(frames);
                         frames = snd_pcm_recover(aud_handle, frames, 1);
                         if (frames < 0) {
                             LOG(ERROR) << "snd_pcm_recover failed: " << snd_strerror(frames);

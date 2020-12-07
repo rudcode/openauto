@@ -137,7 +137,7 @@ void AudioService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChann
 
     aasdk::proto::messages::AVChannelSetupResponse response;
     response.set_media_status(status);
-    response.set_max_unacked(1);
+    response.set_max_unacked(10);
     response.add_configs(0);
 
     auto promise = aasdk::channel::SendPromise::defer(strand_);
