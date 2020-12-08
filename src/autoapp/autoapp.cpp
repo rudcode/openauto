@@ -80,9 +80,29 @@ void dbus_dispatcher() {
 
 INITIALIZE_EASYLOGGINGPP
 
+bool running = true;
+
+void signalHandler( int signum ) {
+    running = false;
+}
+
 int main(int argc, char* argv[])
 {
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    // Values are always std::string
+    defaultConf.set(el::Level::Info,
+                    el::ConfigurationType::Format, "%datetime %levshort [%fbase] %msg");
+    defaultConf.set(el::Level::Debug,
+                    el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
+    defaultConf.set(el::Level::Error,
+                    el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
+    // default logger uses default configurations
+    el::Loggers::reconfigureLogger("default", defaultConf);
+
+
     LOG(INFO) << "[OpenAuto] starting";
+    signal(SIGINT, signalHandler);
     libusb_context* usbContext;
     if(libusb_init(&usbContext) != 0)
     {
@@ -125,14 +145,20 @@ int main(int argc, char* argv[])
 
     app->waitForUSBDevice();
 
-    while(true){
+    while(running){
         sleep(1);
     }
+
+    LOG(DEBUG) << "Calling app->stop()";
+    app->stop();
+    sleep(5);
+    LOG(DEBUG) << "Calling dispatcher.leave()";
     dispatcher.leave();
+    LOG(DEBUG) << "Calling dbus_thread.join()";
     dbus_thread.join();
-
+    LOG(DEBUG) << "Joining threads";
     std::for_each(threadPool.begin(), threadPool.end(), [](std::thread &thread){thread.join();});
-
+    LOG(DEBUG) << "libusb_exit(usbContext)";
     libusb_exit(usbContext);
     return 0;
 }
