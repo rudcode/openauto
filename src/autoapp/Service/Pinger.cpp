@@ -16,13 +16,9 @@
 *  along with openauto. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <f1x/openauto/autoapp/Service/Pinger.hpp>
+#include <autoapp/Service/Pinger.hpp>
 #include <easylogging++.h>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -98,7 +94,5 @@ void Pinger::cancel()
     });
 }
 
-}
-}
 }
 }

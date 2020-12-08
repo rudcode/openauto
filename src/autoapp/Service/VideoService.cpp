@@ -17,12 +17,8 @@
 */
 
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Service/VideoService.hpp>
+#include <autoapp/Service/VideoService.hpp>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -229,7 +225,5 @@ void VideoService::sendVideoFocusLost(__attribute__((unused)) VIDEO_FOCUS_REQUES
     }
 
 
-}
-}
 }
 }

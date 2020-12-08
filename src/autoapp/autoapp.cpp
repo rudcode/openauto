@@ -26,17 +26,15 @@
 #include <aasdk/USB/AccessoryModeQueryChainFactory.hpp>
 #include <aasdk/USB/AccessoryModeQueryFactory.hpp>
 #include <aasdk/TCP/TCPWrapper.hpp>
-#include <f1x/openauto/autoapp/App.hpp>
-#include <f1x/openauto/autoapp/Configuration/IConfiguration.hpp>
-#include <f1x/openauto/autoapp/Service/AndroidAutoEntityFactory.hpp>
-#include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
+#include <autoapp/App.hpp>
+#include <autoapp/Configuration/IConfiguration.hpp>
+#include <autoapp/Service/AndroidAutoEntityFactory.hpp>
+#include <autoapp/Service/ServiceFactory.hpp>
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Managers/VideoManager.hpp>
-#include <f1x/openauto/autoapp/Managers/AudioManager.hpp>
+#include <autoapp/Managers/VideoManager.hpp>
+#include <autoapp/Managers/AudioManager.hpp>
 
 
-namespace aasdk = aasdk;
-namespace autoapp = f1x::openauto::autoapp;
 using ThreadPool = std::vector<std::thread>;
 
 void startUSBWorkers(asio::io_service& ioService, libusb_context* usbContext, ThreadPool& threadPool)

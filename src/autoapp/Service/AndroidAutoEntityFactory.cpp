@@ -24,14 +24,10 @@
 #include <aasdk/Messenger/MessageInStream.hpp>
 #include <aasdk/Messenger/MessageOutStream.hpp>
 #include <aasdk/Messenger/Messenger.hpp>
-#include <f1x/openauto/autoapp/Service/AndroidAutoEntityFactory.hpp>
-#include <f1x/openauto/autoapp/Service/AndroidAutoEntity.hpp>
-#include <f1x/openauto/autoapp/Service/Pinger.hpp>
+#include <autoapp/Service/AndroidAutoEntityFactory.hpp>
+#include <autoapp/Service/AndroidAutoEntity.hpp>
+#include <autoapp/Service/Pinger.hpp>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -75,7 +71,5 @@ IAndroidAutoEntity::Pointer AndroidAutoEntityFactory::create(aasdk::transport::I
     return std::make_shared<AndroidAutoEntity>(ioService_, std::move(cryptor), std::move(transport), std::move(messenger), configuration_, std::move(serviceList), std::move(pinger), std::move(signals_));
 }
 
-}
-}
 }
 }

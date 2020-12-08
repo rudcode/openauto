@@ -17,28 +17,24 @@
 */
 
 #include <aasdk/Channel/AV/MediaAudioServiceChannel.hpp>
-#include <f1x/openauto/autoapp/Service/ServiceFactory.hpp>
-#include <f1x/openauto/autoapp/Service/VideoService.hpp>
-#include <f1x/openauto/autoapp/Service/MediaAudioService.hpp>
-#include <f1x/openauto/autoapp/Service/SpeechAudioService.hpp>
-#include <f1x/openauto/autoapp/Service/AudioInputService.hpp>
-#include <f1x/openauto/autoapp/Service/SensorService.hpp>
-#include <f1x/openauto/autoapp/Service/BluetoothService.hpp>
-#include <f1x/openauto/autoapp/Service/InputService.hpp>
-#include <f1x/openauto/autoapp/Projection/GSTVideoOutput.hpp>
-#include <f1x/openauto/autoapp/Projection/AlsaAudio.hpp>
-#include <f1x/openauto/autoapp/Projection/AlsaAudioInput.hpp>
-#include <f1x/openauto/autoapp/Projection/InputDevice.hpp>
-#include <f1x/openauto/autoapp/Projection/MazdaBluetooth.hpp>
-#include <f1x/openauto/autoapp/Service/SystemAudioService.hpp>
+#include <autoapp/Service/ServiceFactory.hpp>
+#include <autoapp/Service/VideoService.hpp>
+#include <autoapp/Service/MediaAudioService.hpp>
+#include <autoapp/Service/SpeechAudioService.hpp>
+#include <autoapp/Service/AudioInputService.hpp>
+#include <autoapp/Service/SensorService.hpp>
+#include <autoapp/Service/BluetoothService.hpp>
+#include <autoapp/Service/InputService.hpp>
+#include <autoapp/Projection/GSTVideoOutput.hpp>
+#include <autoapp/Projection/AlsaAudio.hpp>
+#include <autoapp/Projection/AlsaAudioInput.hpp>
+#include <autoapp/Projection/InputDevice.hpp>
+#include <autoapp/Projection/MazdaBluetooth.hpp>
+#include <autoapp/Service/SystemAudioService.hpp>
 #include <utility>
 
 
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -102,7 +98,5 @@ void ServiceFactory::createAudioServices(ServiceList& serviceList, const aasdk::
 //    serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
 }
 
-}
-}
 }
 }

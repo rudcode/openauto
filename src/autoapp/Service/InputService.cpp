@@ -18,12 +18,8 @@
 
 #include <aasdk_proto/InputEventIndicationMessage.pb.h>
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Service/InputService.hpp>
+#include <autoapp/Service/InputService.hpp>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -199,7 +195,5 @@ void InputService::onTouchEvent(const projection::TouchEvent& event)
     });
 }
 
-}
-}
 }
 }

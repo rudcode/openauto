@@ -17,12 +17,8 @@
 */
 
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Service/BluetoothService.hpp>
+#include <autoapp/Service/BluetoothService.hpp>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -121,7 +117,5 @@ void BluetoothService::onChannelError(const aasdk::error::Error& e)
     LOG(ERROR) << "[BluetoothService] channel error: " << e.what();
 }
 
-}
-}
 }
 }

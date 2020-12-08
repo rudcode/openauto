@@ -1,4 +1,4 @@
-#include "f1x/openauto/autoapp/Managers/VideoManager.hpp"
+#include "autoapp/Managers/VideoManager.hpp"
 #include <easylogging++.h>
 
 
@@ -6,10 +6,10 @@ BucpsaClient::BucpsaClient(DBus::Connection& hmiBus, VideoSignals::Pointer video
         : DBus::ObjectProxy(hmiBus, "/com/jci/bucpsa", "com.jci.bucpsa"), _videosignals(std::move(videosignals))
 {
     uint32_t DisplayMode;
-    currentDisplayMode = (bool)DisplayMode;
     int32_t returnValue;
     // check if backup camera is not visible at the moment and get output only when not
     GetDisplayMode(DisplayMode, returnValue);
+    currentDisplayMode = (bool)DisplayMode;
 }
 
 BucpsaClient::~BucpsaClient() = default;

@@ -17,12 +17,8 @@
 */
 
 #include <aasdk/Channel/AV/SystemAudioServiceChannel.hpp>
-#include <f1x/openauto/autoapp/Service/SystemAudioService.hpp>
+#include <autoapp/Service/SystemAudioService.hpp>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -34,7 +30,5 @@ SystemAudioService::SystemAudioService(asio::io_service& ioService, aasdk::messe
 
 }
 
-}
-}
 }
 }

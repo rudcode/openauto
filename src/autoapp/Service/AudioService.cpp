@@ -17,12 +17,8 @@
 */
 
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Service/AudioService.hpp>
+#include <autoapp/Service/AudioService.hpp>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -190,7 +186,5 @@ void AudioService::onChannelError(const aasdk::error::Error& e)
                         << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
 }
 
-}
-}
 }
 }

@@ -18,13 +18,9 @@
 
 #include <ctime>
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Service/AudioInputService.hpp>
+#include <autoapp/Service/AudioInputService.hpp>
 #include <utility>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -210,7 +206,5 @@ void AudioInputService::readAudioInput()
     }
 }
 
-}
-}
 }
 }

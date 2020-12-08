@@ -19,13 +19,9 @@
 #include <thread>
 #include <aasdk/USB/AOAPDevice.hpp>
 #include <aasdk/TCP/TCPEndpoint.hpp>
-#include <f1x/openauto/autoapp/App.hpp>
+#include <autoapp/App.hpp>
 #include <easylogging++.h>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 
@@ -281,6 +277,4 @@ void App::onUSBHubError(const aasdk::error::Error& error)
 //    }
 }
 
-}
-}
 }

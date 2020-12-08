@@ -18,14 +18,10 @@
 
 #include <aasdk_proto/DrivingStatusEnum.pb.h>
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Service/SensorService.hpp>
+#include <autoapp/Service/SensorService.hpp>
 #include <fstream>
 #include <cmath>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -255,7 +251,5 @@ void SensorService::onChannelError(const aasdk::error::Error& e)
     LOG(ERROR) << "[SensorService] channel error: " << e.what();
 }
 
-}
-}
 }
 }

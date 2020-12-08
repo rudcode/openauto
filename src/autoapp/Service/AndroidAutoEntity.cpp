@@ -17,13 +17,9 @@
 */
 
 #include <aasdk/Channel/Control/ControlServiceChannel.hpp>
-#include <f1x/openauto/autoapp/Service/AndroidAutoEntity.hpp>
+#include <autoapp/Service/AndroidAutoEntity.hpp>
 #include <easylogging++.h>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -339,7 +335,5 @@ void AndroidAutoEntity::sendPing()
     controlServiceChannel_->sendPingRequest(request, std::move(promise));
 }
 
-}
-}
 }
 }

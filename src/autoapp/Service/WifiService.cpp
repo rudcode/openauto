@@ -17,14 +17,9 @@
 */
 
 #include <easylogging++.h>
-#include <f1x/openauto/autoapp/Service/WifiService.hpp>
+#include <autoapp/Service/WifiService.hpp>
 #include <fstream>
-//#include <QString>
 
-namespace f1x
-{
-namespace openauto
-{
 namespace autoapp
 {
 namespace service
@@ -63,7 +58,5 @@ void WifiService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse&
 //    channel->set_ssid(std::string("Mazda"));
 }
 
-}
-}
 }
 }

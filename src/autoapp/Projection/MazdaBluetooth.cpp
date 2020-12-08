@@ -1,4 +1,4 @@
-#include <f1x/openauto/autoapp/Projection/MazdaBluetooth.hpp>
+#include <autoapp/Projection/MazdaBluetooth.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -16,7 +16,7 @@
 // Cache the address if we need to retrieve it repeatedly;
 static std::string macAddress;
 
-static uint32_t hexStrToInt(const std::string& hexStr) {
+static uint32_t hexStrToInt(const std::string &hexStr) {
     uint32_t x;
     std::stringstream ss;
     ss << std::hex << hexStr;
@@ -71,31 +71,27 @@ std::string get_bluetooth_mac_address() {
     return macAddress;
 }
 
-namespace f1x {
-    namespace openauto {
-        namespace autoapp {
-            namespace projection {
+namespace autoapp {
+    namespace projection {
 
-                std::string MazdaBluetooth::getLocalAddress() const {
-                    return get_bluetooth_mac_address();
-                }
+        std::string MazdaBluetooth::getLocalAddress() const {
+            return get_bluetooth_mac_address();
+        }
 
-                void MazdaBluetooth::stop() {
+        void MazdaBluetooth::stop() {
 
-                }
+        }
 
-                bool MazdaBluetooth::isPaired(const std::string &address) const {
-                    return true;
-                }
+        bool MazdaBluetooth::isPaired(const std::string &address) const {
+            return true;
+        }
 
-                void MazdaBluetooth::pair(const std::string &address, PairingPromise::Pointer promise) {
-                    promise->resolve();
-                }
+        void MazdaBluetooth::pair(const std::string &address, PairingPromise::Pointer promise) {
+            promise->resolve();
+        }
 
-                bool MazdaBluetooth::isAvailable() const {
-                    return true;
-                }
-            }
+        bool MazdaBluetooth::isAvailable() const {
+            return true;
         }
     }
 }
