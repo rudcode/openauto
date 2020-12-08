@@ -3,6 +3,7 @@
 #include <aasdk/Common/Data.hpp>
 #include <f1x/openauto/autoapp/Projection/IVideoOutput.hpp>
 #include <thread>
+#include <asio.hpp>
 
 #ifndef ASPECT_RATIO_FIX
 #define ASPECT_RATIO_FIX 1
@@ -17,7 +18,7 @@ namespace f1x {
                     FILE *gst_file = nullptr;
 
                 public:
-                    explicit GSTVideoOutput();
+                    explicit GSTVideoOutput(asio::io_service& ioService);
 
                     ~GSTVideoOutput() override;
 
@@ -37,6 +38,14 @@ namespace f1x {
                     size_t getScreenDPI() const override { return 140; }
 
                     VideoMargins getVideoMargins() const override;
+                private:
+                    asio::io_service& ioService_;
+                    pid_t gstpid;
+                    int p_stdin[2], p_stdout[2];
+                    asio::streambuf buffer;
+                    asio::posix::stream_descriptor *sd = nullptr;
+                    void message_handler(asio::error_code ec, size_t bytes_transferred);
+                    void spawn_gst();
                 };
             }
         }
