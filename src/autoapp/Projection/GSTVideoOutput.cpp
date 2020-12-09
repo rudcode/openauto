@@ -18,7 +18,7 @@ namespace autoapp {
 
             std::string s((std::istreambuf_iterator<char>(&buffer)), std::istreambuf_iterator<char>());
             buffer.consume(bytes_transferred);
-            int newline = s.rfind('\n');
+            unsigned int newline = s.rfind('\n');
             s.erase(newline); // Remove extranious new line
 
             std::smatch m;

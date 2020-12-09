@@ -37,11 +37,11 @@ namespace autoapp {
                 }
                 avail = snd_pcm_avail_update(pcm_handle);
                 aasdk::common::Data data(readSize, 0);
-                data.reserve(readSize);
+                data.reserve(static_cast<unsigned int>(readSize));
                 data.insert(data.begin(), tempBuffer, tempBuffer + readSize);
 
                 if (readSize != -1) {
-                    data.resize(readSize);
+                    data.resize(static_cast<unsigned int>(readSize));
                     readPromise_->resolve(std::move(data));
                     readPromise_.reset();
                 } else {
@@ -189,7 +189,7 @@ namespace autoapp {
                 return false;
             }
 
-            if ((err = snd_pcm_poll_descriptors(pcm_handle, ufds, count)) < 0) {
+            if ((err = snd_pcm_poll_descriptors(pcm_handle, ufds, static_cast<unsigned int>(count))) < 0) {
                 printf("Unable to obtain poll descriptors for playback: %s\n", snd_strerror(err));
                 return false;
             }
