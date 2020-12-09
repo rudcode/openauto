@@ -33,6 +33,7 @@
 #include <easylogging++.h>
 #include <autoapp/Managers/VideoManager.hpp>
 #include <autoapp/Managers/AudioManager.hpp>
+#include <autoapp/Configuration/Configuration.hpp>
 
 
 using ThreadPool = std::vector<std::thread>;
@@ -123,7 +124,7 @@ int main(int argc, char* argv[])
     startUSBWorkers(ioService, usbContext, threadPool);
     startIOServiceWorkers(ioService, threadPool);
 
-    auto configuration = nullptr;
+    auto configuration = std::make_shared<autoapp::configuration::Configuration>();
     auto signals = std::make_shared<Signals>();
 
     AudioManagerClient audioManager(serviceBus, signals->audioSignals);

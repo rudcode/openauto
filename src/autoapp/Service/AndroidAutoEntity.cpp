@@ -191,13 +191,13 @@ void AndroidAutoEntity::onServiceDiscoveryRequest(const aasdk::proto::messages::
     serviceDiscoveryResponse.set_car_model("Universal");
     serviceDiscoveryResponse.set_car_year("2018");
     serviceDiscoveryResponse.set_car_serial("20180301");
-    serviceDiscoveryResponse.set_left_hand_drive_vehicle(true);
+    serviceDiscoveryResponse.set_left_hand_drive_vehicle(configuration_->leftHandDrive());
     serviceDiscoveryResponse.set_headunit_manufacturer("f1x");
     serviceDiscoveryResponse.set_headunit_model("Crankshaft-NG Autoapp");
     serviceDiscoveryResponse.set_sw_build("1");
     serviceDiscoveryResponse.set_sw_version("1.0");
     serviceDiscoveryResponse.set_can_play_native_media_during_vr(false);
-    serviceDiscoveryResponse.set_hide_clock(false);
+    serviceDiscoveryResponse.set_hide_clock(configuration_->hideClock());
 
     std::for_each(serviceList_.begin(), serviceList_.end(),  [&](IService::Pointer& service) { service->fillFeatures(serviceDiscoveryResponse); });
 
