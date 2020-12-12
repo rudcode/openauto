@@ -21,6 +21,7 @@
 //#include <gps.h>
 #include <aasdk/Channel/Sensor/SensorServiceChannel.hpp>
 #include <autoapp/Service/IService.hpp>
+#include <autoapp/Signals/GpsSignals.hpp>
 
 namespace autoapp
 {
@@ -30,7 +31,7 @@ namespace service
 class SensorService: public aasdk::channel::sensor::ISensorServiceChannelEventHandler, public IService, public std::enable_shared_from_this<SensorService>
 {
 public:
-    SensorService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger);
+    SensorService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, GpsSignals::Pointer gpssignals);
     bool isNight = false;
     bool previous = false;
     bool stopPolling = false;
@@ -48,17 +49,20 @@ private:
     using std::enable_shared_from_this<SensorService>::shared_from_this;
     void sendDrivingStatusUnrestricted();
     void sendNightData();
-    void sendGPSLocationData();
-    bool is_file_exist(const char *filename);
+    void sendGPSLocationData(uint64_t time, int32_t latitude, int32_t longitude, uint32_t accuracy,
+                             int32_t altitude, int32_t speed, int32_t bearing);
     void sensorPolling();
     bool firstRun = true;
 
-//    asio::deadline_timer timer_;
+    asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
     asio::io_service::strand strand_;
     aasdk::channel::sensor::SensorServiceChannel::Pointer channel_;
 //    struct gps_data_t gpsData_;
-    bool gpsEnabled_ = false;
+    bool gpsEnabled_ = true;
+    GpsSignals::Pointer gpssignals_;
 };
 
 }
 }
+
+bool checkNight();
