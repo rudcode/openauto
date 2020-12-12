@@ -88,12 +88,11 @@ void ServiceFactory::createAudioServices(ServiceList& serviceList, const aasdk::
     auto mediaAudioOutput = std::make_shared<projection::AlsaAudioOutput>(2, 48000, "entertainmentMl");
     serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_, messenger, std::move(mediaAudioOutput)));
 
-    auto speechAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "entertainmentMl");
+    auto speechAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationNavi");
     serviceList.emplace_back(std::make_shared<SpeechAudioService>(ioService_, messenger, std::move(speechAudioOutput)));
 
-
-//    auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "entertainmentMl");
-//    serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
+    auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationGeneric");
+    serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
 }
 
 }
