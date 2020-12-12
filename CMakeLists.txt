@@ -65,8 +65,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR}
 
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
-set(common_include_directory ${include_directory}/f1x/openauto/Common)
-
 set(autoapp_sources_directory ${sources_directory}/autoapp)
 set(autoapp_include_directory)
 file(GLOB_RECURSE autoapp_source_files ${autoapp_sources_directory}/*.cpp)
@@ -76,9 +74,13 @@ add_executable(autoapp
         ${sources_directory}/easylogging++.cc
         "Mazda/Dbus/com.jci.nativeguictrl.h"
         "Mazda/Dbus/com.jci.bucpsa.h"
-        "Mazda/Dbus/com.xsembedded.ServiceProvider.h")
-target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/ ${common_include_directory})
+        "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
+        "Mazda/Dbus/com.jci.lds.control.h"
+        "Mazda/Dbus/com.jci.lds.data.h")
+target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/)
 target_include_directories(autoapp PRIVATE ${include_directory})
+
+target_compile_options(autoapp PUBLIC "-ffile-prefix-map=${CMAKE_SOURCE_DIR}=.")
 
 target_link_libraries(autoapp
         ${SIGC++_LIBRARIES}
@@ -96,8 +98,27 @@ target_link_libraries(autoapp
         -pthread
         )
 
+add_custom_command(
+        TARGET autoapp
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} --only-keep-debug autoapp autoapp.debug
+        WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+)
+add_custom_command(
+        TARGET autoapp
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} --strip-all autoapp
+        WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+)
+add_custom_command(
+        TARGET autoapp
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=autoapp.debug autoapp
+        WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+)
+
 #set(btservice_sources_directory ${sources_directory}/btservice)
-#set(btservice_include_directory ${include_directory}/f1x/openauto/btservice)
+#set(btservice_include_directory ${include_directory}/btservice)
 #file(GLOB_RECURSE btservice_source_files ${btservice_sources_directory}/*.cpp ${btservice_include_directory}/*.hpp ${common_include_directory}/*.hpp)
 #
 #add_executable(btservice
