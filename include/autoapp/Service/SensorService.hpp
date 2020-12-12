@@ -60,6 +60,7 @@ private:
 //    struct gps_data_t gpsData_;
     bool gpsEnabled_ = true;
     GpsSignals::Pointer gpssignals_;
+    sigc::connection signal_returnUpdate_;
 };
 
 }

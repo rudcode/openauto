@@ -33,7 +33,7 @@ namespace autoapp::service {
     }
 
     void SensorService::start() {
-        gpssignals_->returnUpdate.connect(sigc::mem_fun(*this, &SensorService::sendGPSLocationData));
+        signal_returnUpdate_ = gpssignals_->returnUpdate.connect(sigc::mem_fun(*this, &SensorService::sendGPSLocationData));
         strand_.dispatch([this, self = this->shared_from_this()]() {
             if (checkNight()) {
                 this->isNight = true;
@@ -48,6 +48,7 @@ namespace autoapp::service {
 
     void SensorService::stop() {
         this->stopPolling = true;
+        signal_returnUpdate_.disconnect();
         LOG(INFO) << "[SensorService] stop.";
     }
 
