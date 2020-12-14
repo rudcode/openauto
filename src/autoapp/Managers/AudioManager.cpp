@@ -98,7 +98,7 @@ void AudioManagerClient::populateStreamTable()
         auto result = json::parse(resultString);
         for (auto& sessionRecord : result["APP"].get_ref<json::array_t&>())
         {
-            std::string sessionStr = sessionRecord.get<std::string>();
+            auto sessionStr = sessionRecord.get<std::string>();
             //Stream names have no spaces so it's safe to do this
             std::replace(sessionStr.begin(), sessionStr.end(), '.', ' ');
             std::istringstream sessionIStr(sessionStr);
@@ -144,9 +144,9 @@ void AudioManagerClient::populateStreamTable()
     }
 }
 
-AudioManagerClient::AudioManagerClient(DBus::Connection &connection, AudioSignals::Pointer audioSignals)
+AudioManagerClient::AudioManagerClient(DBus::Connection &connection, AudioSignals::Pointer audiosignals)
         : DBus::ObjectProxy(connection, "/com/xse/service/AudioManagement/AudioApplication", "com.xsembedded.service.AudioManagement")
-        , as(std::move(audioSignals))
+        , audiosignals_(std::move(audiosignals))
 {
     populateStreamTable();
     if (aaSessionID < 0 || aaTransientSessionID < 0)
@@ -154,8 +154,8 @@ AudioManagerClient::AudioManagerClient(DBus::Connection &connection, AudioSignal
         LOG(ERROR) << "Can't find audio stream. Audio will not work";
     }
     else {
-        as->focusRelease.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrReleaseAudioFocus));
-        as->focusRequest.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrRequestAudioFocus));
+        audiosignals_->focusRelease.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrReleaseAudioFocus));
+        audiosignals_->focusRequest.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrRequestAudioFocus));
     }
 }
 
@@ -195,7 +195,6 @@ std::map<aasdk::proto::enums::AudioFocusType_Enum, aasdk::proto::enums::AudioFoc
 
 void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::proto::enums::AudioFocusType_Enum aa_type)
 {
-    // TODO: Handle call state
     FocusType type = AAFocusToFocusType[aa_type];
     if (type == FocusType::NONE)
     {
@@ -205,35 +204,34 @@ void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::proto::enums::AudioFoc
     LOG(INFO) << "audioMgrRequestAudioFocus(" << int(type) << ")";
     if (currentFocus == type)
     {
-        as->focusChanged.emit(TypeToState[aa_type]);
+        audiosignals_->focusChanged.emit(TypeToState[aa_type]);
         return;
     }
-
-    if (currentFocus == FocusType::NONE && type == FocusType::PERMANENT)
-    {
-        waitingForFocusLostEvent = true;
-        previousSessionID = -1;
-    }
-    json args = { { "sessionId", type == FocusType::TRANSIENT ? aaTransientSessionID : aaSessionID } };
-    try{
-        std::string result = Request("requestAudioFocus", args.dump());
-        LOG(DEBUG) << "requestAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str();
-    }
-    catch (DBus::Error &e) {
-        LOG(ERROR) << e.what();
+    if (!inCall) {
+        if (currentFocus == FocusType::NONE && type == FocusType::PERMANENT) {
+            waitingForFocusLostEvent = true;
+            previousSessionID = -1;
+        }
+        json args = {{"sessionId", type == FocusType::TRANSIENT ? aaTransientSessionID : aaSessionID}};
+        try {
+            std::string result = Request("requestAudioFocus", args.dump());
+            LOG(DEBUG) << "requestAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str();
+        }
+        catch (DBus::Error &e) {
+            LOG(ERROR) << e.what();
+        }
     }
 }
 
 void AudioManagerClient::audioMgrReleaseAudioFocus()
 {
-    // TODO: Handle call state
     LOG(INFO) << "audioMgrReleaseAudioFocus()";
     std::string method;
     json args;
     if (currentFocus == FocusType::NONE)
     {
         //nothing to do
-        as->focusChanged.emit(aasdk::proto::enums::AudioFocusState_Enum_LOSS);
+        audiosignals_->focusChanged.emit(aasdk::proto::enums::AudioFocusState_Enum_LOSS);
     }
     else if (currentFocus == FocusType::PERMANENT && previousSessionID >= 0)
     {
@@ -251,7 +249,7 @@ void AudioManagerClient::audioMgrReleaseAudioFocus()
     else
     {
         currentFocus = FocusType::NONE;
-        as->focusChanged.emit(aasdk::proto::enums::AudioFocusState_Enum_LOSS);
+        audiosignals_->focusChanged.emit(aasdk::proto::enums::AudioFocusState_Enum_LOSS);
     }
     if(!method.empty()){
         try{
@@ -273,9 +271,21 @@ void AudioManagerClient::Notify(const std::string &signalName, const std::string
         try
         {
             auto result = json::parse(payload);
-            std::string streamName = result["streamName"].get<std::string>();
-            std::string newFocus = result["newFocus"].get<std::string>();
-            std::string focusType = result["focusType"].get<std::string>();
+            auto streamName = result["streamName"].get<std::string>();
+            auto newFocus = result["newFocus"].get<std::string>();
+            auto focusType = result["focusType"].get<std::string>();
+            auto streamType = result["streamType"].get<std::string>();
+
+            if (streamType == "Telephony"){
+                if(newFocus == "gained"){
+                    inCall = true;
+                    LOG(DEBUG) << "In Call";
+                }
+                else if(newFocus == "lost"){
+                    inCall = false;
+                    LOG(DEBUG) << "Left Call";
+                }
+            }
 
             int eventSessionID = -1;
             if (streamName == aaStreamName)
@@ -349,7 +359,7 @@ void AudioManagerClient::Notify(const std::string &signalName, const std::string
                             currentstate = aasdk::proto::enums::AudioFocusState_Enum_GAIN_TRANSIENT;
                             break;
                     }
-                    as->focusChanged.emit(currentstate);
+                    audiosignals_->focusChanged.emit(currentstate);
                 }
             }
         }

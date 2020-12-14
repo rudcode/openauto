@@ -15,7 +15,8 @@ private:
     int previousSessionID = -1;
     bool waitingForFocusLostEvent = false;
     FocusType currentFocus = FocusType::NONE;
-    AudioSignals::Pointer as;
+    AudioSignals::Pointer audiosignals_;
+    bool inCall = false;
 
     //These IDs are usually the same, but they depend on the startup order of the services on the car so we can't assume them 100% reliably
     void populateStreamTable();
@@ -23,7 +24,7 @@ private:
     void aaRegisterStream();
 
 public:
-    AudioManagerClient(DBus::Connection &connection, AudioSignals::Pointer audioSignals);
+    AudioManagerClient(DBus::Connection &connection, AudioSignals::Pointer audiosignals);
 
     ~AudioManagerClient() override;
 
