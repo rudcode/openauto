@@ -126,11 +126,11 @@ int main(int argc, char* argv[])
     startIOServiceWorkers(ioService, threadPool);
 
     auto configuration = std::make_shared<autoapp::configuration::Configuration>();
-    auto signals = std::make_shared<Signals>();
+    Signals signals = Signals();
 
-    AudioManagerClient audioManager(serviceBus, signals->audioSignals);
-    VideoManager videoManager(hmiBus, signals->videoSignals);
-    GPSManager gpsManager(serviceBus, signals->gpsSignals);
+    AudioManagerClient audioManager(serviceBus, signals.audioSignals);
+    VideoManager videoManager(hmiBus, signals.videoSignals);
+    GPSManager gpsManager(serviceBus, signals.gpsSignals);
     std::thread dbus_thread(dbus_dispatcher);
 
     aasdk::tcp::TCPWrapper tcpWrapper;

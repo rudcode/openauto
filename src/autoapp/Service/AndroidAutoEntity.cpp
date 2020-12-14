@@ -18,6 +18,7 @@
 
 #include <aasdk/Channel/Control/ControlServiceChannel.hpp>
 #include <autoapp/Service/AndroidAutoEntity.hpp>
+#include <utility>
 #include <easylogging++.h>
 
 namespace autoapp
@@ -32,7 +33,7 @@ AndroidAutoEntity::AndroidAutoEntity(asio::io_service& ioService,
                                      configuration::IConfiguration::Pointer configuration,
                                      ServiceList serviceList,
                                      IPinger::Pointer pinger,
-                                     Signals::Pointer signals)
+                                     const Signals& signals)
     : strand_(ioService)
     , cryptor_(std::move(cryptor))
     , transport_(std::move(transport))
@@ -42,7 +43,7 @@ AndroidAutoEntity::AndroidAutoEntity(asio::io_service& ioService,
     , serviceList_(std::move(serviceList))
     , pinger_(std::move(pinger))
     , eventHandler_(nullptr)
-    , signals_(std::move(signals))
+    , signals_(signals)
 {
 }
 
@@ -60,7 +61,7 @@ void AndroidAutoEntity::start(IAndroidAutoEntityEventHandler& eventHandler)
         std::for_each(serviceList_.begin(), serviceList_.end(), [](IService::Pointer& service) { service->start(); });
         //this->schedulePing();
 
-        signals_->audioSignals->focusChanged.connect(sigc::mem_fun(*this, &AndroidAutoEntity::onAudioFocusResponse));
+        signals_.audioSignals->focusChanged.connect(sigc::mem_fun(*this, &AndroidAutoEntity::onAudioFocusResponse));
 
         auto versionRequestPromise = aasdk::channel::SendPromise::defer(strand_);
         versionRequestPromise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
@@ -212,10 +213,10 @@ void AndroidAutoEntity::onAudioFocusRequest(const aasdk::proto::messages::AudioF
     LOG(INFO) << "[AndroidAutoEntity] requested audio focus, type: " << aasdk::proto::enums::AudioFocusType_Enum_Name(request.audio_focus_type());
 
     if(request.audio_focus_type() == aasdk::proto::enums::AudioFocusType::RELEASE){
-        signals_->audioSignals->focusRelease();
+        signals_.audioSignals->focusRelease();
     }
     else{
-        signals_->audioSignals->focusRequest(request.audio_focus_type());
+        signals_.audioSignals->focusRequest(request.audio_focus_type());
     }
 }
 
@@ -274,7 +275,7 @@ void AndroidAutoEntity::onNavigationFocusRequest(const aasdk::proto::messages::N
 
     void AndroidAutoEntity::onPingRequest(const aasdk::proto::messages::PingRequest& request)
     {
-        LOG(INFO) << "[AndroidAutoEntity] Ping Request";
+//        LOG(INFO) << "[AndroidAutoEntity] Ping Request";
 
         aasdk::proto::messages::PingResponse response;
         response.set_timestamp(request.timestamp());

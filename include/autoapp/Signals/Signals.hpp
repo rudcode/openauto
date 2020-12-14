@@ -7,15 +7,14 @@
 #include "AudioSignals.hpp"
 #include "GpsSignals.hpp"
 
-class Signals{
+class Signals: public sigc::trackable {
 public:
     typedef std::shared_ptr<Signals> Pointer;
 
 
-    VideoSignals::Pointer videoSignals;
-    AudioSignals::Pointer audioSignals;
-    GpsSignals::Pointer gpsSignals;
+    VideoSignals::Pointer videoSignals = std::make_shared<VideoSignals>();
+    AudioSignals::Pointer audioSignals = std::make_shared<AudioSignals>();
+    GpsSignals::Pointer gpsSignals = std::make_shared<GpsSignals>();
 
-
-    Signals(): videoSignals(std::make_shared<VideoSignals>()), audioSignals(std::make_shared<AudioSignals>()), gpsSignals(std::make_shared<GpsSignals>()){};
+    Signals() = default;
 };

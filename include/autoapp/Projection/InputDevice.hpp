@@ -39,7 +39,7 @@ namespace autoapp {
         class InputDevice : public IInputDevice {
 
         public:
-            InputDevice(asio::io_service &ioService, Signals::Pointer signals);
+            InputDevice(asio::io_service &ioService, AudioSignals::Pointer audiosignals, VideoSignals::Pointer videosignals);
 
             void start(IInputDeviceEventHandler &eventHandler) override;
 
@@ -53,7 +53,8 @@ namespace autoapp {
 
         private:
             asio::io_service &ioService_;
-            Signals::Pointer signals_;
+            AudioSignals::Pointer audiosignals_;
+            VideoSignals::Pointer videosignals_;
             asio::posix::stream_descriptor *touchscreen = nullptr;
             asio::posix::stream_descriptor *keyboard = nullptr;
             std::vector<input_event> touch_events;

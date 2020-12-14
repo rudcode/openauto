@@ -36,7 +36,7 @@ public:
     AndroidAutoEntityFactory(asio::io_service& ioService,
                              configuration::IConfiguration::Pointer configuration,
                              IServiceFactory& serviceFactory,
-                             Signals::Pointer signals);
+                             const Signals& signals);
 
     IAndroidAutoEntity::Pointer create(aasdk::usb::IAOAPDevice::Pointer aoapDevice) override;
     IAndroidAutoEntity::Pointer create(aasdk::tcp::ITCPEndpoint::Pointer tcpEndpoint) override;
@@ -47,7 +47,7 @@ private:
     asio::io_service& ioService_;
     configuration::IConfiguration::Pointer configuration_;
     IServiceFactory& serviceFactory_;
-    Signals::Pointer signals_;
+    Signals signals_;
 };
 
 }

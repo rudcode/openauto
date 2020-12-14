@@ -31,7 +31,7 @@ namespace service
 class ServiceFactory: public IServiceFactory
 {
 public:
-    ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer  configuration, Signals::Pointer  signals);
+    ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer  configuration, const Signals& signals);
     ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) override;
 
 private:
@@ -42,7 +42,7 @@ private:
 
     asio::io_service& ioService_;
     configuration::IConfiguration::Pointer configuration_;
-    Signals::Pointer signals_;
+    Signals signals_;
 };
 
 }

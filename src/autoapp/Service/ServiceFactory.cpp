@@ -31,8 +31,6 @@
 #include <autoapp/Projection/InputDevice.hpp>
 #include <autoapp/Projection/MazdaBluetooth.hpp>
 #include <autoapp/Service/SystemAudioService.hpp>
-#include <utility>
-
 
 
 namespace autoapp
@@ -40,10 +38,10 @@ namespace autoapp
 namespace service
 {
 
-ServiceFactory::ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer  configuration, Signals::Pointer  signals)
+ServiceFactory::ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer  configuration, const Signals& signals)
     : ioService_(ioService)
     , configuration_(std::move(configuration))
-    , signals_(std::move(signals))
+    , signals_(signals)
 {
 
 }
@@ -55,7 +53,7 @@ ServiceList ServiceFactory::create(aasdk::messenger::IMessenger::Pointer messeng
     projection::IAudioInput::Pointer audioInput(new projection::AlsaAudioInput(ioService_));
     serviceList.emplace_back(std::make_shared<AudioInputService>(ioService_, messenger, std::move(audioInput)));
     this->createAudioServices(serviceList, messenger);
-    serviceList.emplace_back(std::make_shared<SensorService>(ioService_, messenger, signals_->gpsSignals));
+    serviceList.emplace_back(std::make_shared<SensorService>(ioService_, messenger, signals_.gpsSignals));
     serviceList.emplace_back(this->createVideoService(messenger));
     serviceList.emplace_back(this->createBluetoothService(messenger));
     serviceList.emplace_back(this->createInputService(messenger));
@@ -65,7 +63,7 @@ ServiceList ServiceFactory::create(aasdk::messenger::IMessenger::Pointer messeng
 IService::Pointer ServiceFactory::createVideoService(aasdk::messenger::IMessenger::Pointer messenger)
 {
     projection::IVideoOutput::Pointer videoOutput(new projection::GSTVideoOutput(ioService_));
-    return std::make_shared<VideoService>(ioService_, messenger, std::move(videoOutput), signals_->videoSignals);
+    return std::make_shared<VideoService>(ioService_, messenger, std::move(videoOutput), signals_.videoSignals);
 }
 
 IService::Pointer ServiceFactory::createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger)
@@ -78,7 +76,7 @@ IService::Pointer ServiceFactory::createBluetoothService(aasdk::messenger::IMess
 
 IService::Pointer ServiceFactory::createInputService(aasdk::messenger::IMessenger::Pointer messenger)
 {
-    projection::IInputDevice::Pointer inputDevice(std::make_shared<projection::InputDevice>(ioService_, std::move(signals_)));
+    projection::IInputDevice::Pointer inputDevice(std::make_shared<projection::InputDevice>(ioService_, signals_.audioSignals, signals_.videoSignals));
 
     return std::make_shared<InputService>(ioService_, messenger, std::move(inputDevice));
 }

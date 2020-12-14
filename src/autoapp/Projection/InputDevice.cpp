@@ -37,11 +37,12 @@ static void emit(int fd, int type, int code, int val) {
 
 namespace autoapp {
     namespace projection {
-        InputDevice::InputDevice(asio::io_service &ioService, Signals::Pointer signals)
+        InputDevice::InputDevice(asio::io_service &ioService, AudioSignals::Pointer audiosignals, VideoSignals::Pointer videosignals)
                 : ioService_(ioService)
-                , signals_(std::move(signals))
+                , audiosignals_(std::move(audiosignals))
+                , videosignals_(std::move(videosignals))
                 , eventHandler_(nullptr) {
-            signals_->audioSignals->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
+            audiosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
         }
 
         void InputDevice::audio_focus(aasdk::proto::enums::AudioFocusState_Enum state) {
@@ -230,13 +231,13 @@ namespace autoapp {
                             time_t now = time(nullptr);
                             if (now - pressedSince >= 2) {
                                 if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY) {
-                                    signals_->audioSignals->focusRelease.emit();
+                                    audiosignals_->focusRelease.emit();
                                 } else if (
                                         pressScanCode == aasdk::proto::enums::ButtonCode_Enum_BACK ||
                                         pressScanCode == aasdk::proto::enums::ButtonCode_Enum_CALL_END) {
-                                    signals_->videoSignals->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+                                    videosignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
                                 } else if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_HOME) {
-                                    signals_->videoSignals->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+                                    videosignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
                                 }
                             }
                             pressScanCode = 0;

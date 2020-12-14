@@ -44,7 +44,7 @@ public:
                       configuration::IConfiguration::Pointer configuration,
                       ServiceList serviceList,
                       IPinger::Pointer pinger,
-                      Signals::Pointer signals);
+                      const Signals& signals);
     ~AndroidAutoEntity() override;
 
     void start(IAndroidAutoEntityEventHandler& eventHandler) override;
@@ -79,7 +79,7 @@ private:
     ServiceList serviceList_;
     IPinger::Pointer pinger_;
     IAndroidAutoEntityEventHandler* eventHandler_;
-    Signals::Pointer signals_;
+    Signals signals_;
 };
 
 }
