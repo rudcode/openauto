@@ -22,7 +22,6 @@ SET(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_INIT} -Wall -pedantic -Wno-psabi")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-g -O3")
-add_compile_definitions(ELPP_THREAD_SAFE)
 
 message("CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}")
 
@@ -43,6 +42,10 @@ add_subdirectory(external/Simple-Web-Server)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(JSON_Install OFF CACHE INTERNAL "")
 add_subdirectory(external/json)
+
+add_compile_definitions(ELPP_THREAD_SAFE)
+add_subdirectory(external/easylogging++)
+
 
 find_package(Git)
 if(GIT_EXECUTABLE)
@@ -111,7 +114,6 @@ file(GLOB_RECURSE autoapp_source_files ${autoapp_sources_directory}/*.cpp)
 
 add_executable(autoapp
         ${autoapp_source_files}
-        ${sources_directory}/easylogging++.cc
         "Mazda/Dbus/com.jci.nativeguictrl.h"
         "Mazda/Dbus/com.jci.bucpsa.h"
         "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
@@ -135,6 +137,7 @@ target_link_libraries(autoapp
         ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a
         simple-web-server
         nlohmann_json::nlohmann_json
+        easylogging++
         -static
         -static-libstdc++
         -static-libgcc
