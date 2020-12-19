@@ -35,12 +35,14 @@ void VideoManager::requestFocus(VIDEO_FOCUS_REQUESTOR requestor)
     }
     LOG(DEBUG) << "Setting focus, requested by " << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
     gui.SetRequiredSurfacesByEnum(NativeGUICtrlClient::TV_TOUCH_SURFACE, true);
+    vs->focusChanged.emit(true);
 }
 
 void VideoManager::releaseFocus(VIDEO_FOCUS_REQUESTOR requestor)
 {
     LOG(DEBUG) << "Releasing focus, requested by " << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
     gui.SetRequiredSurfacesByEnum(NativeGUICtrlClient::JCI_OPERA_PRIMARY, true);
+    vs->focusChanged.emit(false);
 }
 
 VideoManager::~VideoManager()= default;

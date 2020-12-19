@@ -34,6 +34,7 @@
 #include <autoapp/Managers/VideoManager.hpp>
 #include <autoapp/Managers/AudioManager.hpp>
 #include <autoapp/Managers/GPSManager.hpp>
+#include <autoapp/Managers/HttpManager.hpp>
 #include <autoapp/Configuration/Configuration.hpp>
 
 
@@ -131,6 +132,7 @@ int main(int argc, char* argv[])
     AudioManagerClient audioManager(serviceBus, signals.audioSignals);
     VideoManager videoManager(hmiBus, signals.videoSignals);
     GPSManager gpsManager(serviceBus, signals.gpsSignals);
+    HttpManager httpManager(ioService, signals.videoSignals, signals.audioSignals, signals.aaSignals);
     std::thread dbus_thread(dbus_dispatcher);
 
     aasdk::tcp::TCPWrapper tcpWrapper;

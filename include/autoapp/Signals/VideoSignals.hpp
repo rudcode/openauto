@@ -15,6 +15,5 @@ public:
     using type_signal_focus = sigc::signal<void(VIDEO_FOCUS_REQUESTOR)>;
     type_signal_focus focusRequest;
     type_signal_focus focusRelease;
-    type_signal_focus focusChanged;
-
+    sigc::signal<void(bool)> focusChanged;
 };

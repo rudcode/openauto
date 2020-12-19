@@ -1,0 +1,1 @@
+#define OPENAUTO_VERSION "@BUILD_HASH@"
