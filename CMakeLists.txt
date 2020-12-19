@@ -46,6 +46,8 @@ add_subdirectory(external/json)
 add_compile_definitions(ELPP_THREAD_SAFE)
 add_subdirectory(external/easylogging++)
 
+add_subdirectory(external/toml++)
+
 
 find_package(Git)
 if(GIT_EXECUTABLE)
@@ -138,6 +140,7 @@ target_link_libraries(autoapp
         simple-web-server
         nlohmann_json::nlohmann_json
         easylogging++
+        toml++
         -static
         -static-libstdc++
         -static-libgcc
