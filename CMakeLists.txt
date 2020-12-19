@@ -40,6 +40,10 @@ SET(USE_STANDALONE_ASIO ON CACHE BOOL "use standalone Asio")
 SET(USE_OPENSSL OFF CACHE BOOL "Don't need SSL in our webserver")
 add_subdirectory(external/Simple-Web-Server)
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(JSON_Install OFF CACHE INTERNAL "")
+add_subdirectory(external/json)
+
 find_package(Git)
 if(GIT_EXECUTABLE)
     execute_process(
@@ -112,7 +116,8 @@ add_executable(autoapp
         "Mazda/Dbus/com.jci.bucpsa.h"
         "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
         "Mazda/Dbus/com.jci.lds.control.h"
-        "Mazda/Dbus/com.jci.lds.data.h")
+        "Mazda/Dbus/com.jci.lds.data.h"
+        "Mazda/Dbus/com.jci.pa.h")
 target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/)
 target_include_directories(autoapp PRIVATE ${include_directory})
 
@@ -129,6 +134,7 @@ target_link_libraries(autoapp
         ${CMAKE_SYSROOT}/usr/lib/libdbus-c++-1.a
         ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a
         simple-web-server
+        nlohmann_json::nlohmann_json
         -static
         -static-libstdc++
         -static-libgcc
