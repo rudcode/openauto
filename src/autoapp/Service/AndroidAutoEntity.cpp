@@ -18,7 +18,6 @@
 
 #include <aasdk/Channel/Control/ControlServiceChannel.hpp>
 #include <autoapp/Service/AndroidAutoEntity.hpp>
-#include <utility>
 #include <easylogging++.h>
 
 namespace autoapp

@@ -15,8 +15,6 @@ struct GPSData {
     double velocity = 0;
     double horizontalAccuracy = 0;
     double verticalAccuracy = 0;
-
-    bool IsSame(const GPSData &other) const;
 };
 
 

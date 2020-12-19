@@ -19,7 +19,6 @@
 #include <ctime>
 #include <easylogging++.h>
 #include <autoapp/Service/AudioInputService.hpp>
-#include <utility>
 
 namespace autoapp
 {

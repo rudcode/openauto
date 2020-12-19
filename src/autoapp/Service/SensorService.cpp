@@ -19,7 +19,6 @@
 #include <aasdk_proto/DrivingStatusEnum.pb.h>
 #include <easylogging++.h>
 #include <autoapp/Service/SensorService.hpp>
-#include <fstream>
 #include <cmath>
 
 namespace autoapp::service {
@@ -184,7 +183,7 @@ namespace autoapp::service {
 }
 
 bool checkNight() {
-    bool nightmodenow;
+    bool nightmodenow = false;
     char gpio_value[3];
     FILE *fd = fopen("/sys/class/gpio/CAN_Day_Mode/value", "r");
     if (fd == nullptr) {
