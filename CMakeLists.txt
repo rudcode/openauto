@@ -172,24 +172,3 @@ add_custom_command(
         COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=autoapp.debug autoapp
         WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
 )
-
-#set(btservice_sources_directory ${sources_directory}/btservice)
-#set(btservice_include_directory ${include_directory}/btservice)
-#file(GLOB_RECURSE btservice_source_files ${btservice_sources_directory}/*.cpp ${btservice_include_directory}/*.hpp ${common_include_directory}/*.hpp)
-#
-#add_executable(btservice
-#        ${btservice_source_files}
-#        "Mazda/Dbus/com.jci.bds.h"
-#        "Mazda/Dbus/com.jci.bca.h")
-#target_include_directories(btservice PUBLIC ${include_directory}/Mazda/Dbus ${common_include_directory})
-#target_include_directories(btservice PRIVATE ${include_directory})
-#
-#
-#target_link_libraries(btservice
-#        ${CMAKE_SYSROOT}/usr/lib/libaasdk_proto.a
-#        ${Protobuf_LITE_LIBRARIES}
-#        ${CMAKE_SYSROOT}/usr/lib/libdbus-c++-1.a
-#        ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a
-#        Threads::Threads
-#        -static-libstdc++
-#        -lrt)
