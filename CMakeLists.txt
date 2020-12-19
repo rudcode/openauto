@@ -43,6 +43,10 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(JSON_Install OFF CACHE INTERNAL "")
 add_subdirectory(external/json)
 
+set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
+set(BUILD_TESTS OFF CACHE INTERNAL "")
+add_subdirectory(external/tinyxml2)
+
 add_compile_definitions(ELPP_THREAD_SAFE)
 add_subdirectory(external/easylogging++)
 
@@ -121,7 +125,9 @@ add_executable(autoapp
         "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
         "Mazda/Dbus/com.jci.lds.control.h"
         "Mazda/Dbus/com.jci.lds.data.h"
-        "Mazda/Dbus/com.jci.pa.h")
+        "Mazda/Dbus/com.jci.pa.h"
+        "Mazda/Dbus/com.jci.bds.h"
+        "Mazda/Dbus/com.jci.bca.h")
 target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/)
 target_include_directories(autoapp PRIVATE ${include_directory})
 
@@ -141,6 +147,7 @@ target_link_libraries(autoapp
         nlohmann_json::nlohmann_json
         easylogging++
         toml++
+        tinyxml2
         -static
         -static-libstdc++
         -static-libgcc
