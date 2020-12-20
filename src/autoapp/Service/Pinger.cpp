@@ -38,9 +38,7 @@ void Pinger::ping(Promise::Pointer promise) {
 
       promise_ = std::move(promise);
       timer_.expires_from_now(std::chrono::milliseconds(duration_));
-      timer_.async_wait(strand_.wrap(std::bind(&Pinger::onTimerExceeded,
-                                               this->shared_from_this(),
-                                               std::placeholders::_1)));
+      timer_.async_wait(strand_.wrap([this](const asio::error_code &error) { onTimerExceeded(error); }));
     }
   });
 }

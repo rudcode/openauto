@@ -52,7 +52,7 @@ void AndroidAutoEntity::start(IAndroidAutoEntityEventHandler &eventHandler) {
 
     eventHandler_ = eventHandler;
     std::for_each(serviceList_.begin(), serviceList_.end(), [](IService::Pointer &service) { service->start(); });
-    //this->schedulePing();
+    this->schedulePing();
 
     signals_.audioSignals->focusChanged.connect(sigc::mem_fun(*this, &AndroidAutoEntity::onAudioFocusResponse));
     signals_.aaSignals->connected.emit(true);
