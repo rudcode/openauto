@@ -1,24 +1,10 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <node>
-   <interface name="com.jci.nativeguictrl">
-      
-		
-      <method name="SetRequiredSurfaces">
-         
-			
-         <annotation name="async_client" value="true"/>
-         
-			
-         <arg direction="in" name="surfaces" type="s"/>
-         
-			
-         <arg direction="in" name="bFadeOpera" type="n"/>
-         
-		
-      </method>
-      
-	
-   </interface>
-   
-	
+ <interface name="com.jci.nativeguictrl">
+  <method name="SetRequiredSurfaces">
+   <annotation name="async_client" value="true"/>
+   <arg direction="in" name="surfaces" type="s"/>
+   <arg direction="in" name="bFadeOpera" type="n"/>
+  </method>
+ </interface>
 </node>

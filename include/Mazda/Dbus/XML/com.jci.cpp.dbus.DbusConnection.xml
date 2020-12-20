@@ -1,18 +1,8 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <node>
-   <interface name="com.jci.cpp.dbus.DbusConnection">
-      
-		
-      <method name="Wiki">
-         
-			
-         <arg direction="in" name="timeout" type="u"/>
-         
-		
-      </method>
-      
-	
-   </interface>
-   
-	
+ <interface name="com.jci.cpp.dbus.DbusConnection">
+  <method name="Wiki">
+   <arg direction="in" name="timeout" type="u"/>
+  </method>
+ </interface>
 </node>

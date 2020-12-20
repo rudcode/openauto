@@ -1,699 +1,236 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <node>
-   <interface name="com.jci.xmdata">
-      
-		
-      <annotation name="def_struct_names.dataSubscriptions_st" value="service, subcription"/>
-      
-		
-      <annotation name="def_struct_types.dataSubscriptions_st" value="u, u"/>
-      
-		
-      <annotation name="def_struct_names.dataSubscriptionArr_st" value="dataSubscriptions"/>
-      
-		
-      <annotation name="def_struct_types.dataSubscriptionArr_st" value="dataSubscriptions_st"/>
-      
-		
-      <annotation name="def_struct_names.SubscriptionStatus_st" value="status, reasonCode, suspendDate, reasonText, phoneNumber"/>
-      
-		
-      <annotation name="def_struct_types.SubscriptionStatus_st" value="u, y, u, s, s"/>
-      
-		
-      <annotation name="def_struct_names.dataAvailable_st" value="service, available"/>
-      
-		
-      <annotation name="def_struct_types.dataAvailable_st" value="u, u"/>
-      
-		
-      <annotation name="def_struct_names.dataAvailableArr_st" value="dataAvailable"/>
-      
-		
-      <annotation name="def_struct_types.dataAvailableArr_st" value="dataAvailable_st"/>
-      
-		
-      <annotation name="def_struct_names.WSAlertData_st" value="AlertID,AlertName, AlertPriority, AlertDesc"/>
-      
-		
-      <annotation name="def_struct_types.WSAlertData_st" value=" u, s, q, s"/>
-      
-		
-      <annotation name="def_struct_names.WSAlertDataArr_st" value="WSAlertData"/>
-      
-		
-      <annotation name="def_struct_types.WSAlertDataArr_st" value="WSAlertData_st"/>
-      
-		
-      <annotation name="def_struct_names.XMDATA_CityListArr_st" value="list"/>
-      
-		
-      <annotation name="def_struct_types.XMDATA_CityListArr_st" value="s"/>
-      
-		
-      <annotation name="def_struct_names.XMDATA_SportsListArr_st" value="list"/>
-      
-		
-      <annotation name="def_struct_types.XMDATA_SportsListArr_st" value="s"/>
-      
-		
-      <annotation name="def_struct_names.XMDATA_BrandListArr_st" value="list"/>
-      
-		
-      <method name="GetSubscriptionStatus">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetDataServiceSubscriptions">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetDataAvailable">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetInstallStatus">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="status" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetESN">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetVehicleLocation">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="status" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="AddStock">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="in" name="stockSymbol" type="s"/>
-         
-			
-         <arg direction="out" name="status" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="RemoveStock">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="in" name="stockSymbol" type="s"/>
-         
-			
-         <arg direction="out" name="status" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetStockCount">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-			
-         <arg direction="out" name="count" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetWSAlertData">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="SaveWSAlertSetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-			
-         <arg direction="in" name="popUpSetting" type="b"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetWSAlertSetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-			
-         <arg direction="out" name="popUpSetting" type="b"/>
-         
-		
-      </method>
-      
-		
-      <method name="WSHighAlertDataOverride">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="in" name="alertID" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetWSHighAlertData">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="alertID" type="u"/>
-         
-			
-         <arg direction="out" name="alertName" type="s"/>
-         
-			
-         <arg direction="out" name="alertPriority" type="q"/>
-         
-			
-         <arg direction="out" name="alertDesc" type="s"/>
-         
-			
-         <arg direction="out" name="alertAvailability" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="SelectState">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="in" name="stateName" type="s"/>
-         
-		
-      </method>
-      
-		
-      <method name="SelectCity">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="in" name="cityName" type="s"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetRecentCities">
-         
-			
-         <annotation name="type_ref.cityList" value="XMDATA_CityListArr_st"/>
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="out" name="cityList" type="(as)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SetSelectedRate">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="in" name="rateType" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetSelectedRate">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="out" name="rateType" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="SaveParkingCountrySetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-			
-         <arg direction="in" name="parkingCountry" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetParkingCountrySetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="parkingCountry" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetLastViewedSportTeamList">
-         
-			
-         <annotation name="type_ref.SportsList" value="XMDATA_SportsListArr_st"/>
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="out" name="sportsList" type="(as)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SelectSportTeam">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="in" name="teamInfo" type="s"/>
-         
-		
-      </method>
-      
-		
-      <method name="DisplayNNGServices">
-         
-			
-         <annotation name="async_client" value="true"/>
-         
-			
-         <arg direction="in" name="service" type="u"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="SaveFuelSetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-			
-         <arg direction="in" name="fuelType" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="SaveFuelBrandSetting">
-         
-			
-         <annotation name="type_ref.brandList" value="XMDATA_BrandListArr_st"/>
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-			
-         <arg direction="in" name="brandList" type="(as)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SaveFuelCountrySetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-			
-         <arg direction="in" name="fuelCountry" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetFuelSetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="fuelType" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetFuelBrandSetting">
-         
-			
-         <annotation name="type_ref.brandList" value="XMDATA_BrandListArr_st"/>
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="u"/>
-         
-			
-         <arg direction="out" name="brandList" type="(as)"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetFuelCountrySetting">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="fuelCountry" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetWeatherCitySelect">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="selected" type="b"/>
-         
-			
-         <arg direction="out" name="cityName" type="s"/>
-         
-		
-      </method>
-      
-		
-      <signal name="SubscriptionStatus">
-         
-			
-         <annotation name="type_ref.SubscriptionDetails" value="SubscriptionStatus_st"/>
-         
-			
-         <arg name="subscriptionDetails" type="(uyuss)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="DataServiceSubscription">
-         
-			
-         <annotation name="type_ref.dataSubscriptions" value="dataSubscriptionArr_st"/>
-         
-			
-         <arg name="dataSubscriptions" type="(a(uu))"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="DataAvailable">
-         
-			
-         <annotation name="type_ref.dataAvailable" value="dataAvailableArr_st"/>
-         
-			
-         <arg name="dataAvailable" type="(a(uu))"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="InstallStatus">
-         
-			
-         <arg name="status" type="i"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="ESNInfo">
-         
-			
-         <arg name="esn_val " type="s"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="VehicleLocation">
-         
-			
-         <arg name="latitude" type="d"/>
-         
-			
-         <arg name="longitude" type="d"/>
-         
-			
-         <arg name="heading" type="d"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="FuelDataUpdated">
-         
-			
-         <arg name="count" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="StockAdded">
-         
-			
-         <arg name="isAdded" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="StockRemoved">
-         
-			
-         <arg name="isRemoved" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="StockDataUpdated">
-         
-			
-         <arg name="count" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="StockOTAUnAvailable"/>
-      
-		
-      <signal name="MoviesDataUpdated">
-         
-			
-         <arg name="count" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="WeatherForecastDataUpdated">
-         
-			
-         <arg name="count" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="WSAlertDataUpdated">
-         
-			
-         <annotation name="type_ref.WSAlertData" value="WSAlertDataArr_st"/>
-         
-			
-         <arg name="wSAlertData" type="(a(usqs))"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="WSHighAlertData">
-         
-			
-         <arg name="alertPriority" type="q"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="CityListAvailable">
-         
-			
-         <arg name="count" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="ParkingDataUpdated">
-         
-			
-         <arg name="count" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="SportsDataUpdated">
-         
-			
-         <arg name="listType" type="u"/>
-         
-			
-         <arg name="flag" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="ShowSXMServices"/>
-      
-	
-   </interface>
-   
-	
+ <interface name="com.jci.xmdata">
+  <annotation name="def_struct_names.dataSubscriptions_st" value="service, subcription"/>
+  <annotation name="def_struct_types.dataSubscriptions_st" value="u, u"/>
+  <annotation name="def_struct_names.dataSubscriptionArr_st" value="dataSubscriptions"/>
+  <annotation name="def_struct_types.dataSubscriptionArr_st" value="dataSubscriptions_st"/>
+  <annotation name="def_struct_names.SubscriptionStatus_st"
+              value="status, reasonCode, suspendDate, reasonText, phoneNumber"/>
+  <annotation name="def_struct_types.SubscriptionStatus_st" value="u, y, u, s, s"/>
+  <annotation name="def_struct_names.dataAvailable_st" value="service, available"/>
+  <annotation name="def_struct_types.dataAvailable_st" value="u, u"/>
+  <annotation name="def_struct_names.dataAvailableArr_st" value="dataAvailable"/>
+  <annotation name="def_struct_types.dataAvailableArr_st" value="dataAvailable_st"/>
+  <annotation name="def_struct_names.WSAlertData_st" value="AlertID,AlertName, AlertPriority, AlertDesc"/>
+  <annotation name="def_struct_types.WSAlertData_st" value=" u, s, q, s"/>
+  <annotation name="def_struct_names.WSAlertDataArr_st" value="WSAlertData"/>
+  <annotation name="def_struct_types.WSAlertDataArr_st" value="WSAlertData_st"/>
+  <annotation name="def_struct_names.XMDATA_CityListArr_st" value="list"/>
+  <annotation name="def_struct_types.XMDATA_CityListArr_st" value="s"/>
+  <annotation name="def_struct_names.XMDATA_SportsListArr_st" value="list"/>
+  <annotation name="def_struct_types.XMDATA_SportsListArr_st" value="s"/>
+  <annotation name="def_struct_names.XMDATA_BrandListArr_st" value="list"/>
+  <method name="GetSubscriptionStatus">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+  </method>
+  <method name="GetDataServiceSubscriptions">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+  </method>
+  <method name="GetDataAvailable">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+  </method>
+  <method name="GetInstallStatus">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="status" type="i"/>
+  </method>
+  <method name="GetESN">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+  </method>
+  <method name="GetVehicleLocation">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="status" type="i"/>
+  </method>
+  <method name="AddStock">
+   <annotation name="async" value="client"/>
+   <arg direction="in" name="stockSymbol" type="s"/>
+   <arg direction="out" name="status" type="i"/>
+  </method>
+  <method name="RemoveStock">
+   <annotation name="async" value="client"/>
+   <arg direction="in" name="stockSymbol" type="s"/>
+   <arg direction="out" name="status" type="i"/>
+  </method>
+  <method name="GetStockCount">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+   <arg direction="out" name="count" type="u"/>
+  </method>
+  <method name="GetWSAlertData">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+  </method>
+  <method name="SaveWSAlertSetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+   <arg direction="in" name="popUpSetting" type="b"/>
+  </method>
+  <method name="GetWSAlertSetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+   <arg direction="out" name="popUpSetting" type="b"/>
+  </method>
+  <method name="WSHighAlertDataOverride">
+   <annotation name="async" value="client"/>
+   <arg direction="in" name="alertID" type="u"/>
+  </method>
+  <method name="GetWSHighAlertData">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="alertID" type="u"/>
+   <arg direction="out" name="alertName" type="s"/>
+   <arg direction="out" name="alertPriority" type="q"/>
+   <arg direction="out" name="alertDesc" type="s"/>
+   <arg direction="out" name="alertAvailability" type="u"/>
+  </method>
+  <method name="SelectState">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="in" name="stateName" type="s"/>
+  </method>
+  <method name="SelectCity">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="in" name="cityName" type="s"/>
+  </method>
+  <method name="GetRecentCities">
+   <annotation name="type_ref.cityList" value="XMDATA_CityListArr_st"/>
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="out" name="cityList" type="(as)"/>
+  </method>
+  <method name="SetSelectedRate">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="in" name="rateType" type="u"/>
+  </method>
+  <method name="GetSelectedRate">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="out" name="rateType" type="u"/>
+  </method>
+  <method name="SaveParkingCountrySetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+   <arg direction="in" name="parkingCountry" type="u"/>
+  </method>
+  <method name="GetParkingCountrySetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="parkingCountry" type="u"/>
+  </method>
+  <method name="GetLastViewedSportTeamList">
+   <annotation name="type_ref.SportsList" value="XMDATA_SportsListArr_st"/>
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="out" name="sportsList" type="(as)"/>
+  </method>
+  <method name="SelectSportTeam">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="in" name="teamInfo" type="s"/>
+  </method>
+  <method name="DisplayNNGServices">
+   <annotation name="async_client" value="true"/>
+   <arg direction="in" name="service" type="u"/>
+   <arg direction="out" name="return_value" type="u"/>
+  </method>
+  <method name="SaveFuelSetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+   <arg direction="in" name="fuelType" type="u"/>
+  </method>
+  <method name="SaveFuelBrandSetting">
+   <annotation name="type_ref.brandList" value="XMDATA_BrandListArr_st"/>
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+   <arg direction="in" name="brandList" type="(as)"/>
+  </method>
+  <method name="SaveFuelCountrySetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+   <arg direction="in" name="fuelCountry" type="u"/>
+  </method>
+  <method name="GetFuelSetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="fuelType" type="u"/>
+  </method>
+  <method name="GetFuelBrandSetting">
+   <annotation name="type_ref.brandList" value="XMDATA_BrandListArr_st"/>
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="u"/>
+   <arg direction="out" name="brandList" type="(as)"/>
+  </method>
+  <method name="GetFuelCountrySetting">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="fuelCountry" type="u"/>
+  </method>
+  <method name="GetWeatherCitySelect">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="selected" type="b"/>
+   <arg direction="out" name="cityName" type="s"/>
+  </method>
+  <signal name="SubscriptionStatus">
+   <annotation name="type_ref.SubscriptionDetails" value="SubscriptionStatus_st"/>
+   <arg name="subscriptionDetails" type="(uyuss)"/>
+  </signal>
+  <signal name="DataServiceSubscription">
+   <annotation name="type_ref.dataSubscriptions" value="dataSubscriptionArr_st"/>
+   <arg name="dataSubscriptions" type="(a(uu))"/>
+  </signal>
+  <signal name="DataAvailable">
+   <annotation name="type_ref.dataAvailable" value="dataAvailableArr_st"/>
+   <arg name="dataAvailable" type="(a(uu))"/>
+  </signal>
+  <signal name="InstallStatus">
+   <arg name="status" type="i"/>
+  </signal>
+  <signal name="ESNInfo">
+   <arg name="esn_val " type="s"/>
+  </signal>
+  <signal name="VehicleLocation">
+   <arg name="latitude" type="d"/>
+   <arg name="longitude" type="d"/>
+   <arg name="heading" type="d"/>
+  </signal>
+  <signal name="FuelDataUpdated">
+   <arg name="count" type="u"/>
+  </signal>
+  <signal name="StockAdded">
+   <arg name="isAdded" type="u"/>
+  </signal>
+  <signal name="StockRemoved">
+   <arg name="isRemoved" type="b"/>
+  </signal>
+  <signal name="StockDataUpdated">
+   <arg name="count" type="u"/>
+  </signal>
+  <signal name="StockOTAUnAvailable"/>
+  <signal name="MoviesDataUpdated">
+   <arg name="count" type="u"/>
+  </signal>
+  <signal name="WeatherForecastDataUpdated">
+   <arg name="count" type="u"/>
+  </signal>
+  <signal name="WSAlertDataUpdated">
+   <annotation name="type_ref.WSAlertData" value="WSAlertDataArr_st"/>
+   <arg name="wSAlertData" type="(a(usqs))"/>
+  </signal>
+  <signal name="WSHighAlertData">
+   <arg name="alertPriority" type="q"/>
+  </signal>
+  <signal name="CityListAvailable">
+   <arg name="count" type="u"/>
+  </signal>
+  <signal name="ParkingDataUpdated">
+   <arg name="count" type="u"/>
+  </signal>
+  <signal name="SportsDataUpdated">
+   <arg name="listType" type="u"/>
+   <arg name="flag" type="b"/>
+  </signal>
+  <signal name="ShowSXMServices"/>
+ </interface>
 </node>

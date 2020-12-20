@@ -1,18 +1,8 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <node>
-   <interface name="com.jci.direct">
-      
-		
-      <method name="GetDirectConnection">
-         
-			
-         <arg direction="out" name="server" type="s"/>
-         
-		
-      </method>
-      
-	
-   </interface>
-   
-	
+ <interface name="com.jci.direct">
+  <method name="GetDirectConnection">
+   <arg direction="out" name="server" type="s"/>
+  </method>
+ </interface>
 </node>

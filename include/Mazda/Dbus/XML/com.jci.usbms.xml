@@ -1,876 +1,316 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <node>
-   <interface name="com.jci.usbms">
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_StorageAttached_t" value="devInfo,         devFeatures"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_StorageAttached_t" value="USBMS_DevInfo_t, u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_DevInfo_t" value="id, type, name, identifier, aliasPort, devError, syncEventInfo"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_DevInfo_t" value="u,  u,    s,    s,          i,         i,        USBMS_SyncEventInfo_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayComplete_t" value="reason"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayComplete_t" value="i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetStorageDevListReply_t" value="devList"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetStorageDevListReply_t" value="USBMS_DevInfo_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_StorageDetached_t" value="deviceId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_StorageDetached_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_Alphabet_t" value="id, index, letter"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_Alphabet_t" value="u,  i,     s"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetTaggingInfo_t" value="deviceId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetTaggingInfo_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetTaggingInfoReply_t" value="freeSpace, totalSpace, maxFileSize, maxWriteSize, majorVersion, minorVersion, result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetTaggingInfoReply_t" value="t,         t,          u,           q,            y,            y,            u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_iPodSendTag_t" value="deviceId, featureData,         maxWriteSize"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_iPodSendTag_t" value="u,        USBMS_FeatureData_t, q"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_iPodSendTagReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_iPodSendTagReply_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_FeatureData_t" value="data"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_FeatureData_t" value="y"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_Filter_t" value="filterEnum, idLevel1, idLevel2, idLevel3, sortOrder"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_Filter_t" value="i,          u,        u,        u,        i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_FilterList_t" value="filter"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_FilterList_t" value="USBMS_Filter_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_BrowseContext_t" value="deviceId, filterList,         playListName, offset, count"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_BrowseContext_t" value="u,        USBMS_FilterList_t, s,            u,      u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_ItemList_t" value="itemName, itemId, itemType"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_ItemList_t" value="s,        u,      i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_BrowseContextReply_t" value="totalCount, itemList,         result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_BrowseContextReply_t" value="u,          USBMS_ItemList_t, u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetBrowseFolderInfo_t" value="deviceId, filterList,         itemId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetBrowseFolderInfo_t" value="u,        USBMS_FilterList_t, u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetBrowseFolderInfoReply_t" value="parentId, parentName, folderName, result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetBrowseFolderInfoReply_t" value="u,        s,          s,          u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PauseResume_t" value="deviceId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PauseResume_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PauseResumeReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PauseResumeReply_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayResume_t" value="deviceId, type"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayResume_t" value="u,        i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayResumeReply_t" value="filters,        repeatMode, shuffleMode, playerState, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime,         result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayResumeReply_t" value="USBMS_Filter_t, i,          i,           i,           s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t, u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayContext_t" value="deviceId, filter,         playListName, trackId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayContext_t" value="u,        USBMS_Filter_t, s,            u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayContextReply_t" value="repeatMode, shuffleMode, playerState, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime,         result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayContextReply_t" value="i,          i,           i,           s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t, i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_StopPlayback_t" value="deviceId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_StopPlayback_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_StopPlaybackReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_StopPlaybackReply_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetAlbumArt_t" value="deviceId, trackId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetAlbumArt_t" value="u,        u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetAlbumArtReply_t" value="fileName, trackId, result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetAlbumArtReply_t" value="s,        u,       u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_AlbumArtReady_t" value="deviceId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_AlbumArtReady_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SyncEvent_t" value="deviceId, syncEvent, contentChanged, numFiles, numRadioStations"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SyncEvent_t" value="u,        i,         i,              u,        u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SyncEventInfoEntry_t" value="event,             seqNo"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SyncEventInfoEntry_t" value="USBMS_SyncEvent_t, u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SyncEventInfo_t" value="eventInfoEntry,             latestSeqNo"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SyncEventInfo_t" value="USBMS_SyncEventInfoEntry_t, u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_DbUpdate_t" value="deviceId, updateCause, numFiles"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_DbUpdate_t" value="u,        i,           u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_TrackInfo_t" value="trackId, title, artist, album, genre"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_TrackInfo_t" value="u,       s,     s,      s,     s"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetPlayTrackInfoReply_t" value="trackInfo,         result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetPlayTrackInfoReply_t" value="USBMS_TrackInfo_t, i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_TrackChanged_t" value="deviceId, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_TrackChanged_t" value="u,        s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlaybackTime_t" value="elapsedTimeSec, durationSec"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlaybackTime_t" value="u,              u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayerSeek_t" value="deviceId, seek, position"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayerSeek_t" value="u,        i,    u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayerSeekReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayerSeekReply_t" value="i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayTrackCtrl_t" value="deviceId, playCtrlCommand, commandCount"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayTrackCtrl_t" value="u,        i,               u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayTrackCtrlReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayTrackCtrlReply_t" value="i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SetPlayerSettings_t" value="deviceId, shuffle, repeat"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SetPlayerSettings_t" value="u,        i,       i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SetPlayerSettingsReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SetPlayerSettingsReply_t" value="i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_DeviceError_t" value="deviceId, devError"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_DeviceError_t" value="u,        i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlayerStateChanged_t" value="deviceId, playerState, playStateChangeCause, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlayerStateChanged_t" value="u,        i,           i,                    s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_PlaybackSettingsChanged_t" value="deviceId, shuffle, repeat"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_PlaybackSettingsChanged_t" value="u,             i,       i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_MoreLikeThis_t" value="deviceId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_MoreLikeThis_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_MoreLikeThisReply_t" value="filter,         plName, result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_MoreLikeThisReply_t" value="USBMS_Filter_t, s,      u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SongInfo_t" value="title, titleId,  artist, artistId, album, albumId, genre, genreId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SongInfo_t" value="s,     u,        s,      u,        s,     u,       s,     u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SongInfoList_t" value="songInfo"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SongInfoList_t" value="USBMS_SongInfo_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetSongsInfoList_t" value="deviceId, startIndex, endIndex"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetSongsInfoList_t" value="u,        u,          u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetSongsInfoListReply_t" value="songsInfo,            result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetSongsInfoListReply_t" value="USBMS_SongInfoList_t, u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SetLanguage_t" value="langId"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SetLanguage_t" value="u"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SetLanguageReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SetLanguageReply_t" value="i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetAlphabet_t" value="deviceId, filterList"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetAlphabet_t" value="u,        USBMS_FilterList_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_GetAlphabetReply_t" value="item"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_GetAlphabetReply_t" value="USBMS_Alphabet_t"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.USBMS_SaveDataReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.USBMS_SaveDataReply_t" value="i"/>
-      
-		
-      <method name="BrowseContext">
-         
-			
-         <annotation name="com.jci.type_ref.browseContext" value="USBMS_BrowseContext_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.browseContextReply" value="USBMS_BrowseContextReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <annotation name="appsdkgen" value=""/>
-         
-			
-         <arg direction="in" name="browseContext" type="(u(a(iuuui))suu)"/>
-         
-			
-         <arg direction="out" name="browseContextReply" type="(ua(sui)u)"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetBrowseFolderInfo">
-         
-			
-         <annotation name="com.jci.type_ref.getBrowseFolderInfo" value="USBMS_GetBrowseFolderInfo_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.getBrowseFolderInfoReply" value="USBMS_GetBrowseFolderInfoReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <annotation name="appsdkgen" value=""/>
-         
-			
-         <arg direction="in" name="getBrowseFolderInfo" type="(u(a(iuuui))u)"/>
-         
-			
-         <arg direction="out" name="getBrowseFolderInfoReply" type="(ussu)"/>
-         
-		
-      </method>
-      
-		
-      <method name="PauseResume">
-         
-			
-         <annotation name="com.jci.type_ref.pauseResume" value="USBMS_PauseResume_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.pauseResumeReply" value="USBMS_PauseResumeReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="pauseResume" type="(u)"/>
-         
-			
-         <arg direction="out" name="pauseResumeReply" type="(u)"/>
-         
-		
-      </method>
-      
-		
-      <method name="PlayResume">
-         
-			
-         <annotation name="com.jci.type_ref.playResume" value="USBMS_PlayResume_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.playResumeReply" value="USBMS_PlayResumeReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="playResume" type="(ui)"/>
-         
-			
-         <arg direction="out" name="playResumeReply" type="((iuuui)iiissu(ussss)(uu)u)"/>
-         
-		
-      </method>
-      
-		
-      <method name="PlayContext">
-         
-			
-         <annotation name="com.jci.type_ref.playContext" value="USBMS_PlayContext_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.playContextReply" value="USBMS_PlayContextReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="playContext" type="(u(iuuui)su)"/>
-         
-			
-         <arg direction="out" name="playContextReply" type="(iiissu(ussss)(uu)i)"/>
-         
-		
-      </method>
-      
-		
-      <method name="StopPlayback">
-         
-			
-         <annotation name="com.jci.type_ref.stopPlayback" value="USBMS_StopPlayback_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.stopPlaybackReply" value="USBMS_StopPlaybackReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="stopPlayback" type="(u)"/>
-         
-			
-         <arg direction="out" name="stopPlaybackReply" type="(u)"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetAlbumArt">
-         
-			
-         <annotation name="com.jci.type_ref.getAlbumArt" value="USBMS_GetAlbumArt_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.getAlbumArtReply" value="USBMS_GetAlbumArtReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="getAlbumArt" type="(uu)"/>
-         
-			
-         <arg direction="out" name="getAlbumArtReply" type="(suu)"/>
-         
-		
-      </method>
-      
-		
-      <method name="PlayerSeek">
-         
-			
-         <annotation name="com.jci.type_ref.playerSeek" value="USBMS_PlayerSeek_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.playerSeekReply" value="USBMS_PlayerSeekReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="playerSeek" type="(uiu)"/>
-         
-			
-         <arg direction="out" name="playerSeekReply" type="(i)"/>
-         
-		
-      </method>
-      
-		
-      <method name="PlayTrackControl">
-         
-			
-         <annotation name="com.jci.type_ref.playTrackCtrl" value="USBMS_PlayTrackCtrl_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.playTrackCtrlReply" value="USBMS_PlayTrackCtrlReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="playTrackCtrl" type="(uiu)"/>
-         
-			
-         <arg direction="out" name="playTrackCtrlReply" type="(i)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SetPlayerSettings">
-         
-			
-         <annotation name="com.jci.type_ref.setPlayerSettings" value="USBMS_SetPlayerSettings_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.setPlayerSettingsReply" value="USBMS_SetPlayerSettingsReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="setPlayerSettings" type="(uii)"/>
-         
-			
-         <arg direction="out" name="setPlayerSettingsReply" type="(i)"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetStorageDevicesList">
-         
-			
-         <annotation name="com.jci.type_ref.getStorageDevListReply" value="USBMS_GetStorageDevListReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="out" name="getStorageDevListReply" type="(a(uussii(a((uiiuu)u)u)))"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetPlayTrackInfo">
-         
-			
-         <annotation name="com.jci.type_ref.getPlayTrackInfoReply" value="USBMS_GetPlayTrackInfoReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="out" name="getPlayTrackInfoReply" type="((ussss)i)"/>
-         
-		
-      </method>
-      
-		
-      <method name="MoreLikeThis">
-         
-			
-         <annotation name="com.jci.type_ref.moreLikeThis" value="USBMS_MoreLikeThis_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.moreLikeThisReply" value="USBMS_MoreLikeThisReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="moreLikeThis" type="(u)"/>
-         
-			
-         <arg direction="out" name="moreLikeThisReply" type="((iuuui)su)"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetSongsInfoList">
-         
-			
-         <annotation name="com.jci.type_ref.getSongsInfoList" value="USBMS_GetSongsInfoList_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.getSongsInfoListReply" value="USBMS_GetSongsInfoListReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="getSongsInfoList" type="(uuu)"/>
-         
-			
-         <arg direction="out" name="getSongsInfoListReply" type="((a(susususu))u)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SetLanguage">
-         
-			
-         <annotation name="com.jci.type_ref.setLanguage" value="USBMS_SetLanguage_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.setLanguageReply" value="USBMS_SetLanguageReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="setLanguage" type="(u)"/>
-         
-			
-         <arg direction="out" name="setLanguageReply" type="(i)"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetAlphabet">
-         
-			
-         <annotation name="com.jci.type_ref.getAlphabet" value="USBMS_GetAlphabet_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.getAlphabetReply" value="USBMS_GetAlphabetReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <annotation name="appsdkgen" value=""/>
-         
-			
-         <arg direction="in" name="getAlphabet" type="(u(a(iuuui)))"/>
-         
-			
-         <arg direction="out" name="getAlphabetReply" type="(a(uis))"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetTaggingInfo">
-         
-			
-         <annotation name="com.jci.type_ref.getTaggingInfo" value="USBMS_GetTaggingInfo_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.getTaggingInfoReply" value="USBMS_GetTaggingInfoReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="getTaggingInfo" type="(u)"/>
-         
-			
-         <arg direction="out" name="getTaggingInfoReply" type="(ttuqyyu)"/>
-         
-		
-      </method>
-      
-		
-      <method name="iPodSendTag">
-         
-			
-         <annotation name="com.jci.type_ref.iPodSendTag" value="USBMS_iPodSendTag_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.iPodSendTagReply" value="USBMS_iPodSendTagReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="iPodSendTag" type="(u(ay)q)"/>
-         
-			
-         <arg direction="out" name="iPodSendTagReply" type="(u)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SaveData">
-         
-			
-         <annotation name="com.jci.type_ref.saveDataReply" value="USBMS_SaveDataReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="out" name="saveDataReply" type="(i)"/>
-         
-		
-      </method>
-      
-		
-      <signal name="StorageAttached">
-         
-			
-         <annotation name="com.jci.type_ref.storageAttached" value="USBMS_StorageAttached_t"/>
-         
-			
-         <arg direction="in" name="storageAttached" type="((uussii(a((uiiuu)u)u))u)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="StorageDetached">
-         
-			
-         <annotation name="com.jci.type_ref.storageDetached" value="USBMS_StorageDetached_t"/>
-         
-			
-         <arg direction="in" name="storageDetached" type="(u)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="SyncEvent">
-         
-			
-         <annotation name="com.jci.type_ref.syncEvent" value="USBMS_SyncEvent_t"/>
-         
-			
-         <arg direction="in" name="syncEvent" type="(uiiuu)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="DbUpdate">
-         
-			
-         <annotation name="com.jci.type_ref.dbUpdate" value="USBMS_DbUpdate_t"/>
-         
-			
-         <arg direction="in" name="dbUpdate" type="(uiu)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="TrackChanged">
-         
-			
-         <annotation name="com.jci.type_ref.trackChanged" value="USBMS_TrackChanged_t"/>
-         
-			
-         <arg direction="in" name="trackChanged" type="(ussu(ussss)(uu))"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="PlayComplete">
-         
-			
-         <annotation name="com.jci.type_ref.playComplete" value="USBMS_PlayComplete_t"/>
-         
-			
-         <arg direction="in" name="playComplete" type="(i)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="PlaybackTime">
-         
-			
-         <annotation name="com.jci.type_ref.playbackTime" value="USBMS_PlaybackTime_t"/>
-         
-			
-         <arg direction="in" name="playbackTime" type="(uu)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="DeviceError">
-         
-			
-         <annotation name="com.jci.type_ref.deviceError" value="USBMS_DeviceError_t"/>
-         
-			
-         <arg direction="in" name="deviceError" type="(ui)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="PlayerStateChanged">
-         
-			
-         <annotation name="com.jci.type_ref.playerStateChanged" value="USBMS_PlayerStateChanged_t"/>
-         
-			
-         <arg direction="in" name="playerStateChanged" type="(uiissu(ussss)(uu))"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="PlaybackSettingsChanged">
-         
-			
-         <annotation name="com.jci.type_ref.playbackSettingsChanged" value="USBMS_PlaybackSettingsChanged_t"/>
-         
-			
-         <arg direction="in" name="playbackSettingsChanged" type="(uii)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="AlbumArtReady">
-         
-			
-         <annotation name="com.jci.type_ref.albumArtReady" value="USBMS_AlbumArtReady_t"/>
-         
-			
-         <arg direction="in" name="albumArtReady" type="(u)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="Ping"/>
-      
-	
-   </interface>
-   
-	
+ <interface name="com.jci.usbms">
+  <annotation name="com.jci.def_struct_names.USBMS_StorageAttached_t" value="devInfo,         devFeatures"/>
+  <annotation name="com.jci.def_struct_types.USBMS_StorageAttached_t" value="USBMS_DevInfo_t, u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_DevInfo_t"
+              value="id, type, name, identifier, aliasPort, devError, syncEventInfo"/>
+  <annotation name="com.jci.def_struct_types.USBMS_DevInfo_t"
+              value="u,  u,    s,    s,          i,         i,        USBMS_SyncEventInfo_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayComplete_t" value="reason"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayComplete_t" value="i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetStorageDevListReply_t" value="devList"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetStorageDevListReply_t" value="USBMS_DevInfo_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_StorageDetached_t" value="deviceId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_StorageDetached_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_Alphabet_t" value="id, index, letter"/>
+  <annotation name="com.jci.def_struct_types.USBMS_Alphabet_t" value="u,  i,     s"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetTaggingInfo_t" value="deviceId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetTaggingInfo_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetTaggingInfoReply_t"
+              value="freeSpace, totalSpace, maxFileSize, maxWriteSize, majorVersion, minorVersion, result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetTaggingInfoReply_t"
+              value="t,         t,          u,           q,            y,            y,            u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_iPodSendTag_t" value="deviceId, featureData,         maxWriteSize"/>
+  <annotation name="com.jci.def_struct_types.USBMS_iPodSendTag_t" value="u,        USBMS_FeatureData_t, q"/>
+  <annotation name="com.jci.def_struct_names.USBMS_iPodSendTagReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_iPodSendTagReply_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_FeatureData_t" value="data"/>
+  <annotation name="com.jci.def_struct_types.USBMS_FeatureData_t" value="y"/>
+  <annotation name="com.jci.def_struct_names.USBMS_Filter_t"
+              value="filterEnum, idLevel1, idLevel2, idLevel3, sortOrder"/>
+  <annotation name="com.jci.def_struct_types.USBMS_Filter_t" value="i,          u,        u,        u,        i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_FilterList_t" value="filter"/>
+  <annotation name="com.jci.def_struct_types.USBMS_FilterList_t" value="USBMS_Filter_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_BrowseContext_t"
+              value="deviceId, filterList,         playListName, offset, count"/>
+  <annotation name="com.jci.def_struct_types.USBMS_BrowseContext_t"
+              value="u,        USBMS_FilterList_t, s,            u,      u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_ItemList_t" value="itemName, itemId, itemType"/>
+  <annotation name="com.jci.def_struct_types.USBMS_ItemList_t" value="s,        u,      i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_BrowseContextReply_t" value="totalCount, itemList,         result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_BrowseContextReply_t" value="u,          USBMS_ItemList_t, u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetBrowseFolderInfo_t" value="deviceId, filterList,         itemId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetBrowseFolderInfo_t" value="u,        USBMS_FilterList_t, u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetBrowseFolderInfoReply_t"
+              value="parentId, parentName, folderName, result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetBrowseFolderInfoReply_t"
+              value="u,        s,          s,          u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PauseResume_t" value="deviceId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PauseResume_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PauseResumeReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PauseResumeReply_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayResume_t" value="deviceId, type"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayResume_t" value="u,        i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayResumeReply_t"
+              value="filters,        repeatMode, shuffleMode, playerState, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime,         result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayResumeReply_t"
+              value="USBMS_Filter_t, i,          i,           i,           s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t, u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayContext_t"
+              value="deviceId, filter,         playListName, trackId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayContext_t" value="u,        USBMS_Filter_t, s,            u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayContextReply_t"
+              value="repeatMode, shuffleMode, playerState, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime,         result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayContextReply_t"
+              value="i,          i,           i,           s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t, i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_StopPlayback_t" value="deviceId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_StopPlayback_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_StopPlaybackReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_StopPlaybackReply_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetAlbumArt_t" value="deviceId, trackId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetAlbumArt_t" value="u,        u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetAlbumArtReply_t" value="fileName, trackId, result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetAlbumArtReply_t" value="s,        u,       u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_AlbumArtReady_t" value="deviceId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_AlbumArtReady_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SyncEvent_t"
+              value="deviceId, syncEvent, contentChanged, numFiles, numRadioStations"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SyncEvent_t"
+              value="u,        i,         i,              u,        u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SyncEventInfoEntry_t" value="event,             seqNo"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SyncEventInfoEntry_t" value="USBMS_SyncEvent_t, u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SyncEventInfo_t" value="eventInfoEntry,             latestSeqNo"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SyncEventInfo_t" value="USBMS_SyncEventInfoEntry_t, u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_DbUpdate_t" value="deviceId, updateCause, numFiles"/>
+  <annotation name="com.jci.def_struct_types.USBMS_DbUpdate_t" value="u,        i,           u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_TrackInfo_t" value="trackId, title, artist, album, genre"/>
+  <annotation name="com.jci.def_struct_types.USBMS_TrackInfo_t" value="u,       s,     s,      s,     s"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetPlayTrackInfoReply_t" value="trackInfo,         result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetPlayTrackInfoReply_t" value="USBMS_TrackInfo_t, i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_TrackChanged_t"
+              value="deviceId, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime"/>
+  <annotation name="com.jci.def_struct_types.USBMS_TrackChanged_t"
+              value="u,        s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlaybackTime_t" value="elapsedTimeSec, durationSec"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlaybackTime_t" value="u,              u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayerSeek_t" value="deviceId, seek, position"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayerSeek_t" value="u,        i,    u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayerSeekReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayerSeekReply_t" value="i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayTrackCtrl_t" value="deviceId, playCtrlCommand, commandCount"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayTrackCtrl_t" value="u,        i,               u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayTrackCtrlReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayTrackCtrlReply_t" value="i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SetPlayerSettings_t" value="deviceId, shuffle, repeat"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SetPlayerSettings_t" value="u,        i,       i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SetPlayerSettingsReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SetPlayerSettingsReply_t" value="i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_DeviceError_t" value="deviceId, devError"/>
+  <annotation name="com.jci.def_struct_types.USBMS_DeviceError_t" value="u,        i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlayerStateChanged_t"
+              value="deviceId, playerState, playStateChangeCause, folderName, playlistName, trackIdOffsetInList, trackInfo,         playbackTime"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlayerStateChanged_t"
+              value="u,        i,           i,                    s,          s,            u,                   USBMS_TrackInfo_t, USBMS_PlaybackTime_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_PlaybackSettingsChanged_t" value="deviceId, shuffle, repeat"/>
+  <annotation name="com.jci.def_struct_types.USBMS_PlaybackSettingsChanged_t" value="u,             i,       i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_MoreLikeThis_t" value="deviceId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_MoreLikeThis_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_MoreLikeThisReply_t" value="filter,         plName, result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_MoreLikeThisReply_t" value="USBMS_Filter_t, s,      u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SongInfo_t"
+              value="title, titleId,  artist, artistId, album, albumId, genre, genreId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SongInfo_t"
+              value="s,     u,        s,      u,        s,     u,       s,     u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SongInfoList_t" value="songInfo"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SongInfoList_t" value="USBMS_SongInfo_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetSongsInfoList_t" value="deviceId, startIndex, endIndex"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetSongsInfoList_t" value="u,        u,          u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetSongsInfoListReply_t" value="songsInfo,            result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetSongsInfoListReply_t" value="USBMS_SongInfoList_t, u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SetLanguage_t" value="langId"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SetLanguage_t" value="u"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SetLanguageReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SetLanguageReply_t" value="i"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetAlphabet_t" value="deviceId, filterList"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetAlphabet_t" value="u,        USBMS_FilterList_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_GetAlphabetReply_t" value="item"/>
+  <annotation name="com.jci.def_struct_types.USBMS_GetAlphabetReply_t" value="USBMS_Alphabet_t"/>
+  <annotation name="com.jci.def_struct_names.USBMS_SaveDataReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.USBMS_SaveDataReply_t" value="i"/>
+  <method name="BrowseContext">
+   <annotation name="com.jci.type_ref.browseContext" value="USBMS_BrowseContext_t"/>
+   <annotation name="com.jci.type_ref.browseContextReply" value="USBMS_BrowseContextReply_t"/>
+   <annotation name="async" value="both"/>
+   <annotation name="appsdkgen" value=""/>
+   <arg direction="in" name="browseContext" type="(u(a(iuuui))suu)"/>
+   <arg direction="out" name="browseContextReply" type="(ua(sui)u)"/>
+  </method>
+  <method name="GetBrowseFolderInfo">
+   <annotation name="com.jci.type_ref.getBrowseFolderInfo" value="USBMS_GetBrowseFolderInfo_t"/>
+   <annotation name="com.jci.type_ref.getBrowseFolderInfoReply" value="USBMS_GetBrowseFolderInfoReply_t"/>
+   <annotation name="async" value="both"/>
+   <annotation name="appsdkgen" value=""/>
+   <arg direction="in" name="getBrowseFolderInfo" type="(u(a(iuuui))u)"/>
+   <arg direction="out" name="getBrowseFolderInfoReply" type="(ussu)"/>
+  </method>
+  <method name="PauseResume">
+   <annotation name="com.jci.type_ref.pauseResume" value="USBMS_PauseResume_t"/>
+   <annotation name="com.jci.type_ref.pauseResumeReply" value="USBMS_PauseResumeReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="pauseResume" type="(u)"/>
+   <arg direction="out" name="pauseResumeReply" type="(u)"/>
+  </method>
+  <method name="PlayResume">
+   <annotation name="com.jci.type_ref.playResume" value="USBMS_PlayResume_t"/>
+   <annotation name="com.jci.type_ref.playResumeReply" value="USBMS_PlayResumeReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="playResume" type="(ui)"/>
+   <arg direction="out" name="playResumeReply" type="((iuuui)iiissu(ussss)(uu)u)"/>
+  </method>
+  <method name="PlayContext">
+   <annotation name="com.jci.type_ref.playContext" value="USBMS_PlayContext_t"/>
+   <annotation name="com.jci.type_ref.playContextReply" value="USBMS_PlayContextReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="playContext" type="(u(iuuui)su)"/>
+   <arg direction="out" name="playContextReply" type="(iiissu(ussss)(uu)i)"/>
+  </method>
+  <method name="StopPlayback">
+   <annotation name="com.jci.type_ref.stopPlayback" value="USBMS_StopPlayback_t"/>
+   <annotation name="com.jci.type_ref.stopPlaybackReply" value="USBMS_StopPlaybackReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="stopPlayback" type="(u)"/>
+   <arg direction="out" name="stopPlaybackReply" type="(u)"/>
+  </method>
+  <method name="GetAlbumArt">
+   <annotation name="com.jci.type_ref.getAlbumArt" value="USBMS_GetAlbumArt_t"/>
+   <annotation name="com.jci.type_ref.getAlbumArtReply" value="USBMS_GetAlbumArtReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="getAlbumArt" type="(uu)"/>
+   <arg direction="out" name="getAlbumArtReply" type="(suu)"/>
+  </method>
+  <method name="PlayerSeek">
+   <annotation name="com.jci.type_ref.playerSeek" value="USBMS_PlayerSeek_t"/>
+   <annotation name="com.jci.type_ref.playerSeekReply" value="USBMS_PlayerSeekReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="playerSeek" type="(uiu)"/>
+   <arg direction="out" name="playerSeekReply" type="(i)"/>
+  </method>
+  <method name="PlayTrackControl">
+   <annotation name="com.jci.type_ref.playTrackCtrl" value="USBMS_PlayTrackCtrl_t"/>
+   <annotation name="com.jci.type_ref.playTrackCtrlReply" value="USBMS_PlayTrackCtrlReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="playTrackCtrl" type="(uiu)"/>
+   <arg direction="out" name="playTrackCtrlReply" type="(i)"/>
+  </method>
+  <method name="SetPlayerSettings">
+   <annotation name="com.jci.type_ref.setPlayerSettings" value="USBMS_SetPlayerSettings_t"/>
+   <annotation name="com.jci.type_ref.setPlayerSettingsReply" value="USBMS_SetPlayerSettingsReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="setPlayerSettings" type="(uii)"/>
+   <arg direction="out" name="setPlayerSettingsReply" type="(i)"/>
+  </method>
+  <method name="GetStorageDevicesList">
+   <annotation name="com.jci.type_ref.getStorageDevListReply" value="USBMS_GetStorageDevListReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="out" name="getStorageDevListReply" type="(a(uussii(a((uiiuu)u)u)))"/>
+  </method>
+  <method name="GetPlayTrackInfo">
+   <annotation name="com.jci.type_ref.getPlayTrackInfoReply" value="USBMS_GetPlayTrackInfoReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="out" name="getPlayTrackInfoReply" type="((ussss)i)"/>
+  </method>
+  <method name="MoreLikeThis">
+   <annotation name="com.jci.type_ref.moreLikeThis" value="USBMS_MoreLikeThis_t"/>
+   <annotation name="com.jci.type_ref.moreLikeThisReply" value="USBMS_MoreLikeThisReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="moreLikeThis" type="(u)"/>
+   <arg direction="out" name="moreLikeThisReply" type="((iuuui)su)"/>
+  </method>
+  <method name="GetSongsInfoList">
+   <annotation name="com.jci.type_ref.getSongsInfoList" value="USBMS_GetSongsInfoList_t"/>
+   <annotation name="com.jci.type_ref.getSongsInfoListReply" value="USBMS_GetSongsInfoListReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="getSongsInfoList" type="(uuu)"/>
+   <arg direction="out" name="getSongsInfoListReply" type="((a(susususu))u)"/>
+  </method>
+  <method name="SetLanguage">
+   <annotation name="com.jci.type_ref.setLanguage" value="USBMS_SetLanguage_t"/>
+   <annotation name="com.jci.type_ref.setLanguageReply" value="USBMS_SetLanguageReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="setLanguage" type="(u)"/>
+   <arg direction="out" name="setLanguageReply" type="(i)"/>
+  </method>
+  <method name="GetAlphabet">
+   <annotation name="com.jci.type_ref.getAlphabet" value="USBMS_GetAlphabet_t"/>
+   <annotation name="com.jci.type_ref.getAlphabetReply" value="USBMS_GetAlphabetReply_t"/>
+   <annotation name="async" value="both"/>
+   <annotation name="appsdkgen" value=""/>
+   <arg direction="in" name="getAlphabet" type="(u(a(iuuui)))"/>
+   <arg direction="out" name="getAlphabetReply" type="(a(uis))"/>
+  </method>
+  <method name="GetTaggingInfo">
+   <annotation name="com.jci.type_ref.getTaggingInfo" value="USBMS_GetTaggingInfo_t"/>
+   <annotation name="com.jci.type_ref.getTaggingInfoReply" value="USBMS_GetTaggingInfoReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="getTaggingInfo" type="(u)"/>
+   <arg direction="out" name="getTaggingInfoReply" type="(ttuqyyu)"/>
+  </method>
+  <method name="iPodSendTag">
+   <annotation name="com.jci.type_ref.iPodSendTag" value="USBMS_iPodSendTag_t"/>
+   <annotation name="com.jci.type_ref.iPodSendTagReply" value="USBMS_iPodSendTagReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="iPodSendTag" type="(u(ay)q)"/>
+   <arg direction="out" name="iPodSendTagReply" type="(u)"/>
+  </method>
+  <method name="SaveData">
+   <annotation name="com.jci.type_ref.saveDataReply" value="USBMS_SaveDataReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="out" name="saveDataReply" type="(i)"/>
+  </method>
+  <signal name="StorageAttached">
+   <annotation name="com.jci.type_ref.storageAttached" value="USBMS_StorageAttached_t"/>
+   <arg direction="in" name="storageAttached" type="((uussii(a((uiiuu)u)u))u)"/>
+  </signal>
+  <signal name="StorageDetached">
+   <annotation name="com.jci.type_ref.storageDetached" value="USBMS_StorageDetached_t"/>
+   <arg direction="in" name="storageDetached" type="(u)"/>
+  </signal>
+  <signal name="SyncEvent">
+   <annotation name="com.jci.type_ref.syncEvent" value="USBMS_SyncEvent_t"/>
+   <arg direction="in" name="syncEvent" type="(uiiuu)"/>
+  </signal>
+  <signal name="DbUpdate">
+   <annotation name="com.jci.type_ref.dbUpdate" value="USBMS_DbUpdate_t"/>
+   <arg direction="in" name="dbUpdate" type="(uiu)"/>
+  </signal>
+  <signal name="TrackChanged">
+   <annotation name="com.jci.type_ref.trackChanged" value="USBMS_TrackChanged_t"/>
+   <arg direction="in" name="trackChanged" type="(ussu(ussss)(uu))"/>
+  </signal>
+  <signal name="PlayComplete">
+   <annotation name="com.jci.type_ref.playComplete" value="USBMS_PlayComplete_t"/>
+   <arg direction="in" name="playComplete" type="(i)"/>
+  </signal>
+  <signal name="PlaybackTime">
+   <annotation name="com.jci.type_ref.playbackTime" value="USBMS_PlaybackTime_t"/>
+   <arg direction="in" name="playbackTime" type="(uu)"/>
+  </signal>
+  <signal name="DeviceError">
+   <annotation name="com.jci.type_ref.deviceError" value="USBMS_DeviceError_t"/>
+   <arg direction="in" name="deviceError" type="(ui)"/>
+  </signal>
+  <signal name="PlayerStateChanged">
+   <annotation name="com.jci.type_ref.playerStateChanged" value="USBMS_PlayerStateChanged_t"/>
+   <arg direction="in" name="playerStateChanged" type="(uiissu(ussss)(uu))"/>
+  </signal>
+  <signal name="PlaybackSettingsChanged">
+   <annotation name="com.jci.type_ref.playbackSettingsChanged" value="USBMS_PlaybackSettingsChanged_t"/>
+   <arg direction="in" name="playbackSettingsChanged" type="(uii)"/>
+  </signal>
+  <signal name="AlbumArtReady">
+   <annotation name="com.jci.type_ref.albumArtReady" value="USBMS_AlbumArtReady_t"/>
+   <arg direction="in" name="albumArtReady" type="(u)"/>
+  </signal>
+  <signal name="Ping"/>
+ </interface>
 </node>

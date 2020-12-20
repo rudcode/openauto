@@ -1,48 +1,19 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <node>
-   <interface name="com.jci.xm_mgr">
-      
-		
-      <annotation name="com.jci.def_struct_names.XM_MGR_subscription_state_info_s_t" value="subscription_status,reason_code,suspended_date,reason_txt,phone_num"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.XM_MGR_subscription_state_info_s_t" value="    i  ,     i  ,i, s , s "/>
-      
-		
-      <method name="GetSubscriptionStatus">
-         
-			
-         <annotation name="async" value="client"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetXMInstalled">
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-		
-      </method>
-      
-		
-      <signal name="SubscriptionStatus">
-         
-			
-         <annotation name="com.jci.type_ref.subscription_state" value="XM_MGR_subscription_state_info_s_t"/>
-         
-			
-         <arg direction="in" name="subscription_state" type="(iiiss)"/>
-         
-		
-      </signal>
-      
-	
-   </interface>
-   
-
+ <interface name="com.jci.xm_mgr">
+  <annotation name="com.jci.def_struct_names.XM_MGR_subscription_state_info_s_t"
+              value="subscription_status,reason_code,suspended_date,reason_txt,phone_num"/>
+  <annotation name="com.jci.def_struct_types.XM_MGR_subscription_state_info_s_t" value="    i  ,     i  ,i, s , s "/>
+  <method name="GetSubscriptionStatus">
+   <annotation name="async" value="client"/>
+   <arg direction="out" name="return_value" type="i"/>
+  </method>
+  <method name="GetXMInstalled">
+   <arg direction="out" name="return_value" type="i"/>
+  </method>
+  <signal name="SubscriptionStatus">
+   <annotation name="com.jci.type_ref.subscription_state" value="XM_MGR_subscription_state_info_s_t"/>
+   <arg direction="in" name="subscription_state" type="(iiiss)"/>
+  </signal>
+ </interface>
 </node>

@@ -1,603 +1,204 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <node>
-   <interface name="com.jci.aapa">
-      
-		
-      <annotation name="com.jci.force_interface_visibility" value="client"/>
-      
-		
-      <annotation name="header_include" value="aapa_types.h"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.AAPA_SetNativeTurnByTurnStatus_t" value="isActive"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.AAPA_SetNativeTurnByTurnStatus_t" value="b"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.AAPA_SetNativeTurnByTurnStatusReply_t" value="result"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.AAPA_SetNativeTurnByTurnStatusReply_t" value="i"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.AAPA_ClearLastFocusInfo_t" value="isLastVideo, isLastAudio"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.AAPA_ClearLastFocusInfo_t" value="b, b"/>
-      
-		
-      <annotation name="com.jci.def_struct_names.AAPA_NowPlayingInfo_t" value="state, folderInfo, songName, artistName, albumName"/>
-      
-		
-      <annotation name="com.jci.def_struct_types.AAPA_NowPlayingInfo_t" value="y, s, s, s, s"/>
-      
-		
-      <method name="MDSettingModeData">
-         
-			
-         <annotation name="typeof.selectMode" value="AAPA_SelectMode_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="selectMode" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="VideoProjectionEventToMD">
-         
-			
-         <annotation name="typeof.videoProjectionEvent" value="AAPA_VideoProjection_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="videoProjectionEvent" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="InputKey">
-         
-			
-         <annotation name="typeof.keyCode" value="AAPA_InputKeyEvents_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="keyCode" type="u"/>
-         
-			
-         <arg direction="in" name="absolute" type="b"/>
-         
-			
-         <arg direction="in" name="step" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="SetRouteState">
-         
-			
-         <annotation name="typeof.state" value="AAPA_SetRouteState_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="state" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetNowPlayingInfo">
-         
-			
-         <annotation name="type_ref.nowPlayingInfo" value="AAPA_NowPlayingInfo_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="out" name="nowPlayingInfo" type="(yssss)"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-		
-      </method>
-      
-		
-      <method name="BTPairingResult">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="result" type="b"/>
-         
-		
-      </method>
-      
-		
-      <method name="BTReadyToPair">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="alreadyPaired" type="b"/>
-         
-		
-      </method>
-      
-		
-      <method name="SendBTAuthenticationData">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="btdata" type="s"/>
-         
-			
-         <arg direction="in" name="len" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="SetVehicleBtMacAddress">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="macaddr" type="s"/>
-         
-			
-         <arg direction="in" name="maclen" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="NotifyBTHFCallStatus">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="status" type="b"/>
-         
-			
-         <arg direction="in" name="macaddr" type="s"/>
-         
-		
-      </method>
-      
-		
-      <method name="IntentPhoneCall">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="phonenumber" type="s"/>
-         
-		
-      </method>
-      
-		
-      <method name="DialogWinkStatus">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="status" type="b"/>
-         
-		
-      </method>
-      
-		
-      <method name="ClearLastFocus">
-         
-			
-         <annotation name="type_ref.focusInfo" value="AAPA_ClearLastFocusInfo_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="focusInfo" type="(bb)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SbnStatus">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="status" type="b"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetAOASessionStatus">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="out" name="status" type="b"/>
-         
-			
-         <arg direction="out" name="macaddr" type="s"/>
-         
-			
-         <arg direction="out" name="maclen" type="u"/>
-         
-		
-      </method>
-      
-		
-      <method name="GetAvailable">
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="out" name="available" type="y"/>
-         
-		
-      </method>
-      
-		
-      <method name="SetNativeTurnByTurnStatus">
-         
-			
-         <annotation name="com.jci.type_ref.SetNativeTurnByTurnStatus" value="AAPA_SetNativeTurnByTurnStatus_t"/>
-         
-			
-         <annotation name="com.jci.type_ref.SetNativeTurnByTurnStatus_reply" value="AAPA_SetNativeTurnByTurnStatusReply_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="setNativeTurnByTurnStatus" type="(b)"/>
-         
-			
-         <arg direction="out" name="setNativeTurnByTurnStatus_reply" type="(i)"/>
-         
-		
-      </method>
-      
-		
-      <method name="SetMP911EmergencyCallStatus">
-         
-			
-         <annotation name="typeof.status" value="AAPA_Mp911CallStatus_t"/>
-         
-			
-         <annotation name="async" value="both"/>
-         
-			
-         <arg direction="in" name="status" type="u"/>
-         
-			
-         <arg direction="out" name="return_value" type="i"/>
-         
-		
-      </method>
-      
-		
-      <signal name="AOASessionStatus">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_AOASessionStatusSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="SendSessionInfo">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_SendSessionInfoSignal_t"/>
-         
-			
-         <arg direction="in" name="deviceName" type="s"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="VideoProjectionRequestFromMD">
-         
-			
-         <annotation name="typeof.enable" value="AAPA_VideoProjection_t"/>
-         
-			
-         <annotation name="typedef_callback" value="AAPA_VideoProjectionRequestFromMDSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NowPlayingInfo">
-         
-			
-         <annotation name="type_ref.nowPlayingInfo" value="AAPA_NowPlayingInfo_t"/>
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NowPlayingInfoSignal_t"/>
-         
-			
-         <arg direction="in" name="nowPlayingInfo" type="(yssss)"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="MDModeDisplayFirstDialog">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_MDModeDisplayFirstDialogSignal_t"/>
-         
-			
-         <arg direction="in" name="displayFirstDialog" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="DisplayReconnectingDialog">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_DisplayReconnectingDialogSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="StartBtConnection">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_StartBtConnectionSignal_t"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="BTPairingRequest">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_BTPairingRequestSignal_t"/>
-         
-			
-         <arg direction="in" name="macaddr" type="s"/>
-         
-			
-         <arg direction="in" name="maclen" type="u"/>
-         
-			
-         <arg direction="in" name="method" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="GetVehicleBtMacAddress">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_GetVehicleBtMacAddressSignal_t"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifySpeedThreshold">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifySpeedThresholdSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="DisplaySbnInfo">
-         
-			
-         <annotation name="typeof.info" value="AAPA_DisplaySbnInfo_t"/>
-         
-			
-         <annotation name="typedef_callback" value="AAPA_DisplaySbnInfoSignal_t"/>
-         
-			
-         <arg direction="in" name="info" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyAudioFocusStatus">
-         
-			
-         <annotation name="typeof.status" value="AAPA_AudioStatusAndReason_t"/>
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyAudioFocusStatusSignal_t"/>
-         
-			
-         <arg direction="in" name="status" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyBTConnectionComplete">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyBTConnectionCompleteSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="Available">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_AvailableSignal_t"/>
-         
-			
-         <arg direction="in" name="available" type="y"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyStopAndSetup">
-         
-			
-         <annotation name="typeof.displaySASDialog" value="AAPA_DisplayDialog_t"/>
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyStopAndSetupSignal_t"/>
-         
-			
-         <arg direction="in" name="displaySASDialog" type="u"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyNoVideoSinkSetup">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyNoVideoSinkSetupSignal_t"/>
-         
-			
-         <arg direction="in" name="displayNVSSDialog" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyDeviceNotResponding">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyDeviceNotRespondingSignal_t"/>
-         
-			
-         <arg direction="in" name="displayDNR" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyASRStatus">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyASRStatusSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="ProjectionStatusResult">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_ProjectionStatusResultSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="DisplayStopForSetupDialog">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_DisplayStopForSetupDialogSignal_t"/>
-         
-			
-         <arg direction="in" name="enable" type="b"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyAANaviStatus">
-         
-			
-         <annotation name="typeof.status" value="AAPA_AANaviStatus_t"/>
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyAANaviStatusSignal_t"/>
-         
-			
-         <arg direction="in" name="status" type="i"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="GetNativeTurnByTurnStatusRequest">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_GetNativeTurnByTurnStatusRequestSignal_t"/>
-         
-		
-      </signal>
-      
-		
-      <signal name="NotifyDeviceConnection">
-         
-			
-         <annotation name="typedef_callback" value="AAPA_NotifyDeviceConnectionSignal_t"/>
-         
-			
-         <arg direction="in" name="status" type="b"/>
-         
-		
-      </signal>
-      
-	
-   </interface>
-   
-	
+ <interface name="com.jci.aapa">
+  <annotation name="com.jci.force_interface_visibility" value="client"/>
+  <annotation name="header_include" value="aapa_types.h"/>
+  <annotation name="com.jci.def_struct_names.AAPA_SetNativeTurnByTurnStatus_t" value="isActive"/>
+  <annotation name="com.jci.def_struct_types.AAPA_SetNativeTurnByTurnStatus_t" value="b"/>
+  <annotation name="com.jci.def_struct_names.AAPA_SetNativeTurnByTurnStatusReply_t" value="result"/>
+  <annotation name="com.jci.def_struct_types.AAPA_SetNativeTurnByTurnStatusReply_t" value="i"/>
+  <annotation name="com.jci.def_struct_names.AAPA_ClearLastFocusInfo_t" value="isLastVideo, isLastAudio"/>
+  <annotation name="com.jci.def_struct_types.AAPA_ClearLastFocusInfo_t" value="b, b"/>
+  <annotation name="com.jci.def_struct_names.AAPA_NowPlayingInfo_t"
+              value="state, folderInfo, songName, artistName, albumName"/>
+  <annotation name="com.jci.def_struct_types.AAPA_NowPlayingInfo_t" value="y, s, s, s, s"/>
+  <method name="MDSettingModeData">
+   <annotation name="typeof.selectMode" value="AAPA_SelectMode_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="selectMode" type="u"/>
+  </method>
+  <method name="VideoProjectionEventToMD">
+   <annotation name="typeof.videoProjectionEvent" value="AAPA_VideoProjection_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="videoProjectionEvent" type="u"/>
+  </method>
+  <method name="InputKey">
+   <annotation name="typeof.keyCode" value="AAPA_InputKeyEvents_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="keyCode" type="u"/>
+   <arg direction="in" name="absolute" type="b"/>
+   <arg direction="in" name="step" type="i"/>
+  </method>
+  <method name="SetRouteState">
+   <annotation name="typeof.state" value="AAPA_SetRouteState_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="state" type="u"/>
+  </method>
+  <method name="GetNowPlayingInfo">
+   <annotation name="type_ref.nowPlayingInfo" value="AAPA_NowPlayingInfo_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="out" name="nowPlayingInfo" type="(yssss)"/>
+   <arg direction="out" name="return_value" type="i"/>
+  </method>
+  <method name="BTPairingResult">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="result" type="b"/>
+  </method>
+  <method name="BTReadyToPair">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="alreadyPaired" type="b"/>
+  </method>
+  <method name="SendBTAuthenticationData">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="btdata" type="s"/>
+   <arg direction="in" name="len" type="u"/>
+  </method>
+  <method name="SetVehicleBtMacAddress">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="macaddr" type="s"/>
+   <arg direction="in" name="maclen" type="u"/>
+  </method>
+  <method name="NotifyBTHFCallStatus">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="status" type="b"/>
+   <arg direction="in" name="macaddr" type="s"/>
+  </method>
+  <method name="IntentPhoneCall">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="phonenumber" type="s"/>
+  </method>
+  <method name="DialogWinkStatus">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="status" type="b"/>
+  </method>
+  <method name="ClearLastFocus">
+   <annotation name="type_ref.focusInfo" value="AAPA_ClearLastFocusInfo_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="focusInfo" type="(bb)"/>
+  </method>
+  <method name="SbnStatus">
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="status" type="b"/>
+  </method>
+  <method name="GetAOASessionStatus">
+   <annotation name="async" value="both"/>
+   <arg direction="out" name="status" type="b"/>
+   <arg direction="out" name="macaddr" type="s"/>
+   <arg direction="out" name="maclen" type="u"/>
+  </method>
+  <method name="GetAvailable">
+   <annotation name="async" value="both"/>
+   <arg direction="out" name="available" type="y"/>
+  </method>
+  <method name="SetNativeTurnByTurnStatus">
+   <annotation name="com.jci.type_ref.SetNativeTurnByTurnStatus" value="AAPA_SetNativeTurnByTurnStatus_t"/>
+   <annotation name="com.jci.type_ref.SetNativeTurnByTurnStatus_reply" value="AAPA_SetNativeTurnByTurnStatusReply_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="setNativeTurnByTurnStatus" type="(b)"/>
+   <arg direction="out" name="setNativeTurnByTurnStatus_reply" type="(i)"/>
+  </method>
+  <method name="SetMP911EmergencyCallStatus">
+   <annotation name="typeof.status" value="AAPA_Mp911CallStatus_t"/>
+   <annotation name="async" value="both"/>
+   <arg direction="in" name="status" type="u"/>
+   <arg direction="out" name="return_value" type="i"/>
+  </method>
+  <signal name="AOASessionStatus">
+   <annotation name="typedef_callback" value="AAPA_AOASessionStatusSignal_t"/>
+   <arg direction="in" name="enable" type="b"/>
+  </signal>
+  <signal name="SendSessionInfo">
+   <annotation name="typedef_callback" value="AAPA_SendSessionInfoSignal_t"/>
+   <arg direction="in" name="deviceName" type="s"/>
+  </signal>
+  <signal name="VideoProjectionRequestFromMD">
+   <annotation name="typeof.enable" value="AAPA_VideoProjection_t"/>
+   <annotation name="typedef_callback" value="AAPA_VideoProjectionRequestFromMDSignal_t"/>
+   <arg direction="in" name="enable" type="u"/>
+  </signal>
+  <signal name="NowPlayingInfo">
+   <annotation name="type_ref.nowPlayingInfo" value="AAPA_NowPlayingInfo_t"/>
+   <annotation name="typedef_callback" value="AAPA_NowPlayingInfoSignal_t"/>
+   <arg direction="in" name="nowPlayingInfo" type="(yssss)"/>
+  </signal>
+  <signal name="MDModeDisplayFirstDialog">
+   <annotation name="typedef_callback" value="AAPA_MDModeDisplayFirstDialogSignal_t"/>
+   <arg direction="in" name="displayFirstDialog" type="b"/>
+  </signal>
+  <signal name="DisplayReconnectingDialog">
+   <annotation name="typedef_callback" value="AAPA_DisplayReconnectingDialogSignal_t"/>
+   <arg direction="in" name="enable" type="b"/>
+  </signal>
+  <signal name="StartBtConnection">
+   <annotation name="typedef_callback" value="AAPA_StartBtConnectionSignal_t"/>
+  </signal>
+  <signal name="BTPairingRequest">
+   <annotation name="typedef_callback" value="AAPA_BTPairingRequestSignal_t"/>
+   <arg direction="in" name="macaddr" type="s"/>
+   <arg direction="in" name="maclen" type="u"/>
+   <arg direction="in" name="method" type="b"/>
+  </signal>
+  <signal name="GetVehicleBtMacAddress">
+   <annotation name="typedef_callback" value="AAPA_GetVehicleBtMacAddressSignal_t"/>
+  </signal>
+  <signal name="NotifySpeedThreshold">
+   <annotation name="typedef_callback" value="AAPA_NotifySpeedThresholdSignal_t"/>
+   <arg direction="in" name="enable" type="b"/>
+  </signal>
+  <signal name="DisplaySbnInfo">
+   <annotation name="typeof.info" value="AAPA_DisplaySbnInfo_t"/>
+   <annotation name="typedef_callback" value="AAPA_DisplaySbnInfoSignal_t"/>
+   <arg direction="in" name="info" type="u"/>
+  </signal>
+  <signal name="NotifyAudioFocusStatus">
+   <annotation name="typeof.status" value="AAPA_AudioStatusAndReason_t"/>
+   <annotation name="typedef_callback" value="AAPA_NotifyAudioFocusStatusSignal_t"/>
+   <arg direction="in" name="status" type="u"/>
+  </signal>
+  <signal name="NotifyBTConnectionComplete">
+   <annotation name="typedef_callback" value="AAPA_NotifyBTConnectionCompleteSignal_t"/>
+   <arg direction="in" name="enable" type="b"/>
+  </signal>
+  <signal name="Available">
+   <annotation name="typedef_callback" value="AAPA_AvailableSignal_t"/>
+   <arg direction="in" name="available" type="y"/>
+  </signal>
+  <signal name="NotifyStopAndSetup">
+   <annotation name="typeof.displaySASDialog" value="AAPA_DisplayDialog_t"/>
+   <annotation name="typedef_callback" value="AAPA_NotifyStopAndSetupSignal_t"/>
+   <arg direction="in" name="displaySASDialog" type="u"/>
+  </signal>
+  <signal name="NotifyNoVideoSinkSetup">
+   <annotation name="typedef_callback" value="AAPA_NotifyNoVideoSinkSetupSignal_t"/>
+   <arg direction="in" name="displayNVSSDialog" type="b"/>
+  </signal>
+  <signal name="NotifyDeviceNotResponding">
+   <annotation name="typedef_callback" value="AAPA_NotifyDeviceNotRespondingSignal_t"/>
+   <arg direction="in" name="displayDNR" type="b"/>
+  </signal>
+  <signal name="NotifyASRStatus">
+   <annotation name="typedef_callback" value="AAPA_NotifyASRStatusSignal_t"/>
+   <arg direction="in" name="enable" type="b"/>
+  </signal>
+  <signal name="ProjectionStatusResult">
+   <annotation name="typedef_callback" value="AAPA_ProjectionStatusResultSignal_t"/>
+   <arg direction="in" name="enable" type="b"/>
+  </signal>
+  <signal name="DisplayStopForSetupDialog">
+   <annotation name="typedef_callback" value="AAPA_DisplayStopForSetupDialogSignal_t"/>
+   <arg direction="in" name="enable" type="b"/>
+  </signal>
+  <signal name="NotifyAANaviStatus">
+   <annotation name="typeof.status" value="AAPA_AANaviStatus_t"/>
+   <annotation name="typedef_callback" value="AAPA_NotifyAANaviStatusSignal_t"/>
+   <arg direction="in" name="status" type="i"/>
+  </signal>
+  <signal name="GetNativeTurnByTurnStatusRequest">
+   <annotation name="typedef_callback" value="AAPA_GetNativeTurnByTurnStatusRequestSignal_t"/>
+  </signal>
+  <signal name="NotifyDeviceConnection">
+   <annotation name="typedef_callback" value="AAPA_NotifyDeviceConnectionSignal_t"/>
+   <arg direction="in" name="status" type="b"/>
+  </signal>
+ </interface>
 </node>
