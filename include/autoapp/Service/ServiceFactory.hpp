@@ -35,7 +35,7 @@ class ServiceFactory : public IServiceFactory {
   IService::Pointer createVideoService(aasdk::messenger::IMessenger::Pointer messenger);
   IService::Pointer createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger);
   IService::Pointer createInputService(aasdk::messenger::IMessenger::Pointer messenger);
-  static void createAudioServices(ServiceList &serviceList, const aasdk::messenger::IMessenger::Pointer &messenger);
+  void createAudioServices(ServiceList &serviceList, const aasdk::messenger::IMessenger::Pointer &messenger);
 
   asio::io_service &ioService_;
   configuration::IConfiguration::Pointer configuration_;
