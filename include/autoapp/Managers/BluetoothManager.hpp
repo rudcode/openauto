@@ -6,14 +6,16 @@
 
 #include <string>
 #include <future>
+
+#include <tinyxml2.h>
+
 #include <aasdk_proto/WifiInfoRequestMessage.pb.h>
 #include <aasdk_proto/WifiInfoResponseMessage.pb.h>
 #include <aasdk_proto/WifiSecurityResponseMessage.pb.h>
 
+#include <autoapp/Configuration/IConfiguration.hpp>
+
 #include <Mazda/Dbus/com.jci.pa.h>
-
-#include <tinyxml2.h>
-
 #include <Mazda/Dbus/com.jci.bds.h>
 #include <Mazda/Dbus/com.jci.bca.h>
 
@@ -190,6 +192,7 @@ class BDSClient : public com::jci::bds_proxy, public DBus::ObjectProxy {
   void SignalBTChipFailure_cb(const uint32_t &type, const ::DBus::Struct<std::vector<uint8_t> > &data) override {}
   void SignalDeviceAddressGet_cb(const uint32_t &type, const ::DBus::Struct<std::vector<uint8_t> > &data) override {}
   int serviceID = -1;
+  int wifiPort = 0;
 };
 
 class BCAClient : public com::jci::bca_proxy, public DBus::ObjectProxy {
@@ -222,12 +225,16 @@ class BCAClient : public com::jci::bca_proxy, public DBus::ObjectProxy {
   void DisableBluetoothRsp(const uint32_t &activeCallStatus) override {}
   void ConnectingCarPlayError() override {}
   int serviceID = -1;
+  int wifiPort = 0;
 };
 
 class BluetoothManager {
  public:
-  BluetoothManager(DBus::Connection &serviceBus, DBus::Connection &hmiBus);
+  BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration,
+                   DBus::Connection &serviceBus,
+                   DBus::Connection &hmiBus);
  private:
+  autoapp::configuration::IConfiguration::Pointer configuration_;
   bool bdsconfigured = false;
   int serviceId = 0;
   BDSClient *bdsClient;
@@ -245,12 +252,13 @@ std::string hostapd_config(const std::string &key);
 
 class BluetoothConnection {
  public:
-  BluetoothConnection();
+  explicit BluetoothConnection(int port);
   void handle_connect(const std::string &pty);
 
  private:
   int fd = 0;
   connectionInfo info;
+  int port_;
 
   void handleWifiInfoRequest(uint8_t *buffer, uint16_t length);
   void handleWifiSecurityRequest(__attribute__((unused)) uint8_t *buffer, __attribute__((unused)) uint16_t length);

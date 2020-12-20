@@ -126,7 +126,6 @@ int main(int argc, char *argv[]) {
   VideoManager videoManager(hmiBus, signals.videoSignals);
   GPSManager gpsManager(serviceBus, signals.gpsSignals);
   HttpManager httpManager(ioService, signals.videoSignals, signals.audioSignals, signals.aaSignals);
-  BluetoothManager bluetoothManager(serviceBus, hmiBus);
   std::thread dbus_thread(dbus_dispatcher);
 
   aasdk::tcp::TCPWrapper tcpWrapper;
@@ -145,9 +144,13 @@ int main(int argc, char *argv[]) {
                                             tcpWrapper,
                                             androidAutoEntityFactory,
                                             std::move(usbHub),
-                                            std::move(connectedAccessoriesEnumerator));
+                                            std::move(connectedAccessoriesEnumerator),
+                                            configuration->wifiPort());
 
   app->waitForUSBDevice();
+
+  // This needs to happen after the rest of openauto is setup, so it goes here.
+  BluetoothManager bluetoothManager(configuration, serviceBus, hmiBus);
 
   while (running) {
     sleep(1);

@@ -37,7 +37,7 @@ class App : public service::IAndroidAutoEntityEventHandler, public std::enable_s
       aasdk::tcp::ITCPWrapper &tcpWrapper,
       service::IAndroidAutoEntityFactory &androidAutoEntityFactory,
       aasdk::usb::IUSBHub::Pointer usbHub,
-      aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator);
+      aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator, int port);
 
   void waitForUSBDevice();
   void start(aasdk::tcp::ITCPEndpoint::SocketPointer socket);
@@ -62,6 +62,7 @@ class App : public service::IAndroidAutoEntityEventHandler, public std::enable_s
   service::IAndroidAutoEntityFactory &androidAutoEntityFactory_;
   aasdk::usb::IUSBHub::Pointer usbHub_;
   aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator_;
+  int port_;
   service::IAndroidAutoEntity::Pointer androidAutoEntity_;
   bool isStopped_;
 

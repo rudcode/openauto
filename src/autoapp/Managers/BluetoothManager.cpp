@@ -8,7 +8,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-BluetoothManager::BluetoothManager(DBus::Connection &serviceBus, DBus::Connection &hmiBus) {
+BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration,
+                                   DBus::Connection &serviceBus,
+                                   DBus::Connection &hmiBus) : configuration_(std::move(configuration)) {
   LOG(DEBUG) << "Reading BdsConfiguration.xml";
 
   tinyxml2::XMLDocument doc;
@@ -35,7 +37,9 @@ BluetoothManager::BluetoothManager(DBus::Connection &serviceBus, DBus::Connectio
     bdsClient = new BDSClient(serviceBus);
     bcaClient = new BCAClient(hmiBus);
     bdsClient->serviceID = serviceId;
+    bdsClient->wifiPort = configuration_->wifiPort();
     bcaClient->serviceID = serviceId;
+    bcaClient->wifiPort = configuration_->wifiPort();
     bcaClient->StartAdd(serviceId);
   }
 
@@ -43,7 +47,7 @@ BluetoothManager::BluetoothManager(DBus::Connection &serviceBus, DBus::Connectio
 
 void BluetoothConnection::sendMessage(google::protobuf::MessageLite &message, uint16_t type) const {
   auto byteSize = static_cast<size_t>(message.ByteSizeLong());
-  auto sizeOut = static_cast<uint16_t>(htobe16(static_cast<uint16_t>(byteSize)));
+  auto sizeOut = static_cast<uint16_t>(htobe16(byteSize));
   auto typeOut = static_cast<uint16_t>(htobe16(type));
   auto *out = new char[byteSize + 4];
   memcpy(out, &sizeOut, 2);
@@ -66,8 +70,8 @@ void BluetoothConnection::handleWifiInfoRequest(uint8_t *buffer, uint16_t length
   LOG(DEBUG) << "WifiInfoRequest: " << msg.DebugString();
 
   aasdk::proto::messages::WifiInfoResponse response;
-  response.set_ip_address(info.ipAddress);
-  response.set_port(30515);
+  response.set_ip_address(info.ipAddress.c_str());
+  response.set_port(port_);
   response.set_status(aasdk::proto::messages::WifiInfoResponse_Status_STATUS_SUCCESS);
 
   sendMessage(response, 7);
@@ -78,7 +82,7 @@ void BluetoothConnection::handleWifiSecurityRequest(__attribute__((unused)) uint
   aasdk::proto::messages::WifiSecurityReponse response;
 
   response.set_ssid(hostapd_config("ssid").c_str());
-  response.set_bssid(info.macAddress);
+  response.set_bssid(info.macAddress.c_str());
   response.set_key(hostapd_config("wpa_passphrase").c_str());
   response.set_security_mode(aasdk::proto::messages::WifiSecurityReponse_SecurityMode_WPA2_PERSONAL);
   response.set_access_point_type(aasdk::proto::messages::WifiSecurityReponse_AccessPointType_DYNAMIC);
@@ -93,7 +97,7 @@ int BluetoothConnection::handleWifiInfoRequestResponse(uint8_t *buffer, uint16_t
   return msg.status();
 }
 
-BluetoothConnection::BluetoothConnection() {
+BluetoothConnection::BluetoothConnection(int port) : port_(port) {
   update_connection_info(info);
   LOG(DEBUG) << "Got IP: " << info.ipAddress << " MAC: " << info.macAddress;
 
@@ -104,8 +108,8 @@ void BluetoothConnection::handle_connect(const std::string &pty) {
   LOG(DEBUG) << "PTY: " << pty;
   fd = open(pty.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
   aasdk::proto::messages::WifiInfoRequest request;
-  request.set_ip_address(info.ipAddress);
-  request.set_port(30515);
+  request.set_ip_address(info.ipAddress.c_str());
+  request.set_port(port_);
 
   sendMessage(request, 1);
 
@@ -153,7 +157,7 @@ void BCAClient::ConnectionStatusResp(
   if (static_cast<int>(serviceId) == serviceID && connStatus == 3) {
     std::string pty(terminalPath._1.begin(), terminalPath._1.end());
     LOG(DEBUG) << "PTY: " << pty;
-    BluetoothConnection connection;
+    BluetoothConnection connection(wifiPort);
     connection.handle_connect(pty);
   }
 }
@@ -163,7 +167,7 @@ void BDSClient::SignalConnected_cb(const uint32_t &type, const ::DBus::Struct<st
   if (data._1[36] == serviceID) {
     std::string pty((char *) &data._1[48]);
     LOG(DEBUG) << "PTY: " << pty;
-    BluetoothConnection connection;
+    BluetoothConnection connection(wifiPort);
     connection.handle_connect(pty);
   }
 }

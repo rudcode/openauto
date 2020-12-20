@@ -44,12 +44,17 @@ class Configuration : public IConfiguration {
 
   void setTouchscreenEnabled(bool value) override;
 
+  [[nodiscard]] int wifiPort() override;
+
+  void wifiPort(int port) override;
+
  private:
   toml::table config;
 
   bool lefthandDrive_ = true;
   bool hideClock_ = false;
   bool enableTouchscreen_ = true;
+  int wifiPort_ = 30515;
 };
 
 }

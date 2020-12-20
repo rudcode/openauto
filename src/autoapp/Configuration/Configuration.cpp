@@ -24,9 +24,14 @@ namespace autoapp::configuration {
 Configuration::Configuration() {
   try {
     config = toml::parse_file("/mnt/data_persist/dev/bin/autoapp_configuration.toml");
-    lefthandDrive_ = config["lefthandDrive"].as_boolean();
-    hideClock_ = config["hideClock"].as_boolean();
-    enableTouchscreen_ = config["enableTouchscreen"].as_boolean();
+    if (config.contains("lefthandDrive"))
+      lefthandDrive_ = config["lefthandDrive"].as_boolean();
+    if (config.contains("hideClock"))
+      hideClock_ = config["hideClock"].as_boolean();
+    if (config.contains("enableTouchscreen"))
+      enableTouchscreen_ = config["enableTouchscreen"].as_boolean();
+    if (config.contains("wifiPort"))
+      wifiPort_ = static_cast<int>(static_cast<long long>(*config["wifiPort"].as_integer()));
     LOG(DEBUG) << config;
   }
   catch (const toml::parse_error &err) {
@@ -38,6 +43,7 @@ void Configuration::reset() {
   lefthandDrive_ = true;
   hideClock_ = false;
   enableTouchscreen_ = true;
+  wifiPort_ = 30515;
 }
 
 void Configuration::save() {
@@ -66,6 +72,12 @@ bool Configuration::getTouchscreenEnabled() const {
 
 void Configuration::setTouchscreenEnabled(bool value) {
   enableTouchscreen_ = value;
+}
+int Configuration::wifiPort() {
+  return wifiPort_;
+}
+void Configuration::wifiPort(int port) {
+  wifiPort_ = port;
 }
 
 }
