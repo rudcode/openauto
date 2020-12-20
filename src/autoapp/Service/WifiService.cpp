@@ -20,36 +20,27 @@
 #include <autoapp/Service/WifiService.hpp>
 #include <fstream>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
 WifiService::WifiService(configuration::IConfiguration::Pointer configuration)
-    : configuration_(std::move(configuration))
-{
+    : configuration_(std::move(configuration)) {
 
 }
 
-void WifiService::start()
-{
+void WifiService::start() {
 }
 
-void WifiService::stop()
-{
+void WifiService::stop() {
 }
 
-void WifiService::pause()
-{
+void WifiService::pause() {
 }
 
-void WifiService::resume()
-{
+void WifiService::resume() {
 }
 
-void WifiService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
-{
-    LOG(INFO) << "[WifiService] fill features.";
+void WifiService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse &response) {
+  LOG(INFO) << "[WifiService] fill features.";
 
 //    auto* channelDescriptor = response.add_channels();
 //    channelDescriptor->set_channel_id(14);
@@ -58,5 +49,4 @@ void WifiService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse&
 //    channel->set_ssid(std::string("Mazda"));
 }
 
-}
 }

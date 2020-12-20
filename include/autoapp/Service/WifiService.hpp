@@ -23,28 +23,23 @@
 #include <asio/io_service.hpp>
 #include <aasdk/Messenger/IMessenger.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class WifiService: public IService, public std::enable_shared_from_this<WifiService>
-{
-public:
-    typedef std::shared_ptr<WifiService> Pointer;
+class WifiService : public IService, public std::enable_shared_from_this<WifiService> {
+ public:
+  typedef std::shared_ptr<WifiService> Pointer;
 
-    WifiService(configuration::IConfiguration::Pointer configuration);
+  WifiService(configuration::IConfiguration::Pointer configuration);
 
-    void start() override;
-    void stop() override;
-    void pause() override;
-    void resume() override;
-    void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response) override;
+  void start() override;
+  void stop() override;
+  void pause() override;
+  void resume() override;
+  void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse &response) override;
 
-private:
-    using std::enable_shared_from_this<WifiService>::shared_from_this;
-    configuration::IConfiguration::Pointer configuration_;
+ private:
+  using std::enable_shared_from_this<WifiService>::shared_from_this;
+  configuration::IConfiguration::Pointer configuration_;
 };
 
-}
 }

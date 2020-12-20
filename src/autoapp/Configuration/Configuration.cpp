@@ -21,51 +21,51 @@
 
 namespace autoapp::configuration {
 
-    Configuration::Configuration() {
-        try {
-            config = toml::parse_file("/mnt/data_persist/dev/bin/autoapp_configuration.toml");
-            lefthandDrive_ = config["lefthandDrive"].as_boolean();
-            hideClock_ = config["hideClock"].as_boolean();
-            enableTouchscreen_ = config["enableTouchscreen"].as_boolean();
-            LOG(DEBUG) << config;
-        }
-        catch (const toml::parse_error &err) {
-            LOG(ERROR) << err;
-        }
-    }
+Configuration::Configuration() {
+  try {
+    config = toml::parse_file("/mnt/data_persist/dev/bin/autoapp_configuration.toml");
+    lefthandDrive_ = config["lefthandDrive"].as_boolean();
+    hideClock_ = config["hideClock"].as_boolean();
+    enableTouchscreen_ = config["enableTouchscreen"].as_boolean();
+    LOG(DEBUG) << config;
+  }
+  catch (const toml::parse_error &err) {
+    LOG(ERROR) << err;
+  }
+}
 
-    void Configuration::reset() {
-        lefthandDrive_ = true;
-        hideClock_ = false;
-        enableTouchscreen_ = true;
-    }
+void Configuration::reset() {
+  lefthandDrive_ = true;
+  hideClock_ = false;
+  enableTouchscreen_ = true;
+}
 
-    void Configuration::save() {
+void Configuration::save() {
 
-    }
+}
 
-    void Configuration::leftHandDrive(bool value) {
-        lefthandDrive_ = value;
-    }
+void Configuration::leftHandDrive(bool value) {
+  lefthandDrive_ = value;
+}
 
-    bool Configuration::leftHandDrive() const {
-        return lefthandDrive_;
-    }
+bool Configuration::leftHandDrive() const {
+  return lefthandDrive_;
+}
 
-    void Configuration::hideClock(bool value) {
-        hideClock_ = value;
-    }
+void Configuration::hideClock(bool value) {
+  hideClock_ = value;
+}
 
-    bool Configuration::hideClock() const {
-        return hideClock_;
-    }
+bool Configuration::hideClock() const {
+  return hideClock_;
+}
 
-    bool Configuration::getTouchscreenEnabled() const {
-        return enableTouchscreen_;
-    }
+bool Configuration::getTouchscreenEnabled() const {
+  return enableTouchscreen_;
+}
 
-    void Configuration::setTouchscreenEnabled(bool value) {
-        enableTouchscreen_ = value;
-    }
+void Configuration::setTouchscreenEnabled(bool value) {
+  enableTouchscreen_ = value;
+}
 
 }

@@ -26,46 +26,48 @@
 #include <autoapp/Service/IAndroidAutoEntityEventHandler.hpp>
 #include <autoapp/Service/IAndroidAutoEntityFactory.hpp>
 
-namespace autoapp
-{
+namespace autoapp {
 
-class App: public service::IAndroidAutoEntityEventHandler, public std::enable_shared_from_this<App>
-{
-public:
-    typedef std::shared_ptr<App> Pointer;
+class App : public service::IAndroidAutoEntityEventHandler, public std::enable_shared_from_this<App> {
+ public:
+  typedef std::shared_ptr<App> Pointer;
 
-    App(asio::io_service& ioService, aasdk::usb::USBWrapper& usbWrapper, aasdk::tcp::ITCPWrapper& tcpWrapper, service::IAndroidAutoEntityFactory& androidAutoEntityFactory,
-        aasdk::usb::IUSBHub::Pointer usbHub, aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator);
+  App(asio::io_service &ioService,
+      aasdk::usb::USBWrapper &usbWrapper,
+      aasdk::tcp::ITCPWrapper &tcpWrapper,
+      service::IAndroidAutoEntityFactory &androidAutoEntityFactory,
+      aasdk::usb::IUSBHub::Pointer usbHub,
+      aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator);
 
-    void waitForUSBDevice();
-    void start(aasdk::tcp::ITCPEndpoint::SocketPointer socket);
-    void stop();
-    void pause();
-    void resume();
-    void onAndroidAutoQuit() override;
-    bool disableAutostartEntity = false;
+  void waitForUSBDevice();
+  void start(aasdk::tcp::ITCPEndpoint::SocketPointer socket);
+  void stop();
+  void pause();
+  void resume();
+  void onAndroidAutoQuit() override;
+  bool disableAutostartEntity = false;
 
-private:
-    using std::enable_shared_from_this<App>::shared_from_this;
-    void enumerateDevices();
-    void waitForDevice();
-    void aoapDeviceHandler(aasdk::usb::DeviceHandle deviceHandle);
-    void onUSBHubError(const aasdk::error::Error& error);
+ private:
+  using std::enable_shared_from_this<App>::shared_from_this;
+  void enumerateDevices();
+  void waitForDevice();
+  void aoapDeviceHandler(aasdk::usb::DeviceHandle deviceHandle);
+  void onUSBHubError(const aasdk::error::Error &error);
 
-    asio::io_service& ioService_;
-    aasdk::usb::USBWrapper& usbWrapper_;
-    aasdk::tcp::ITCPWrapper& tcpWrapper_;
-    asio::ip::tcp::acceptor acceptor_;
-    asio::io_service::strand strand_;
-    service::IAndroidAutoEntityFactory& androidAutoEntityFactory_;
-    aasdk::usb::IUSBHub::Pointer usbHub_;
-    aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator_;
-    service::IAndroidAutoEntity::Pointer androidAutoEntity_;
-    bool isStopped_;
+  asio::io_service &ioService_;
+  aasdk::usb::USBWrapper &usbWrapper_;
+  aasdk::tcp::ITCPWrapper &tcpWrapper_;
+  asio::ip::tcp::acceptor acceptor_;
+  asio::io_service::strand strand_;
+  service::IAndroidAutoEntityFactory &androidAutoEntityFactory_;
+  aasdk::usb::IUSBHub::Pointer usbHub_;
+  aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator_;
+  service::IAndroidAutoEntity::Pointer androidAutoEntity_;
+  bool isStopped_;
 
-    void startServerSocket();
+  void startServerSocket();
 
-    void handleNewClient(std::shared_ptr<asio::ip::tcp::socket> socket, const asio::error_code &err);
+  void handleNewClient(std::shared_ptr<asio::ip::tcp::socket> socket, const asio::error_code &err);
 };
 
 }

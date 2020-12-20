@@ -28,52 +28,50 @@
 #include <autoapp/Signals/Signals.hpp>
 
 struct TouchScreenState {
-    uint32_t x;
-    uint32_t y;
-    aasdk::proto::enums::TouchAction::Enum action;
-    int action_recvd;
+  uint32_t x;
+  uint32_t y;
+  aasdk::proto::enums::TouchAction::Enum action;
+  int action_recvd;
 };
 
-namespace autoapp {
-    namespace projection {
-        class InputDevice : public IInputDevice {
+namespace autoapp::projection {
+class InputDevice : public IInputDevice {
 
-        public:
-            InputDevice(asio::io_service &ioService, AudioSignals::Pointer audiosignals, VideoSignals::Pointer videosignals);
+ public:
+  InputDevice(asio::io_service &ioService, AudioSignals::Pointer audiosignals, VideoSignals::Pointer videosignals);
 
-            void start(IInputDeviceEventHandler &eventHandler) override;
+  void start(IInputDeviceEventHandler &eventHandler) override;
 
-            void stop() override;
+  void stop() override;
 
-            ButtonCodes getSupportedButtonCodes() const override;
+  ButtonCodes getSupportedButtonCodes() const override;
 
-            bool hasTouchscreen() const override;
+  bool hasTouchscreen() const override;
 
-            TouchscreenSize getTouchscreenGeometry() const override;
+  TouchscreenSize getTouchscreenGeometry() const override;
 
-        private:
-            asio::io_service &ioService_;
-            AudioSignals::Pointer audiosignals_;
-            VideoSignals::Pointer videosignals_;
-            asio::posix::stream_descriptor *touchscreen = nullptr;
-            asio::posix::stream_descriptor *keyboard = nullptr;
-            std::vector<input_event> touch_events;
-            std::vector<input_event> key_events;
-            IInputDeviceEventHandler *eventHandler_;
-            std::mutex mutex_;
-            int touch_fd = -1, kbd_fd = -1, ui_fd = -1;
-            uint32_t pressScanCode = 0;
-            time_t pressedSince = 0;
-            aasdk::proto::enums::AudioFocusState_Enum audiofocus = aasdk::proto::enums::AudioFocusState_Enum_NONE;
-            TouchScreenState mTouch{0, 0, (aasdk::proto::enums::TouchAction::Enum) 0, 0};
+ private:
+  asio::io_service &ioService_;
+  AudioSignals::Pointer audiosignals_;
+  VideoSignals::Pointer videosignals_;
+  asio::posix::stream_descriptor *touchscreen = nullptr;
+  asio::posix::stream_descriptor *keyboard = nullptr;
+  std::vector<input_event> touch_events;
+  std::vector<input_event> key_events;
+  IInputDeviceEventHandler *eventHandler_;
+  std::mutex mutex_;
+  int touch_fd = -1, kbd_fd = -1, ui_fd = -1;
+  uint32_t pressScanCode = 0;
+  time_t pressedSince = 0;
+  aasdk::proto::enums::AudioFocusState_Enum audiofocus = aasdk::proto::enums::AudioFocusState_Enum_NONE;
+  TouchScreenState mTouch{0, 0, (aasdk::proto::enums::TouchAction::Enum) 0, 0};
 
-            void pass_key_to_mzd(int type, int code, int val) const;
+  void pass_key_to_mzd(int type, int code, int val) const;
 
-            void handle_key(asio::error_code ec, size_t bytes_transferred);
+  void handle_key(asio::error_code ec, size_t bytes_transferred);
 
-            void handle_touch(asio::error_code ec, size_t bytes_transferred);
+  void handle_touch(asio::error_code ec, size_t bytes_transferred);
 
-            void audio_focus(aasdk::proto::enums::AudioFocusState_Enum state);
-        };
-    }
+  void audio_focus(aasdk::proto::enums::AudioFocusState_Enum state);
+};
 }

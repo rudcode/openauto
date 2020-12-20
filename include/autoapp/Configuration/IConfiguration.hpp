@@ -22,34 +22,31 @@
 #include <aasdk_proto/VideoFPSEnum.pb.h>
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
 #include <aasdk_proto/ButtonCodeEnum.pb.h>
-#include <autoapp/Configuration/HandednessOfTrafficType.hpp>
 
-namespace autoapp {
-    namespace configuration {
+namespace autoapp::configuration {
 
-        class IConfiguration {
-        public:
-            typedef std::shared_ptr<IConfiguration> Pointer;
+class IConfiguration {
+ public:
+  typedef std::shared_ptr<IConfiguration> Pointer;
 
-            virtual ~IConfiguration() = default;
+  virtual ~IConfiguration() = default;
 
-            virtual void reset() = 0;
+  virtual void reset() = 0;
 
-            virtual void save() = 0;
+  virtual void save() = 0;
 
-            virtual void leftHandDrive(bool value) = 0;
+  virtual void leftHandDrive(bool value) = 0;
 
-            virtual bool leftHandDrive() const = 0;
+  virtual bool leftHandDrive() const = 0;
 
-            virtual void hideClock(bool value) = 0;
+  virtual void hideClock(bool value) = 0;
 
-            virtual bool hideClock() const = 0;
+  virtual bool hideClock() const = 0;
 
-            virtual bool getTouchscreenEnabled() const = 0;
+  virtual bool getTouchscreenEnabled() const = 0;
 
-            virtual void setTouchscreenEnabled(bool value) = 0;
+  virtual void setTouchscreenEnabled(bool value) = 0;
 
-        };
+};
 
-    }
 }

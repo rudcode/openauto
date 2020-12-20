@@ -21,23 +21,18 @@
 #include <memory>
 #include <autoapp/Service/IAndroidAutoEntityEventHandler.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class IAndroidAutoEntity
-{
-public:
-    typedef std::shared_ptr<IAndroidAutoEntity> Pointer;
+class IAndroidAutoEntity {
+ public:
+  typedef std::shared_ptr<IAndroidAutoEntity> Pointer;
 
-    virtual ~IAndroidAutoEntity() = default;
+  virtual ~IAndroidAutoEntity() = default;
 
-    virtual void start(IAndroidAutoEntityEventHandler& eventHandler) = 0;
-    virtual void stop() = 0;
-    virtual void pause() = 0;
-    virtual void resume() = 0;
+  virtual void start(IAndroidAutoEntityEventHandler &eventHandler) = 0;
+  virtual void stop() = 0;
+  virtual void pause() = 0;
+  virtual void resume() = 0;
 };
 
-}
 }

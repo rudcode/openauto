@@ -21,23 +21,21 @@
 #include <autoapp/Projection/IBluetoothDevice.hpp>
 #include <aasdk/IO/Promise.hpp>
 
-namespace autoapp {
-    namespace projection {
-        class MazdaBluetooth : public IBluetoothDevice {
-        public:
-            typedef aasdk::io::Promise<void, void> PairingPromise;
+namespace autoapp::projection {
+class MazdaBluetooth : public IBluetoothDevice {
+ public:
+  typedef aasdk::io::Promise<void, void> PairingPromise;
 
-            void stop() override;
+  void stop() override;
 
-            bool isPaired(const std::string &address) const override;
+  bool isPaired(const std::string &address) const override;
 
-            void pair(const std::string &address, PairingPromise::Pointer promise) override;
+  void pair(const std::string &address, PairingPromise::Pointer promise) override;
 
-            std::string getLocalAddress() const override;
+  std::string getLocalAddress() const override;
 
-            bool isAvailable() const override;
-        };
-    }
+  bool isAvailable() const override;
+};
 }
 
 

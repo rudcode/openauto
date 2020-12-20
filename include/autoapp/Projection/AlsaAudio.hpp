@@ -21,40 +21,37 @@
 #include <alsa/asoundlib.h>
 #include <thread>
 
-
 #include <memory>
 #include <aasdk/Messenger/Timestamp.hpp>
 #include <aasdk/Common/Data.hpp>
 #include <autoapp/Projection/IAudioOutput.hpp>
 
-namespace autoapp {
-    namespace projection {
-        class AlsaAudioOutput : public IAudioOutput {
-        private:
-            snd_pcm_t *aud_handle = nullptr;
-            unsigned int _channels = 0;
-            unsigned int _rate = 0;
-        public:
-            AlsaAudioOutput(unsigned int channels, unsigned int rate, const char *outDev = "default");
+namespace autoapp::projection {
+class AlsaAudioOutput : public IAudioOutput {
+ private:
+  snd_pcm_t *aud_handle = nullptr;
+  unsigned int _channels = 0;
+  unsigned int _rate = 0;
+ public:
+  AlsaAudioOutput(unsigned int channels, unsigned int rate, const char *outDev = "default");
 
-            ~AlsaAudioOutput() override;
+  ~AlsaAudioOutput() override;
 
-            bool open() override;
+  bool open() override;
 
-            void write(aasdk::messenger::Timestamp::ValueType timestamp,
-                       const aasdk::common::DataConstBuffer &buffer) override;
+  void write(aasdk::messenger::Timestamp::ValueType timestamp,
+             const aasdk::common::DataConstBuffer &buffer) override;
 
-            void start() override {};
+  void start() override {};
 
-            void stop() override;
+  void stop() override;
 
-            void suspend() override {};
+  void suspend() override {};
 
-            uint32_t getSampleSize() const override { return 16; };
+  uint32_t getSampleSize() const override { return 16; };
 
-            uint32_t getChannelCount() const override { return static_cast<uint32_t>(_channels); }
+  uint32_t getChannelCount() const override { return static_cast<uint32_t>(_channels); }
 
-            uint32_t getSampleRate() const override { return static_cast<uint32_t>(_rate); }
-        };
-    }
+  uint32_t getSampleRate() const override { return static_cast<uint32_t>(_rate); }
+};
 }

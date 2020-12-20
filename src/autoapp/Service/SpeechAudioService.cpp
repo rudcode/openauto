@@ -19,16 +19,15 @@
 #include <aasdk/Channel/AV/SpeechAudioServiceChannel.hpp>
 #include <autoapp/Service/SpeechAudioService.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-SpeechAudioService::SpeechAudioService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IAudioOutput::Pointer audioOutput)
-    : AudioService(ioService, std::make_shared<aasdk::channel::av::SpeechAudioServiceChannel>(strand_, std::move(messenger)), std::move(audioOutput))
-{
-
-}
+SpeechAudioService::SpeechAudioService(asio::io_service &ioService,
+                                       aasdk::messenger::IMessenger::Pointer messenger,
+                                       projection::IAudioOutput::Pointer audioOutput)
+    : AudioService(ioService,
+                   std::make_shared<aasdk::channel::av::SpeechAudioServiceChannel>(strand_, std::move(messenger)),
+                   std::move(audioOutput)) {
 
 }
+
 }

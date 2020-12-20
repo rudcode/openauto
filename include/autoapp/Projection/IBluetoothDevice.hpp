@@ -20,23 +20,18 @@
 
 #pragma once
 
-namespace autoapp
-{
-namespace projection
-{
+namespace autoapp::projection {
 
-class IBluetoothDevice
-{
-public:
-    typedef aasdk::io::Promise<void, void> PairingPromise;
-    typedef std::shared_ptr<IBluetoothDevice> Pointer;
+class IBluetoothDevice {
+ public:
+  typedef aasdk::io::Promise<void, void> PairingPromise;
+  typedef std::shared_ptr<IBluetoothDevice> Pointer;
 
-    virtual void stop() = 0;
-    virtual bool isPaired(const std::string& address) const = 0;
-    virtual void pair(const std::string& address, PairingPromise::Pointer promise) = 0;
-    virtual std::string getLocalAddress() const = 0;
-    virtual bool isAvailable() const = 0;
+  virtual void stop() = 0;
+  virtual bool isPaired(const std::string &address) const = 0;
+  virtual void pair(const std::string &address, PairingPromise::Pointer promise) = 0;
+  virtual std::string getLocalAddress() const = 0;
+  virtual bool isAvailable() const = 0;
 };
 
-}
 }

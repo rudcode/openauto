@@ -23,59 +23,57 @@
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
 #include <aasdk/Common/Data.hpp>
 
-namespace autoapp {
-    namespace projection {
-        class VideoMargins {
-        private:
-            uint32_t _height = 0;
-            uint32_t _width = 0;
-        public:
-            VideoMargins(uint32_t height, uint32_t width) {
-                _height = height;
-                _width = width;
-            }
+namespace autoapp::projection {
+class VideoMargins {
+ private:
+  uint32_t _height = 0;
+  uint32_t _width = 0;
+ public:
+  VideoMargins(uint32_t height, uint32_t width) {
+    _height = height;
+    _width = width;
+  }
 
-            uint32_t height() const {
-                return _height;
-            }
+  uint32_t height() const {
+    return _height;
+  }
 
-            uint32_t width() const {
-                return _width;
-            }
+  uint32_t width() const {
+    return _width;
+  }
 
-            void setHeight(uint32_t height) {
-                _height = height;
-            }
+  void setHeight(uint32_t height) {
+    _height = height;
+  }
 
-            void setWidth(uint32_t width) {
-                _width = width;
-            }
-        };
+  void setWidth(uint32_t width) {
+    _width = width;
+  }
+};
 
-        class IVideoOutput {
-        public:
-            typedef std::shared_ptr<IVideoOutput> Pointer;
+class IVideoOutput {
+ public:
+  typedef std::shared_ptr<IVideoOutput> Pointer;
 
-            IVideoOutput() = default;
+  IVideoOutput() = default;
 
-            virtual ~IVideoOutput() = default;
+  virtual ~IVideoOutput() = default;
 
-            virtual bool open() = 0;
+  virtual bool open() = 0;
 
-            virtual bool init() = 0;
+  virtual bool init() = 0;
 
-            virtual void write(uint64_t timestamp, const aasdk::common::DataConstBuffer &buffer) = 0;
+  virtual void write(uint64_t timestamp, const aasdk::common::DataConstBuffer &buffer) = 0;
 
-            virtual void stop() = 0;
+  virtual void stop() = 0;
 
-            virtual aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const = 0;
+  virtual aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const = 0;
 
-            virtual aasdk::proto::enums::VideoResolution::Enum getVideoResolution() const = 0;
+  virtual aasdk::proto::enums::VideoResolution::Enum getVideoResolution() const = 0;
 
-            virtual size_t getScreenDPI() const = 0;
+  virtual size_t getScreenDPI() const = 0;
 
-            virtual VideoMargins getVideoMargins() const = 0;
-        };
+  virtual VideoMargins getVideoMargins() const = 0;
+};
 
-    }
 }

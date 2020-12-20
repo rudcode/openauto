@@ -21,16 +21,13 @@
 #include <aasdk/Messenger/IMessenger.hpp>
 #include <autoapp/Service/AudioService.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class SystemAudioService: public AudioService
-{
-public:
-    SystemAudioService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IAudioOutput::Pointer audioOutput);
+class SystemAudioService : public AudioService {
+ public:
+  SystemAudioService(asio::io_service &ioService,
+                     aasdk::messenger::IMessenger::Pointer messenger,
+                     projection::IAudioOutput::Pointer audioOutput);
 };
 
-}
 }

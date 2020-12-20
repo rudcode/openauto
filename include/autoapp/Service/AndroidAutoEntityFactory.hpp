@@ -25,30 +25,25 @@
 #include <autoapp/Service/IServiceFactory.hpp>
 #include <autoapp/Signals/Signals.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class AndroidAutoEntityFactory: public IAndroidAutoEntityFactory
-{
-public:
-    AndroidAutoEntityFactory(asio::io_service& ioService,
-                             configuration::IConfiguration::Pointer configuration,
-                             IServiceFactory& serviceFactory,
-                             const Signals& signals);
+class AndroidAutoEntityFactory : public IAndroidAutoEntityFactory {
+ public:
+  AndroidAutoEntityFactory(asio::io_service &ioService,
+                           configuration::IConfiguration::Pointer configuration,
+                           IServiceFactory &serviceFactory,
+                           const Signals &signals);
 
-    IAndroidAutoEntity::Pointer create(aasdk::usb::IAOAPDevice::Pointer aoapDevice) override;
-    IAndroidAutoEntity::Pointer create(aasdk::tcp::ITCPEndpoint::Pointer tcpEndpoint) override;
+  IAndroidAutoEntity::Pointer create(aasdk::usb::IAOAPDevice::Pointer aoapDevice) override;
+  IAndroidAutoEntity::Pointer create(aasdk::tcp::ITCPEndpoint::Pointer tcpEndpoint) override;
 
-private:
-    IAndroidAutoEntity::Pointer create(aasdk::transport::ITransport::Pointer transport);
+ private:
+  IAndroidAutoEntity::Pointer create(aasdk::transport::ITransport::Pointer transport);
 
-    asio::io_service& ioService_;
-    configuration::IConfiguration::Pointer configuration_;
-    IServiceFactory& serviceFactory_;
-    Signals signals_;
+  asio::io_service &ioService_;
+  configuration::IConfiguration::Pointer configuration_;
+  IServiceFactory &serviceFactory_;
+  Signals signals_;
 };
 
-}
 }

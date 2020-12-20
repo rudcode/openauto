@@ -22,28 +22,24 @@
 #include <autoapp/Configuration/IConfiguration.hpp>
 #include <autoapp/Signals/Signals.hpp>
 
+namespace autoapp::service {
 
-namespace autoapp
-{
-namespace service
-{
+class ServiceFactory : public IServiceFactory {
+ public:
+  ServiceFactory(asio::io_service &ioService,
+                 configuration::IConfiguration::Pointer configuration,
+                 const Signals &signals);
+  ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) override;
 
-class ServiceFactory: public IServiceFactory
-{
-public:
-    ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer  configuration, const Signals& signals);
-    ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) override;
+ private:
+  IService::Pointer createVideoService(aasdk::messenger::IMessenger::Pointer messenger);
+  IService::Pointer createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger);
+  IService::Pointer createInputService(aasdk::messenger::IMessenger::Pointer messenger);
+  void createAudioServices(ServiceList &serviceList, const aasdk::messenger::IMessenger::Pointer &messenger);
 
-private:
-    IService::Pointer createVideoService(aasdk::messenger::IMessenger::Pointer messenger);
-    IService::Pointer createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger);
-    IService::Pointer createInputService(aasdk::messenger::IMessenger::Pointer messenger);
-    void createAudioServices(ServiceList& serviceList, const aasdk::messenger::IMessenger::Pointer& messenger);
-
-    asio::io_service& ioService_;
-    configuration::IConfiguration::Pointer configuration_;
-    Signals signals_;
+  asio::io_service &ioService_;
+  configuration::IConfiguration::Pointer configuration_;
+  Signals signals_;
 };
 
-}
 }

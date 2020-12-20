@@ -22,19 +22,14 @@
 #include <aasdk/USB/IAOAPDevice.hpp>
 #include <autoapp/Service/IAndroidAutoEntity.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class IAndroidAutoEntityFactory
-{
-public:
-    virtual ~IAndroidAutoEntityFactory() = default;
+class IAndroidAutoEntityFactory {
+ public:
+  virtual ~IAndroidAutoEntityFactory() = default;
 
-    virtual IAndroidAutoEntity::Pointer create(aasdk::usb::IAOAPDevice::Pointer aoapDevice) = 0;
-    virtual IAndroidAutoEntity::Pointer create(aasdk::tcp::ITCPEndpoint::Pointer tcpEndpoint) = 0;
+  virtual IAndroidAutoEntity::Pointer create(aasdk::usb::IAOAPDevice::Pointer aoapDevice) = 0;
+  virtual IAndroidAutoEntity::Pointer create(aasdk::tcp::ITCPEndpoint::Pointer tcpEndpoint) = 0;
 };
 
-}
 }

@@ -21,18 +21,13 @@
 #include <aasdk/Messenger/IMessenger.hpp>
 #include <autoapp/Service/IService.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class IServiceFactory
-{
-public:
-    virtual ~IServiceFactory() = default;
+class IServiceFactory {
+ public:
+  virtual ~IServiceFactory() = default;
 
-    virtual ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) = 0;
+  virtual ServiceList create(aasdk::messenger::IMessenger::Pointer messenger) = 0;
 };
 
-}
 }

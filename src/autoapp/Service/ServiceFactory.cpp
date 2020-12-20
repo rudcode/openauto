@@ -32,66 +32,57 @@
 #include <autoapp/Projection/MazdaBluetooth.hpp>
 #include <autoapp/Service/SystemAudioService.hpp>
 
+namespace autoapp::service {
 
-namespace autoapp
-{
-namespace service
-{
-
-ServiceFactory::ServiceFactory(asio::io_service& ioService, configuration::IConfiguration::Pointer  configuration, const Signals& signals)
-    : ioService_(ioService)
-    , configuration_(std::move(configuration))
-    , signals_(signals)
-{
+ServiceFactory::ServiceFactory(asio::io_service &ioService,
+                               configuration::IConfiguration::Pointer configuration,
+                               const Signals &signals)
+    : ioService_(ioService), configuration_(std::move(configuration)), signals_(signals) {
 
 }
 
-ServiceList ServiceFactory::create(aasdk::messenger::IMessenger::Pointer messenger)
-{
-    ServiceList serviceList;
+ServiceList ServiceFactory::create(aasdk::messenger::IMessenger::Pointer messenger) {
+  ServiceList serviceList;
 
-    projection::IAudioInput::Pointer audioInput(new projection::AlsaAudioInput(ioService_));
-    serviceList.emplace_back(std::make_shared<AudioInputService>(ioService_, messenger, std::move(audioInput)));
-    this->createAudioServices(serviceList, messenger);
-    serviceList.emplace_back(std::make_shared<SensorService>(ioService_, messenger, signals_.gpsSignals));
-    serviceList.emplace_back(this->createVideoService(messenger));
-    serviceList.emplace_back(this->createBluetoothService(messenger));
-    serviceList.emplace_back(this->createInputService(messenger));
-    return serviceList;
+  projection::IAudioInput::Pointer audioInput(new projection::AlsaAudioInput(ioService_));
+  serviceList.emplace_back(std::make_shared<AudioInputService>(ioService_, messenger, std::move(audioInput)));
+  this->createAudioServices(serviceList, messenger);
+  serviceList.emplace_back(std::make_shared<SensorService>(ioService_, messenger, signals_.gpsSignals));
+  serviceList.emplace_back(this->createVideoService(messenger));
+  serviceList.emplace_back(this->createBluetoothService(messenger));
+  serviceList.emplace_back(this->createInputService(messenger));
+  return serviceList;
 }
 
-IService::Pointer ServiceFactory::createVideoService(aasdk::messenger::IMessenger::Pointer messenger)
-{
-    projection::IVideoOutput::Pointer videoOutput(new projection::GSTVideoOutput(ioService_));
-    return std::make_shared<VideoService>(ioService_, messenger, std::move(videoOutput), signals_.videoSignals);
+IService::Pointer ServiceFactory::createVideoService(aasdk::messenger::IMessenger::Pointer messenger) {
+  projection::IVideoOutput::Pointer videoOutput(new projection::GSTVideoOutput(ioService_));
+  return std::make_shared<VideoService>(ioService_, messenger, std::move(videoOutput), signals_.videoSignals);
 }
 
-IService::Pointer ServiceFactory::createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger)
-{
-    projection::IBluetoothDevice::Pointer bluetoothDevice;
-    bluetoothDevice = std::make_shared<projection::MazdaBluetooth>();
+IService::Pointer ServiceFactory::createBluetoothService(aasdk::messenger::IMessenger::Pointer messenger) {
+  projection::IBluetoothDevice::Pointer bluetoothDevice;
+  bluetoothDevice = std::make_shared<projection::MazdaBluetooth>();
 
-    return std::make_shared<BluetoothService>(ioService_, messenger, std::move(bluetoothDevice));
+  return std::make_shared<BluetoothService>(ioService_, messenger, std::move(bluetoothDevice));
 }
 
-IService::Pointer ServiceFactory::createInputService(aasdk::messenger::IMessenger::Pointer messenger)
-{
-    projection::IInputDevice::Pointer inputDevice(std::make_shared<projection::InputDevice>(ioService_, signals_.audioSignals, signals_.videoSignals));
+IService::Pointer ServiceFactory::createInputService(aasdk::messenger::IMessenger::Pointer messenger) {
+  projection::IInputDevice::Pointer
+      inputDevice(std::make_shared<projection::InputDevice>(ioService_, signals_.audioSignals, signals_.videoSignals));
 
-    return std::make_shared<InputService>(ioService_, messenger, std::move(inputDevice));
+  return std::make_shared<InputService>(ioService_, messenger, std::move(inputDevice));
 }
 
-void ServiceFactory::createAudioServices(ServiceList& serviceList, const aasdk::messenger::IMessenger::Pointer& messenger)
-{
-    auto mediaAudioOutput = std::make_shared<projection::AlsaAudioOutput>(2, 48000, "entertainmentMl");
-    serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_, messenger, std::move(mediaAudioOutput)));
+void ServiceFactory::createAudioServices(ServiceList &serviceList,
+                                         const aasdk::messenger::IMessenger::Pointer &messenger) {
+  auto mediaAudioOutput = std::make_shared<projection::AlsaAudioOutput>(2, 48000, "entertainmentMl");
+  serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_, messenger, std::move(mediaAudioOutput)));
 
-    auto speechAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationNavi");
-    serviceList.emplace_back(std::make_shared<SpeechAudioService>(ioService_, messenger, std::move(speechAudioOutput)));
+  auto speechAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationNavi");
+  serviceList.emplace_back(std::make_shared<SpeechAudioService>(ioService_, messenger, std::move(speechAudioOutput)));
 
-    auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationGeneric");
-    serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
+  auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationGeneric");
+  serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
 }
 
-}
 }

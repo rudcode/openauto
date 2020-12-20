@@ -26,46 +26,44 @@
 #include <alsa/asoundlib.h>
 #include <thread>
 
-namespace autoapp {
-    namespace projection {
-        class AlsaAudioInput : public IAudioInput {
-            std::string micDevice;
+namespace autoapp::projection {
+class AlsaAudioInput : public IAudioInput {
+  std::string micDevice;
 
-        public:
-            typedef aasdk::io::Promise<void, void> StartPromise;
-            typedef aasdk::io::Promise<aasdk::common::Data, void> ReadPromise;
+ public:
+  typedef aasdk::io::Promise<void, void> StartPromise;
+  typedef aasdk::io::Promise<aasdk::common::Data, void> ReadPromise;
 
-            explicit AlsaAudioInput(asio::io_service &ioService, const std::string &micDevice = "default");
+  explicit AlsaAudioInput(asio::io_service &ioService, const std::string &micDevice = "default");
 
-            ~AlsaAudioInput() override;
+  ~AlsaAudioInput() override;
 
-            bool open() override;
+  bool open() override;
 
-            bool isActive() const override;
+  bool isActive() const override;
 
-            void read(ReadPromise::Pointer promise) override;
+  void read(ReadPromise::Pointer promise) override;
 
-            void start(StartPromise::Pointer promise) override;
+  void start(StartPromise::Pointer promise) override;
 
-            void stop() override;
+  void stop() override;
 
-            uint32_t getSampleSize() const override { return 16; };
+  uint32_t getSampleSize() const override { return 16; };
 
-            uint32_t getChannelCount() const override { return 1; };
+  uint32_t getChannelCount() const override { return 1; };
 
-            uint32_t getSampleRate() const override { return 16000; };
+  uint32_t getSampleRate() const override { return 16000; };
 
-        private:
-            asio::io_service &ioService_;
-            ReadPromise::Pointer readPromise_;
-            mutable std::mutex mutex_;
-            snd_pcm_t *pcm_handle = nullptr;
-            snd_pcm_uframes_t buffer_size = 256;
-            snd_pcm_uframes_t period_size = 16;
-            asio::posix::stream_descriptor *sd = nullptr;
+ private:
+  asio::io_service &ioService_;
+  ReadPromise::Pointer readPromise_;
+  mutable std::mutex mutex_;
+  snd_pcm_t *pcm_handle = nullptr;
+  snd_pcm_uframes_t buffer_size = 256;
+  snd_pcm_uframes_t period_size = 16;
+  asio::posix::stream_descriptor *sd = nullptr;
 
-            void handler(asio::error_code ec);
-        };
+  void handler(asio::error_code ec);
+};
 
-    }
 }

@@ -19,172 +19,151 @@
 #include <easylogging++.h>
 #include <autoapp/Service/AudioService.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-AudioService::AudioService(asio::io_service& ioService, aasdk::channel::av::IAudioServiceChannel::Pointer channel, projection::IAudioOutput::Pointer audioOutput)
-    : strand_(ioService)
-    , channel_(std::move(channel))
-    , audioOutput_(std::move(audioOutput))
-    , session_(-1)
-{
+AudioService::AudioService(asio::io_service &ioService,
+                           aasdk::channel::av::IAudioServiceChannel::Pointer channel,
+                           projection::IAudioOutput::Pointer audioOutput)
+    : strand_(ioService), channel_(std::move(channel)), audioOutput_(std::move(audioOutput)), session_(-1) {
 
 }
 
-void AudioService::start()
-{
-    strand_.dispatch([this, self = this->shared_from_this()]() {
-        LOG(INFO) << "[AudioService] start, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
-        channel_->receive(this->shared_from_this());
-    });
-}
-
-void AudioService::stop()
-{
-    strand_.dispatch([this, self = this->shared_from_this()]() {
-        LOG(INFO) << "[AudioService] stop, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
-        audioOutput_->stop();
-    });
-}
-
-void AudioService::pause()
-{
-    strand_.dispatch([this, self = this->shared_from_this()]() {
-        LOG(INFO) << "[AudioService] pause.";
-    });
-}
-
-void AudioService::resume()
-{
-    strand_.dispatch([this, self = this->shared_from_this()]() {
-        LOG(INFO) << "[AudioService] resume.";
-    });
-}
-
-void AudioService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response)
-{
-    LOG(INFO) << "[AudioService] fill features, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
-
-    auto* channelDescriptor = response.add_channels();
-    channelDescriptor->set_channel_id(static_cast<uint32_t>(channel_->getId()));
-
-    auto* audioChannel = channelDescriptor->mutable_av_channel();
-    audioChannel->set_stream_type(aasdk::proto::enums::AVStreamType::AUDIO);
-
-    switch(channel_->getId())
-    {
-    case aasdk::messenger::ChannelId::SYSTEM_AUDIO:
-        audioChannel->set_audio_type(aasdk::proto::enums::AudioType::SYSTEM);
-        break;
-
-    case aasdk::messenger::ChannelId::MEDIA_AUDIO:
-        audioChannel->set_audio_type(aasdk::proto::enums::AudioType::MEDIA);
-        break;
-
-    case aasdk::messenger::ChannelId::SPEECH_AUDIO:
-        audioChannel->set_audio_type(aasdk::proto::enums::AudioType::SPEECH);
-        break;
-    default:
-        break;
-    }
-
-    audioChannel->set_available_while_in_call(true);
-
-    auto* audioConfig = audioChannel->add_audio_configs();
-    audioConfig->set_sample_rate(audioOutput_->getSampleRate());
-    audioConfig->set_bit_depth(audioOutput_->getSampleSize());
-    audioConfig->set_channel_count(audioOutput_->getChannelCount());
-}
-
-void AudioService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request)
-{
-    LOG(INFO) << "[AudioService] open request"
-                       << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
-                       << ", priority: " << request.priority();
-
-    LOG(DEBUG) << "[AudioService] channel: " << aasdk::messenger::channelIdToString(channel_->getId())
-                        << " audio output sample rate: " << audioOutput_->getSampleRate()
-                        << ", sample size: " << audioOutput_->getSampleSize()
-                        << ", channel count: " << audioOutput_->getChannelCount();
-
-    const aasdk::proto::enums::Status::Enum status = audioOutput_->open() ? aasdk::proto::enums::Status::OK : aasdk::proto::enums::Status::FAIL;
-    LOG(INFO) << "[AudioService] open status: " << status
-                       << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
-
-    aasdk::proto::messages::ChannelOpenResponse response;
-    response.set_status(status);
-
-    auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
-    channel_->sendChannelOpenResponse(response, std::move(promise));
+void AudioService::start() {
+  strand_.dispatch([this, self = this->shared_from_this()]() {
+    LOG(INFO) << "[AudioService] start, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
     channel_->receive(this->shared_from_this());
+  });
 }
 
-void AudioService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChannelSetupRequest& request)
-{
-    LOG(INFO) << "[AudioService] setup request"
-                       << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
-                       << ", config index: " << request.config_index();
-    const aasdk::proto::enums::AVChannelSetupStatus::Enum status = aasdk::proto::enums::AVChannelSetupStatus::OK;
-    LOG(INFO) << "[AudioService] setup status: " << status
-                       << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
-
-    aasdk::proto::messages::AVChannelSetupResponse response;
-    response.set_media_status(status);
-    response.set_max_unacked(10);
-    response.add_configs(0);
-
-    auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
-    channel_->sendAVChannelSetupResponse(response, std::move(promise));
-    channel_->receive(this->shared_from_this());
+void AudioService::stop() {
+  strand_.dispatch([this, self = this->shared_from_this()]() {
+    LOG(INFO) << "[AudioService] stop, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+    audioOutput_->stop();
+  });
 }
 
-void AudioService::onAVChannelStartIndication(const aasdk::proto::messages::AVChannelStartIndication& indication)
-{
-    LOG(INFO) << "[AudioService] start indication"
-                       << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
-                       << ", session: " << indication.session();
-    session_ = indication.session();
-    audioOutput_->start();
-    channel_->receive(this->shared_from_this());
+void AudioService::pause() {
+  strand_.dispatch([this, self = this->shared_from_this()]() {
+    LOG(INFO) << "[AudioService] pause.";
+  });
 }
 
-void AudioService::onAVChannelStopIndication(const aasdk::proto::messages::AVChannelStopIndication& indication)
-{
-    LOG(INFO) << "[AudioService] stop indication"
-                       << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
-                       << ", session: " << session_;
-    session_ = -1;
-    audioOutput_->suspend();
-    channel_->receive(this->shared_from_this());
+void AudioService::resume() {
+  strand_.dispatch([this, self = this->shared_from_this()]() {
+    LOG(INFO) << "[AudioService] resume.";
+  });
 }
 
-void AudioService::onAVMediaWithTimestampIndication(aasdk::messenger::Timestamp::ValueType timestamp, const aasdk::common::DataConstBuffer& buffer)
-{
-    audioOutput_->write(timestamp, buffer);
-    aasdk::proto::messages::AVMediaAckIndication indication;
-    indication.set_session(session_);
-    indication.set_value(1);
+void AudioService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse &response) {
+  LOG(INFO) << "[AudioService] fill features, channel: " << aasdk::messenger::channelIdToString(channel_->getId());
 
-    auto promise = aasdk::channel::SendPromise::defer(strand_);
-    promise->then([]() {}, [&](const aasdk::error::Error &e){onChannelError(e);});
-    channel_->sendAVMediaAckIndication(indication, std::move(promise));
-    channel_->receive(this->shared_from_this());
+  auto *channelDescriptor = response.add_channels();
+  channelDescriptor->set_channel_id(static_cast<uint32_t>(channel_->getId()));
+
+  auto *audioChannel = channelDescriptor->mutable_av_channel();
+  audioChannel->set_stream_type(aasdk::proto::enums::AVStreamType::AUDIO);
+
+  switch (channel_->getId()) {
+    case aasdk::messenger::ChannelId::SYSTEM_AUDIO:audioChannel->set_audio_type(aasdk::proto::enums::AudioType::SYSTEM);
+      break;
+
+    case aasdk::messenger::ChannelId::MEDIA_AUDIO:audioChannel->set_audio_type(aasdk::proto::enums::AudioType::MEDIA);
+      break;
+
+    case aasdk::messenger::ChannelId::SPEECH_AUDIO:audioChannel->set_audio_type(aasdk::proto::enums::AudioType::SPEECH);
+      break;
+    default:break;
+  }
+
+  audioChannel->set_available_while_in_call(true);
+
+  auto *audioConfig = audioChannel->add_audio_configs();
+  audioConfig->set_sample_rate(audioOutput_->getSampleRate());
+  audioConfig->set_bit_depth(audioOutput_->getSampleSize());
+  audioConfig->set_channel_count(audioOutput_->getChannelCount());
 }
 
-void AudioService::onAVMediaIndication(const aasdk::common::DataConstBuffer& buffer)
-{
-    this->onAVMediaWithTimestampIndication(0, buffer);
+void AudioService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest &request) {
+  LOG(INFO) << "[AudioService] open request"
+            << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
+            << ", priority: " << request.priority();
+
+  LOG(DEBUG) << "[AudioService] channel: " << aasdk::messenger::channelIdToString(channel_->getId())
+             << " audio output sample rate: " << audioOutput_->getSampleRate()
+             << ", sample size: " << audioOutput_->getSampleSize()
+             << ", channel count: " << audioOutput_->getChannelCount();
+
+  const aasdk::proto::enums::Status::Enum
+      status = audioOutput_->open() ? aasdk::proto::enums::Status::OK : aasdk::proto::enums::Status::FAIL;
+  LOG(INFO) << "[AudioService] open status: " << status
+            << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+
+  aasdk::proto::messages::ChannelOpenResponse response;
+  response.set_status(status);
+
+  auto promise = aasdk::channel::SendPromise::defer(strand_);
+  promise->then([]() {}, [&](const aasdk::error::Error &e) { onChannelError(e); });
+  channel_->sendChannelOpenResponse(response, std::move(promise));
+  channel_->receive(this->shared_from_this());
 }
 
-void AudioService::onChannelError(const aasdk::error::Error& e)
-{
-    LOG(ERROR) << "[AudioService] channel error: " << e.what()
-                        << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+void AudioService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChannelSetupRequest &request) {
+  LOG(INFO) << "[AudioService] setup request"
+            << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
+            << ", config index: " << request.config_index();
+  const aasdk::proto::enums::AVChannelSetupStatus::Enum status = aasdk::proto::enums::AVChannelSetupStatus::OK;
+  LOG(INFO) << "[AudioService] setup status: " << status
+            << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+
+  aasdk::proto::messages::AVChannelSetupResponse response;
+  response.set_media_status(status);
+  response.set_max_unacked(10);
+  response.add_configs(0);
+
+  auto promise = aasdk::channel::SendPromise::defer(strand_);
+  promise->then([]() {}, [&](const aasdk::error::Error &e) { onChannelError(e); });
+  channel_->sendAVChannelSetupResponse(response, std::move(promise));
+  channel_->receive(this->shared_from_this());
 }
 
+void AudioService::onAVChannelStartIndication(const aasdk::proto::messages::AVChannelStartIndication &indication) {
+  LOG(INFO) << "[AudioService] start indication"
+            << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
+            << ", session: " << indication.session();
+  session_ = indication.session();
+  audioOutput_->start();
+  channel_->receive(this->shared_from_this());
 }
+
+void AudioService::onAVChannelStopIndication(const aasdk::proto::messages::AVChannelStopIndication &indication) {
+  LOG(INFO) << "[AudioService] stop indication"
+            << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
+            << ", session: " << session_;
+  session_ = -1;
+  audioOutput_->suspend();
+  channel_->receive(this->shared_from_this());
+}
+
+void AudioService::onAVMediaWithTimestampIndication(aasdk::messenger::Timestamp::ValueType timestamp,
+                                                    const aasdk::common::DataConstBuffer &buffer) {
+  audioOutput_->write(timestamp, buffer);
+  aasdk::proto::messages::AVMediaAckIndication indication;
+  indication.set_session(session_);
+  indication.set_value(1);
+
+  auto promise = aasdk::channel::SendPromise::defer(strand_);
+  promise->then([]() {}, [&](const aasdk::error::Error &e) { onChannelError(e); });
+  channel_->sendAVMediaAckIndication(indication, std::move(promise));
+  channel_->receive(this->shared_from_this());
+}
+
+void AudioService::onAVMediaIndication(const aasdk::common::DataConstBuffer &buffer) {
+  this->onAVMediaWithTimestampIndication(0, buffer);
+}
+
+void AudioService::onChannelError(const aasdk::error::Error &e) {
+  LOG(ERROR) << "[AudioService] channel error: " << e.what()
+             << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
+}
+
 }

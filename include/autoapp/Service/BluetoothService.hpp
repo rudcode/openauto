@@ -22,31 +22,31 @@
 #include <autoapp/Projection/IBluetoothDevice.hpp>
 #include <autoapp/Service/IService.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class BluetoothService: public aasdk::channel::bluetooth::IBluetoothServiceChannelEventHandler, public IService, public std::enable_shared_from_this<BluetoothService>
-{
-public:
-    BluetoothService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IBluetoothDevice::Pointer bluetoothDevice);
-    void start() override;
-    void stop() override;
-    void pause() override;
-    void resume() override;
-    void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response) override;
-    void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request) override;
-    void onBluetoothPairingRequest(const aasdk::proto::messages::BluetoothPairingRequest& request) override;
-    void onChannelError(const aasdk::error::Error& e) override;
+class BluetoothService
+    : public aasdk::channel::bluetooth::IBluetoothServiceChannelEventHandler,
+      public IService,
+      public std::enable_shared_from_this<BluetoothService> {
+ public:
+  BluetoothService(asio::io_service &ioService,
+                   aasdk::messenger::IMessenger::Pointer messenger,
+                   projection::IBluetoothDevice::Pointer bluetoothDevice);
+  void start() override;
+  void stop() override;
+  void pause() override;
+  void resume() override;
+  void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse &response) override;
+  void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest &request) override;
+  void onBluetoothPairingRequest(const aasdk::proto::messages::BluetoothPairingRequest &request) override;
+  void onChannelError(const aasdk::error::Error &e) override;
 
-private:
-    using std::enable_shared_from_this<BluetoothService>::shared_from_this;
+ private:
+  using std::enable_shared_from_this<BluetoothService>::shared_from_this;
 
-    asio::io_service::strand strand_;
-    aasdk::channel::bluetooth::BluetoothServiceChannel::Pointer channel_;
-    projection::IBluetoothDevice::Pointer bluetoothDevice_;
+  asio::io_service::strand strand_;
+  aasdk::channel::bluetooth::BluetoothServiceChannel::Pointer channel_;
+  projection::IBluetoothDevice::Pointer bluetoothDevice_;
 };
 
-}
 }

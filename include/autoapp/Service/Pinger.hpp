@@ -20,33 +20,28 @@
 
 #include <autoapp/Service/IPinger.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class Pinger: public IPinger, public std::enable_shared_from_this<Pinger>
-{
-public:
-    Pinger(asio::io_service& ioService, time_t duration);
+class Pinger : public IPinger, public std::enable_shared_from_this<Pinger> {
+ public:
+  Pinger(asio::io_service &ioService, time_t duration);
 
-    void ping(Promise::Pointer promise) override;
-    void pong() override;
-    void cancel() override;
+  void ping(Promise::Pointer promise) override;
+  void pong() override;
+  void cancel() override;
 
-private:
-    using std::enable_shared_from_this<Pinger>::shared_from_this;
+ private:
+  using std::enable_shared_from_this<Pinger>::shared_from_this;
 
-    void onTimerExceeded(const asio::error_code& error);
+  void onTimerExceeded(const asio::error_code &error);
 
-    asio::io_service::strand strand_;
-    asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
-    time_t duration_;
-    bool cancelled_;
-    Promise::Pointer promise_;
-    int64_t pingsCount_;
-    int64_t pongsCount_;
+  asio::io_service::strand strand_;
+  asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
+  time_t duration_;
+  bool cancelled_;
+  Promise::Pointer promise_;
+  int64_t pingsCount_;
+  int64_t pongsCount_;
 };
 
-}
 }

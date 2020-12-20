@@ -38,132 +38,131 @@
 #include <autoapp/Managers/BluetoothManager.hpp>
 #include <autoapp/Configuration/Configuration.hpp>
 
-
 using ThreadPool = std::vector<std::thread>;
 
-void startUSBWorkers(asio::io_service& ioService, libusb_context* usbContext, ThreadPool& threadPool)
-{
-    auto usbWorker = [&ioService, usbContext]() {
-        timeval libusbEventTimeout{180, 0};
+void startUSBWorkers(asio::io_service &ioService, libusb_context *usbContext, ThreadPool &threadPool) {
+  auto usbWorker = [&ioService, usbContext]() {
+    timeval libusbEventTimeout{180, 0};
 
-        while(!ioService.stopped())
-        {
-            libusb_handle_events_timeout_completed(usbContext, &libusbEventTimeout, nullptr);
-        }
-    };
+    while (!ioService.stopped()) {
+      libusb_handle_events_timeout_completed(usbContext, &libusbEventTimeout, nullptr);
+    }
+  };
 
-    threadPool.emplace_back(usbWorker);
-    threadPool.emplace_back(usbWorker);
-    threadPool.emplace_back(usbWorker);
-    threadPool.emplace_back(usbWorker);
+  threadPool.emplace_back(usbWorker);
+  threadPool.emplace_back(usbWorker);
+  threadPool.emplace_back(usbWorker);
+  threadPool.emplace_back(usbWorker);
 }
 
-void startIOServiceWorkers(asio::io_service& ioService, ThreadPool& threadPool)
-{
-    auto ioServiceWorker = [&ioService]() {
-        ioService.run();
-    };
+void startIOServiceWorkers(asio::io_service &ioService, ThreadPool &threadPool) {
+  auto ioServiceWorker = [&ioService]() {
+    ioService.run();
+  };
 
-    threadPool.emplace_back(ioServiceWorker);
-    threadPool.emplace_back(ioServiceWorker);
-    threadPool.emplace_back(ioServiceWorker);
-    threadPool.emplace_back(ioServiceWorker);
-    threadPool.emplace_back(ioServiceWorker);
-    threadPool.emplace_back(ioServiceWorker);
-    threadPool.emplace_back(ioServiceWorker);
-    threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
+  threadPool.emplace_back(ioServiceWorker);
 }
 
 DBus::BusDispatcher dispatcher;
 
 void dbus_dispatcher() {
-    dispatcher.enter();
+  dispatcher.enter();
 }
 
 INITIALIZE_EASYLOGGINGPP
 
 bool running = true;
 
-void signalHandler( int signum ) {
-    running = false;
+void signalHandler(int signum) {
+  running = false;
 }
 
-int main(int argc, char* argv[])
-{
-    el::Configurations defaultConf;
-    defaultConf.setToDefault();
-    // Values are always std::string
-    defaultConf.set(el::Level::Info,
-                    el::ConfigurationType::Format, "%datetime %levshort [%fbase] %msg");
-    defaultConf.set(el::Level::Debug,
-                    el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
-    defaultConf.set(el::Level::Error,
-                    el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
-    // default logger uses default configurations
-    el::Loggers::reconfigureLogger("default", defaultConf);
+int main(int argc, char *argv[]) {
+  el::Configurations defaultConf;
+  defaultConf.setToDefault();
+  // Values are always std::string
+  defaultConf.set(el::Level::Info,
+                  el::ConfigurationType::Format, "%datetime %levshort [%fbase] %msg");
+  defaultConf.set(el::Level::Debug,
+                  el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
+  defaultConf.set(el::Level::Error,
+                  el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
+  // default logger uses default configurations
+  el::Loggers::reconfigureLogger("default", defaultConf);
 
-
-    LOG(INFO) << "[OpenAuto] starting";
-    signal(SIGINT, signalHandler);
-    libusb_context* usbContext;
-    if(libusb_init(&usbContext) != 0)
-    {
-        LOG(ERROR) << "[OpenAuto] libusb init failed.";
-        return 1;
-    }
+  LOG(INFO) << "[OpenAuto] starting";
+  signal(SIGINT, signalHandler);
+  libusb_context *usbContext;
+  if (libusb_init(&usbContext) != 0) {
+    LOG(ERROR) << "[OpenAuto] libusb init failed.";
+    return 1;
+  }
 
 #define HMI_BUS_ADDRESS "unix:path=/tmp/dbus_hmi_socket"
 #define SERVICE_BUS_ADDRESS "unix:path=/tmp/dbus_service_socket"
-    DBus::default_dispatcher = &dispatcher;
-    DBus::Connection hmiBus(HMI_BUS_ADDRESS, true);
-    hmiBus.register_bus();
-    DBus::Connection serviceBus(SERVICE_BUS_ADDRESS, true);
-    serviceBus.register_bus();
+  DBus::default_dispatcher = &dispatcher;
+  DBus::Connection hmiBus(HMI_BUS_ADDRESS, true);
+  hmiBus.register_bus();
+  DBus::Connection serviceBus(SERVICE_BUS_ADDRESS, true);
+  serviceBus.register_bus();
 
+  asio::io_service ioService;
+  asio::io_service::work work(ioService);
+  std::vector<std::thread> threadPool;
+  startUSBWorkers(ioService, usbContext, threadPool);
+  startIOServiceWorkers(ioService, threadPool);
 
-    asio::io_service ioService;
-    asio::io_service::work work(ioService);
-    std::vector<std::thread> threadPool;
-    startUSBWorkers(ioService, usbContext, threadPool);
-    startIOServiceWorkers(ioService, threadPool);
+  auto configuration = std::make_shared<autoapp::configuration::Configuration>();
+  Signals signals = Signals();
 
-    auto configuration = std::make_shared<autoapp::configuration::Configuration>();
-    Signals signals = Signals();
+  AudioManagerClient audioManager(serviceBus, signals.audioSignals);
+  VideoManager videoManager(hmiBus, signals.videoSignals);
+  GPSManager gpsManager(serviceBus, signals.gpsSignals);
+  HttpManager httpManager(ioService, signals.videoSignals, signals.audioSignals, signals.aaSignals);
+  BluetoothManager bluetoothManager(serviceBus, hmiBus);
+  std::thread dbus_thread(dbus_dispatcher);
 
-    AudioManagerClient audioManager(serviceBus, signals.audioSignals);
-    VideoManager videoManager(hmiBus, signals.videoSignals);
-    GPSManager gpsManager(serviceBus, signals.gpsSignals);
-    HttpManager httpManager(ioService, signals.videoSignals, signals.audioSignals, signals.aaSignals);
-    BluetoothManager bluetoothManager(serviceBus, hmiBus);
-    std::thread dbus_thread(dbus_dispatcher);
+  aasdk::tcp::TCPWrapper tcpWrapper;
 
-    aasdk::tcp::TCPWrapper tcpWrapper;
+  aasdk::usb::USBWrapper usbWrapper(usbContext);
+  aasdk::usb::AccessoryModeQueryFactory queryFactory(usbWrapper, ioService);
+  aasdk::usb::AccessoryModeQueryChainFactory queryChainFactory(usbWrapper, ioService, queryFactory);
+  autoapp::service::ServiceFactory serviceFactory(ioService, configuration, signals);
+  autoapp::service::AndroidAutoEntityFactory
+      androidAutoEntityFactory(ioService, configuration, serviceFactory, signals);
+  auto usbHub(std::make_shared<aasdk::usb::USBHub>(usbWrapper, ioService, queryChainFactory));
+  auto connectedAccessoriesEnumerator
+      (std::make_shared<aasdk::usb::ConnectedAccessoriesEnumerator>(usbWrapper, ioService, queryChainFactory));
+  auto app = std::make_shared<autoapp::App>(ioService,
+                                            usbWrapper,
+                                            tcpWrapper,
+                                            androidAutoEntityFactory,
+                                            std::move(usbHub),
+                                            std::move(connectedAccessoriesEnumerator));
 
-    aasdk::usb::USBWrapper usbWrapper(usbContext);
-    aasdk::usb::AccessoryModeQueryFactory queryFactory(usbWrapper, ioService);
-    aasdk::usb::AccessoryModeQueryChainFactory queryChainFactory(usbWrapper, ioService, queryFactory);
-    autoapp::service::ServiceFactory serviceFactory(ioService, configuration, signals);
-    autoapp::service::AndroidAutoEntityFactory androidAutoEntityFactory(ioService, configuration, serviceFactory, signals);
-    auto usbHub(std::make_shared<aasdk::usb::USBHub>(usbWrapper, ioService, queryChainFactory));
-    auto connectedAccessoriesEnumerator(std::make_shared<aasdk::usb::ConnectedAccessoriesEnumerator>(usbWrapper, ioService, queryChainFactory));
-    auto app = std::make_shared<autoapp::App>(ioService, usbWrapper, tcpWrapper, androidAutoEntityFactory, std::move(usbHub), std::move(connectedAccessoriesEnumerator));
+  app->waitForUSBDevice();
 
-    app->waitForUSBDevice();
+  while (running) {
+    sleep(1);
+  }
 
-    while(running){
-        sleep(1);
-    }
-
-    LOG(DEBUG) << "Calling app->stop()";
-    app->stop();
-    sleep(5);
-    LOG(DEBUG) << "Calling dispatcher.leave()";
-    dispatcher.leave();
-    LOG(DEBUG) << "Calling dbus_thread.join()";
-    dbus_thread.join();
-    LOG(DEBUG) << "Joining threads";
-    std::for_each(threadPool.begin(), threadPool.end(), [](std::thread &thread){thread.join();});
-    LOG(DEBUG) << "libusb_exit(usbContext)";
-    libusb_exit(usbContext);
-    return 0;
+  LOG(DEBUG) << "Calling app->stop()";
+  app->stop();
+  sleep(5);
+  LOG(DEBUG) << "Calling dispatcher.leave()";
+  dispatcher.leave();
+  LOG(DEBUG) << "Calling dbus_thread.join()";
+  dbus_thread.join();
+  LOG(DEBUG) << "Joining threads";
+  std::for_each(threadPool.begin(), threadPool.end(), [](std::thread &thread) { thread.join(); });
+  LOG(DEBUG) << "libusb_exit(usbContext)";
+  libusb_exit(usbContext);
+  return 0;
 }

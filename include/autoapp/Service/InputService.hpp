@@ -24,38 +24,35 @@
 #include <autoapp/Projection/IInputDevice.hpp>
 #include <autoapp/Projection/IInputDeviceEventHandler.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class InputService:
-        public aasdk::channel::input::IInputServiceChannelEventHandler,
-        public IService,
-        public projection::IInputDeviceEventHandler,
-        public std::enable_shared_from_this<InputService>
-{
-public:
-    InputService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IInputDevice::Pointer inputDevice);
+class InputService :
+    public aasdk::channel::input::IInputServiceChannelEventHandler,
+    public IService,
+    public projection::IInputDeviceEventHandler,
+    public std::enable_shared_from_this<InputService> {
+ public:
+  InputService(asio::io_service &ioService,
+               aasdk::messenger::IMessenger::Pointer messenger,
+               projection::IInputDevice::Pointer inputDevice);
 
-    void start() override;
-    void stop() override;
-    void pause() override;
-    void resume() override;
-    void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response) override;
-    void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request) override;
-    void onBindingRequest(const aasdk::proto::messages::BindingRequest& request) override;
-    void onChannelError(const aasdk::error::Error& e) override;
-    void onButtonEvent(const projection::ButtonEvent& event) override;
-    void onTouchEvent(const projection::TouchEvent& event) override;
+  void start() override;
+  void stop() override;
+  void pause() override;
+  void resume() override;
+  void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse &response) override;
+  void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest &request) override;
+  void onBindingRequest(const aasdk::proto::messages::BindingRequest &request) override;
+  void onChannelError(const aasdk::error::Error &e) override;
+  void onButtonEvent(const projection::ButtonEvent &event) override;
+  void onTouchEvent(const projection::TouchEvent &event) override;
 
-private:
-    using std::enable_shared_from_this<InputService>::shared_from_this;
+ private:
+  using std::enable_shared_from_this<InputService>::shared_from_this;
 
-    asio::io_service::strand strand_;
-    aasdk::channel::input::InputServiceChannel::Pointer channel_;
-    projection::IInputDevice::Pointer inputDevice_;
+  asio::io_service::strand strand_;
+  aasdk::channel::input::InputServiceChannel::Pointer channel_;
+  projection::IInputDevice::Pointer inputDevice_;
 };
 
-}
 }

@@ -24,34 +24,32 @@
 
 namespace autoapp::configuration {
 
-    class Configuration: public IConfiguration {
-    public:
-        Configuration();
+class Configuration : public IConfiguration {
+ public:
+  Configuration();
 
-        void reset() override;
+  void reset() override;
 
-        void save() override;
+  void save() override;
 
-        void leftHandDrive(bool value);
+  void leftHandDrive(bool value);
 
-        bool leftHandDrive() const;
+  bool leftHandDrive() const;
 
-        void hideClock(bool value);
+  void hideClock(bool value);
 
-        bool hideClock() const;
+  bool hideClock() const;
 
-        bool getTouchscreenEnabled() const override;
+  bool getTouchscreenEnabled() const override;
 
-        void setTouchscreenEnabled(bool value) override;
+  void setTouchscreenEnabled(bool value) override;
 
+ private:
+  toml::table config;
 
-    private:
-        toml::table config;
-
-
-        bool lefthandDrive_ = true;
-        bool hideClock_ = false;
-        bool enableTouchscreen_ = true;
-    };
+  bool lefthandDrive_ = true;
+  bool hideClock_ = false;
+  bool enableTouchscreen_ = true;
+};
 
 }

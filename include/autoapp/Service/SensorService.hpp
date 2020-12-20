@@ -23,47 +23,47 @@
 #include <autoapp/Service/IService.hpp>
 #include <autoapp/Signals/GpsSignals.hpp>
 
-namespace autoapp
-{
-namespace service
-{
+namespace autoapp::service {
 
-class SensorService: public aasdk::channel::sensor::ISensorServiceChannelEventHandler, public IService, public std::enable_shared_from_this<SensorService>
-{
-public:
-    SensorService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, GpsSignals::Pointer gpssignals);
-    bool isNight = false;
-    bool previous = false;
-    bool stopPolling = false;
+class SensorService
+    : public aasdk::channel::sensor::ISensorServiceChannelEventHandler,
+      public IService,
+      public std::enable_shared_from_this<SensorService> {
+ public:
+  SensorService(asio::io_service &ioService,
+                aasdk::messenger::IMessenger::Pointer messenger,
+                GpsSignals::Pointer gpssignals);
+  bool isNight = false;
+  bool previous = false;
+  bool stopPolling = false;
 
-    void start() override;
-    void stop() override;
-    void pause() override;
-    void resume() override;
-    void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response) override;
-    void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request) override;
-    void onSensorStartRequest(const aasdk::proto::messages::SensorStartRequestMessage& request) override;
-    void onChannelError(const aasdk::error::Error& e) override;
+  void start() override;
+  void stop() override;
+  void pause() override;
+  void resume() override;
+  void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse &response) override;
+  void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest &request) override;
+  void onSensorStartRequest(const aasdk::proto::messages::SensorStartRequestMessage &request) override;
+  void onChannelError(const aasdk::error::Error &e) override;
 
-private:
-    using std::enable_shared_from_this<SensorService>::shared_from_this;
-    void sendDrivingStatusUnrestricted();
-    void sendNightData();
-    void sendGPSLocationData(uint64_t time, int32_t latitude, int32_t longitude, uint32_t accuracy,
-                             int32_t altitude, int32_t speed, int32_t bearing);
-    void sensorPolling();
-    bool firstRun = true;
+ private:
+  using std::enable_shared_from_this<SensorService>::shared_from_this;
+  void sendDrivingStatusUnrestricted();
+  void sendNightData();
+  void sendGPSLocationData(uint64_t time, int32_t latitude, int32_t longitude, uint32_t accuracy,
+                           int32_t altitude, int32_t speed, int32_t bearing);
+  void sensorPolling();
+  bool firstRun = true;
 
-    asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
-    asio::io_service::strand strand_;
-    aasdk::channel::sensor::SensorServiceChannel::Pointer channel_;
+  asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
+  asio::io_service::strand strand_;
+  aasdk::channel::sensor::SensorServiceChannel::Pointer channel_;
 //    struct gps_data_t gpsData_;
-    bool gpsEnabled_ = true;
-    GpsSignals::Pointer gpssignals_;
-    sigc::connection signal_returnUpdate_;
+  bool gpsEnabled_ = true;
+  GpsSignals::Pointer gpssignals_;
+  sigc::connection signal_returnUpdate_;
 };
 
-}
 }
 
 bool checkNight();

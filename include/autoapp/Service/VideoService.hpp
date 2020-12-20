@@ -26,46 +26,46 @@
 #include <autoapp/Signals/VideoSignals.hpp>
 #include <autoapp/Managers/VideoManager.hpp>
 
+namespace autoapp::service {
 
-namespace autoapp
-{
-namespace service
-{
+class VideoService
+    : public aasdk::channel::av::IVideoServiceChannelEventHandler,
+      public IService,
+      public std::enable_shared_from_this<VideoService> {
+ public:
+  typedef std::shared_ptr<VideoService> Pointer;
 
-class VideoService: public aasdk::channel::av::IVideoServiceChannelEventHandler, public IService, public std::enable_shared_from_this<VideoService>
-{
-public:
-    typedef std::shared_ptr<VideoService> Pointer;
+  VideoService(asio::io_service &ioService,
+               aasdk::messenger::IMessenger::Pointer messenger,
+               projection::IVideoOutput::Pointer videoOutput,
+               VideoSignals::Pointer videoSignals);
 
-    VideoService(asio::io_service& ioService, aasdk::messenger::IMessenger::Pointer messenger, projection::IVideoOutput::Pointer videoOutput, VideoSignals::Pointer videoSignals);
+  void start() override;
+  void stop() override;
+  void pause() override;
+  void resume() override;
+  void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse &response) override;
+  void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest &request) override;
+  void onAVChannelSetupRequest(const aasdk::proto::messages::AVChannelSetupRequest &request) override;
+  void onAVChannelStartIndication(const aasdk::proto::messages::AVChannelStartIndication &indication) override;
+  void onAVChannelStopIndication(const aasdk::proto::messages::AVChannelStopIndication &indication) override;
+  void onAVMediaWithTimestampIndication(aasdk::messenger::Timestamp::ValueType timestamp,
+                                        const aasdk::common::DataConstBuffer &buffer) override;
+  void onAVMediaIndication(const aasdk::common::DataConstBuffer &buffer) override;
+  void onVideoFocusRequest(const aasdk::proto::messages::VideoFocusRequest &request) override;
+  void onChannelError(const aasdk::error::Error &e) override;
 
-    void start() override;
-    void stop() override;
-    void pause() override;
-    void resume() override;
-    void fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse& response) override;
-    void onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest& request) override;
-    void onAVChannelSetupRequest(const aasdk::proto::messages::AVChannelSetupRequest& request) override;
-    void onAVChannelStartIndication(const aasdk::proto::messages::AVChannelStartIndication& indication) override;
-    void onAVChannelStopIndication(const aasdk::proto::messages::AVChannelStopIndication& indication) override;
-    void onAVMediaWithTimestampIndication(aasdk::messenger::Timestamp::ValueType timestamp, const aasdk::common::DataConstBuffer& buffer) override;
-    void onAVMediaIndication(const aasdk::common::DataConstBuffer& buffer) override;
-    void onVideoFocusRequest(const aasdk::proto::messages::VideoFocusRequest& request) override;
-    void onChannelError(const aasdk::error::Error& e) override;
+  VideoSignals::Pointer videoSignals_;
 
-    VideoSignals::Pointer videoSignals_;
+ private:
+  using std::enable_shared_from_this<VideoService>::shared_from_this;
+  void sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor);
+  void sendVideoFocusLost(VIDEO_FOCUS_REQUESTOR requestor);
 
-
-private:
-    using std::enable_shared_from_this<VideoService>::shared_from_this;
-    void sendVideoFocusIndication(VIDEO_FOCUS_REQUESTOR requestor);
-    void sendVideoFocusLost(VIDEO_FOCUS_REQUESTOR requestor);
-
-    asio::io_service::strand strand_;
-    aasdk::channel::av::VideoServiceChannel::Pointer channel_;
-    projection::IVideoOutput::Pointer videoOutput_;
-    int32_t session_;
+  asio::io_service::strand strand_;
+  aasdk::channel::av::VideoServiceChannel::Pointer channel_;
+  projection::IVideoOutput::Pointer videoOutput_;
+  int32_t session_;
 };
 
-}
 }
