@@ -44,11 +44,11 @@ class InputDevice : public IInputDevice {
 
   void stop() override;
 
-  ButtonCodes getSupportedButtonCodes() const override;
+  [[nodiscard]] ButtonCodes getSupportedButtonCodes() const override;
 
-  bool hasTouchscreen() const override;
+  [[nodiscard]] bool hasTouchscreen() const override;
 
-  TouchscreenSize getTouchscreenGeometry() const override;
+  [[nodiscard]] TouchscreenSize getTouchscreenGeometry() const override;
 
  private:
   asio::io_service &ioService_;

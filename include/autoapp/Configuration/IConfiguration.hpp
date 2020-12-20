@@ -37,13 +37,13 @@ class IConfiguration {
 
   virtual void leftHandDrive(bool value) = 0;
 
-  virtual bool leftHandDrive() const = 0;
+  [[nodiscard]] virtual bool leftHandDrive() const = 0;
 
   virtual void hideClock(bool value) = 0;
 
-  virtual bool hideClock() const = 0;
+  [[nodiscard]] virtual bool hideClock() const = 0;
 
-  virtual bool getTouchscreenEnabled() const = 0;
+  [[nodiscard]] virtual bool getTouchscreenEnabled() const = 0;
 
   virtual void setTouchscreenEnabled(bool value) = 0;
 

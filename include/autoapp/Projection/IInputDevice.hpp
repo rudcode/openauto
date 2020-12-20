@@ -38,9 +38,9 @@ class IInputDevice {
   virtual ~IInputDevice() = default;
   virtual void start(IInputDeviceEventHandler &eventHandler) = 0;
   virtual void stop() = 0;
-  virtual ButtonCodes getSupportedButtonCodes() const = 0;
-  virtual bool hasTouchscreen() const = 0;
-  virtual TouchscreenSize getTouchscreenGeometry() const = 0;
+  [[nodiscard]] virtual ButtonCodes getSupportedButtonCodes() const = 0;
+  [[nodiscard]] virtual bool hasTouchscreen() const = 0;
+  [[nodiscard]] virtual TouchscreenSize getTouchscreenGeometry() const = 0;
 };
 
 }

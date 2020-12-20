@@ -34,11 +34,11 @@ class VideoMargins {
     _width = width;
   }
 
-  uint32_t height() const {
+  [[nodiscard]] uint32_t height() const {
     return _height;
   }
 
-  uint32_t width() const {
+  [[nodiscard]] uint32_t width() const {
     return _width;
   }
 
@@ -67,13 +67,13 @@ class IVideoOutput {
 
   virtual void stop() = 0;
 
-  virtual aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const = 0;
+  [[nodiscard]] virtual aasdk::proto::enums::VideoFPS::Enum getVideoFPS() const = 0;
 
-  virtual aasdk::proto::enums::VideoResolution::Enum getVideoResolution() const = 0;
+  [[nodiscard]] virtual aasdk::proto::enums::VideoResolution::Enum getVideoResolution() const = 0;
 
-  virtual size_t getScreenDPI() const = 0;
+  [[nodiscard]] virtual size_t getScreenDPI() const = 0;
 
-  virtual VideoMargins getVideoMargins() const = 0;
+  [[nodiscard]] virtual VideoMargins getVideoMargins() const = 0;
 };
 
 }

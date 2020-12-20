@@ -33,13 +33,13 @@ class IAudioInput {
   virtual ~IAudioInput() = default;
 
   virtual bool open() = 0;
-  virtual bool isActive() const = 0;
+  [[nodiscard]] virtual bool isActive() const = 0;
   virtual void read(ReadPromise::Pointer promise) = 0;
   virtual void start(StartPromise::Pointer promise) = 0;
   virtual void stop() = 0;
-  virtual uint32_t getSampleSize() const = 0;
-  virtual uint32_t getChannelCount() const = 0;
-  virtual uint32_t getSampleRate() const = 0;
+  [[nodiscard]] virtual uint32_t getSampleSize() const = 0;
+  [[nodiscard]] virtual uint32_t getChannelCount() const = 0;
+  [[nodiscard]] virtual uint32_t getSampleRate() const = 0;
 };
 
 }

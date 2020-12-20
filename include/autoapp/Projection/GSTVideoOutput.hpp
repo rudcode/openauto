@@ -28,15 +28,15 @@ class GSTVideoOutput : public IVideoOutput {
 
   void stop() override;
 
-  aasdk::proto::enums::VideoFPS::Enum
+  [[nodiscard]] aasdk::proto::enums::VideoFPS::Enum
   getVideoFPS() const override { return aasdk::proto::enums::VideoFPS::Enum::VideoFPS_Enum__30; }
 
-  aasdk::proto::enums::VideoResolution::Enum
+  [[nodiscard]] aasdk::proto::enums::VideoResolution::Enum
   getVideoResolution() const override { return aasdk::proto::enums::VideoResolution::Enum::VideoResolution_Enum__480p; }
 
-  size_t getScreenDPI() const override { return 140; }
+  [[nodiscard]] size_t getScreenDPI() const override { return 140; }
 
-  VideoMargins getVideoMargins() const override;
+  [[nodiscard]] VideoMargins getVideoMargins() const override;
 
  private:
   asio::io_service &ioService_;

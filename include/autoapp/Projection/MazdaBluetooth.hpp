@@ -28,13 +28,13 @@ class MazdaBluetooth : public IBluetoothDevice {
 
   void stop() override;
 
-  bool isPaired(const std::string &address) const override;
+  [[nodiscard]] bool isPaired(const std::string &address) const override;
 
   void pair(const std::string &address, PairingPromise::Pointer promise) override;
 
-  std::string getLocalAddress() const override;
+  [[nodiscard]] std::string getLocalAddress() const override;
 
-  bool isAvailable() const override;
+  [[nodiscard]] bool isAvailable() const override;
 };
 }
 

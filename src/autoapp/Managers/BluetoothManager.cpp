@@ -43,7 +43,7 @@ BluetoothManager::BluetoothManager(DBus::Connection &serviceBus, DBus::Connectio
 
 void BluetoothConnection::sendMessage(google::protobuf::MessageLite &message, uint16_t type) const {
   auto byteSize = static_cast<size_t>(message.ByteSizeLong());
-  auto sizeOut = static_cast<uint16_t>(htobe16(byteSize));
+  auto sizeOut = static_cast<uint16_t>(htobe16(static_cast<uint16_t>(byteSize)));
   auto typeOut = static_cast<uint16_t>(htobe16(type));
   auto *out = new char[byteSize + 4];
   memcpy(out, &sizeOut, 2);

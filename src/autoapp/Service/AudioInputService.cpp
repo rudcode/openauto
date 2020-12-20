@@ -172,7 +172,7 @@ void AudioInputService::onAudioInputDataReady(aasdk::common::Data data) {
 
   auto timestamp =
       std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch());
-  channel_->sendAVMediaWithTimestampIndication(timestamp.count(), std::move(data), std::move(sendPromise));
+  channel_->sendAVMediaWithTimestampIndication(timestamp.count(), data, std::move(sendPromise));
 }
 
 void AudioInputService::readAudioInput() {

@@ -48,10 +48,10 @@ class AlsaAudioOutput : public IAudioOutput {
 
   void suspend() override {};
 
-  uint32_t getSampleSize() const override { return 16; };
+  [[nodiscard]] uint32_t getSampleSize() const override { return 16; };
 
-  uint32_t getChannelCount() const override { return static_cast<uint32_t>(_channels); }
+  [[nodiscard]] uint32_t getChannelCount() const override { return static_cast<uint32_t>(_channels); }
 
-  uint32_t getSampleRate() const override { return static_cast<uint32_t>(_rate); }
+  [[nodiscard]] uint32_t getSampleRate() const override { return static_cast<uint32_t>(_rate); }
 };
 }

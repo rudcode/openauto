@@ -32,15 +32,15 @@ class Configuration : public IConfiguration {
 
   void save() override;
 
-  void leftHandDrive(bool value);
+  void leftHandDrive(bool value) override;
 
-  bool leftHandDrive() const;
+  [[nodiscard]] bool leftHandDrive() const override;
 
-  void hideClock(bool value);
+  void hideClock(bool value) override;
 
-  bool hideClock() const;
+  [[nodiscard]] bool hideClock() const override;
 
-  bool getTouchscreenEnabled() const override;
+  [[nodiscard]] bool getTouchscreenEnabled() const override;
 
   void setTouchscreenEnabled(bool value) override;
 
