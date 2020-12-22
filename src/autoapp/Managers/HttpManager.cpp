@@ -87,6 +87,9 @@ void HttpManager::handle_video_focus(bool state) {
 void HttpManager::handle_aa_connect(bool state) {
   aa_connected = state;
 }
+void HttpManager::stop() {
+  server.stop();
+}
 
 //void HttpManager::handle_audio_focus() {
 //    has_audio_focus = state;

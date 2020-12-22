@@ -132,11 +132,16 @@ void AudioManagerClient::populateStreamTable() {
     LOG(ERROR) << resultString.c_str();
   }
 }
+//    : DBus::ObjectProxy(connection,
+//                        "/com/xse/service/AudioManagement/AudioApplication",
+//                        "com.xsembedded.service.AudioManagement")
 
-AudioManagerClient::AudioManagerClient(DBus::Connection &connection, AudioSignals::Pointer audiosignals)
-    : DBus::ObjectProxy(connection,
-                        "/com/xse/service/AudioManagement/AudioApplication",
-                        "com.xsembedded.service.AudioManagement"), audiosignals_(std::move(audiosignals)) {
+AudioManagerClient::AudioManagerClient(std::string destination,
+                                       std::string objectPath,
+                                       AudioSignals::Pointer audiosignals)
+    : sdbus::ProxyInterfaces<com::xsembedded::ServiceProvider_proxy>(std::move(destination), std::move(objectPath)),
+      audiosignals_(std::move(audiosignals)) {
+  registerProxy();
   populateStreamTable();
   if (aaSessionID < 0 || aaTransientSessionID < 0) {
     LOG(ERROR) << "Can't find audio stream. Audio will not work";
@@ -160,6 +165,7 @@ AudioManagerClient::~AudioManagerClient() {
       LOG(DEBUG) << "closeSession(" << args.dump().c_str() << ")\n" << result.c_str() << "\n";
     }
   }
+  unregisterProxy();
 }
 
 bool AudioManagerClient::canSwitchAudio() const { return aaSessionID >= 0 && aaTransientSessionID >= 0; }
@@ -197,7 +203,7 @@ void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::proto::enums::AudioFoc
       std::string result = Request("requestAudioFocus", args.dump());
       LOG(DEBUG) << "requestAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str();
     }
-    catch (DBus::Error &e) {
+    catch (sdbus::Error &e) {
       LOG(ERROR) << e.what();
     }
   }
@@ -229,13 +235,13 @@ void AudioManagerClient::audioMgrReleaseAudioFocus() {
       LOG(DEBUG) << method << "(" << args.dump() << ")\n" << result;
 
     }
-    catch (DBus::Error &e) {
+    catch (sdbus::Error &e) {
       LOG(ERROR) << e.what();
     }
   }
 }
 
-void AudioManagerClient::Notify(const std::string &signalName, const std::string &payload) {
+void AudioManagerClient::onNotify(const std::string &signalName, const std::string &payload) {
   LOG(INFO) << "AudioManagerClient::Notify signalName=" << signalName.c_str() << " payload=" << payload.c_str();
   if (signalName == "audioFocusChangeEvent") {
     try {

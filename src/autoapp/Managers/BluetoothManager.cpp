@@ -8,9 +8,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration,
-                                   DBus::Connection &serviceBus,
-                                   DBus::Connection &hmiBus) : configuration_(std::move(configuration)) {
+BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration)
+    : configuration_(std::move(configuration)) {
   LOG(DEBUG) << "Reading BdsConfiguration.xml";
 
   tinyxml2::XMLDocument doc;
@@ -34,8 +33,10 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
   }
 
   if (bdsconfigured) {
-    bdsClient = new BDSClient(serviceBus);
-    bcaClient = new BCAClient(hmiBus);
+    sleep(5);
+    auto connection = sdbus::createSessionBusConnection();
+    bdsClient = new BDSClient("com.jci.bds", "/com/jci/bds");
+    bcaClient = new BCAClient(connection, "com.jci.bca", "/com/jci/bca");
     bdsClient->serviceID = serviceId;
     bdsClient->wifiPort = configuration_->wifiPort();
     bcaClient->serviceID = serviceId;
@@ -43,6 +44,10 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
     bcaClient->StartAdd(serviceId);
   }
 
+}
+void BluetoothManager::stop() {
+  delete bdsClient;
+  delete bcaClient;
 }
 
 void BluetoothConnection::sendMessage(google::protobuf::MessageLite &message, uint16_t type) const {
@@ -103,6 +108,48 @@ BluetoothConnection::BluetoothConnection(int port) : port_(port) {
 
 }
 
+#include <ostream>
+#include <string>
+
+namespace neolib {
+template<class Elem, class Traits>
+inline void hex_dump(const void *aData,
+                     std::size_t aLength,
+                     std::basic_ostream<Elem, Traits> &aStream,
+                     std::size_t aWidth = 16) {
+  const char *const start = static_cast<const char *>(aData);
+  const char *const end = start + aLength;
+  const char *line = start;
+  while (line != end) {
+    aStream.width(4);
+    aStream.fill('0');
+    aStream << std::hex << line - start << " : ";
+    std::size_t lineLength = std::min(aWidth, static_cast<std::size_t>(end - line));
+    for (std::size_t pass = 1; pass <= 2; ++pass) {
+      for (const char *next = line; next != end && next != line + aWidth; ++next) {
+        char ch = *next;
+        switch (pass) {
+          case 1:aStream << (ch < 32 ? '.' : ch);
+            break;
+          case 2:
+            if (next != line)
+              aStream << " ";
+            aStream.width(2);
+            aStream.fill('0');
+            aStream << std::hex << std::uppercase << static_cast<int>(static_cast<unsigned char>(ch));
+            break;
+        }
+      }
+      if (pass == 1 && lineLength != aWidth)
+        aStream << std::string(aWidth - lineLength, ' ');
+      aStream << " ";
+    }
+    aStream << std::endl;
+    line = line + lineLength;
+  }
+}
+}
+
 void BluetoothConnection::handle_connect(const std::string &pty) {
   char buf[100];
   LOG(DEBUG) << "PTY: " << pty;
@@ -118,54 +165,52 @@ void BluetoothConnection::handle_connect(const std::string &pty) {
   while (loop) {
     ssize_t i = read(fd, buf, 4);
     len += i;
-    if (len >= 4) {
+    if (len == 4) {
       auto size = static_cast<uint16_t>(be16toh(*(uint16_t *) buf));
       auto type = static_cast<uint16_t>(be16toh(*(uint16_t *) (buf + 2)));
       LOG(DEBUG) << "Size: " << size << " MessageID: " << type;
-      if (len >= size + 4) {
-        auto *buffer = new uint8_t[size];
-        i = 0;
-        while (i < size) {
-          i += read(fd, buffer, size);
-        }
-        switch (type) {
-          case 1:handleWifiInfoRequest(buffer, size);
-            break;
-          case 2:handleWifiSecurityRequest(buffer, size);
-            break;
-          case 7:
-            if (handleWifiInfoRequestResponse(buffer, size) == 0) {
-              loop = 0;
-            }
-            break;
-          default:loop = 0;
-            break;
-        }
-        delete[] buffer;
+      auto *buffer = new uint8_t[size];
+      i = 0;
+      while (i < size) {
+        i += read(fd, buffer + i, size - i);
       }
+      switch (type) {
+        case 1:handleWifiInfoRequest(buffer, size);
+          break;
+        case 2:handleWifiSecurityRequest(buffer, size);
+          break;
+        case 7:
+          if (handleWifiInfoRequestResponse(buffer, size) == 0) {
+            loop = 0;
+          }
+          break;
+        default:neolib::hex_dump(buffer, size, std::cout);
+          break;
+      }
+      delete[] buffer;
     }
   }
 }
 
-void BCAClient::ConnectionStatusResp(
+void BCAClient::onConnectionStatusResp(
     const uint32_t &serviceId,
     const uint32_t &connStatus,
     const uint32_t &btDeviceId,
     const uint32_t &status,
-    const ::DBus::Struct<std::vector<uint8_t>> &terminalPath) {
+    const sdbus::Struct<std::vector<uint8_t>> &terminalPath) {
   LOG(DEBUG) << "Saw Service: " << serviceId;
   if (static_cast<int>(serviceId) == serviceID && connStatus == 3) {
-    std::string pty(terminalPath._1.begin(), terminalPath._1.end());
+    std::string pty(terminalPath.get<0>().begin(), terminalPath.get<0>().end());
     LOG(DEBUG) << "PTY: " << pty;
     BluetoothConnection connection(wifiPort);
     connection.handle_connect(pty);
   }
 }
 
-void BDSClient::SignalConnected_cb(const uint32_t &type, const ::DBus::Struct<std::vector<uint8_t>> &data) {
-  printf("Saw Service: %u", data._1[36]);
-  if (data._1[36] == serviceID) {
-    std::string pty((char *) &data._1[48]);
+void BDSClient::onSignalConnected_cb(const uint32_t &type, const sdbus::Struct<std::vector<uint8_t>> &data) {
+  printf("Saw Service: %u", data.get<0>()[36]);
+  if (data.get<0>()[36] == serviceID) {
+    std::string pty((char *) &data.get<0>()[48]);
     LOG(DEBUG) << "PTY: " << pty;
     BluetoothConnection connection(wifiPort);
     connection.handle_connect(pty);

@@ -20,6 +20,7 @@ class HttpManager {
               AudioSignals::Pointer audiosignals,
               AASignals::Pointer aasignals);
   ~HttpManager();
+  void stop();
  private:
   bool has_video_focus = false;
   bool has_audio_focus = false;

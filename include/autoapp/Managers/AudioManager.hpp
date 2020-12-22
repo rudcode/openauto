@@ -1,11 +1,11 @@
 #include <set>
+#include <sdbus-c++/sdbus-c++.h>
 
 #include <autoapp/Signals/AudioSignals.hpp>
 
 #include <Mazda/Dbus/com.xsembedded.ServiceProvider.h>
 
-class AudioManagerClient : public com::xsembedded::ServiceProvider_proxy,
-                           public DBus::ObjectProxy {
+class AudioManagerClient : public sdbus::ProxyInterfaces<com::xsembedded::ServiceProvider_proxy> {
  private:
   std::map<std::string, int> streamToSessionIds;
   std::string aaStreamName = "MLENT";
@@ -23,9 +23,9 @@ class AudioManagerClient : public com::xsembedded::ServiceProvider_proxy,
   void aaRegisterStream();
 
  public:
-  AudioManagerClient(DBus::Connection &connection, AudioSignals::Pointer audiosignals);
+  AudioManagerClient(std::string destination, std::string objectPath, AudioSignals::Pointer audiosignals);
 
-  ~AudioManagerClient() override;
+  ~AudioManagerClient();
 
   bool canSwitchAudio() const;
 
@@ -34,5 +34,5 @@ class AudioManagerClient : public com::xsembedded::ServiceProvider_proxy,
 
   void audioMgrReleaseAudioFocus();
 
-  void Notify(const std::string &signalName, const std::string &payload) override;
+  void onNotify(const std::string &signalName, const std::string &payload) override;
 };

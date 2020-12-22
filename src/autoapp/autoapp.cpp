@@ -18,7 +18,7 @@
 
 #include <thread>
 
-#include <dbus-c++/dbus.h>
+#include <sdbus-c++/sdbus-c++.h>
 
 #include <aasdk/USB/USBHub.hpp>
 #include <aasdk/USB/ConnectedAccessoriesEnumerator.hpp>
@@ -33,7 +33,7 @@
 #include <easylogging++.h>
 #include <autoapp/Managers/VideoManager.hpp>
 #include <autoapp/Managers/AudioManager.hpp>
-#include <autoapp/Managers/GPSManager.hpp>
+//#include <autoapp/Managers/GPSManager.hpp>
 #include <autoapp/Managers/HttpManager.hpp>
 #include <autoapp/Managers/BluetoothManager.hpp>
 #include <autoapp/Configuration/Configuration.hpp>
@@ -70,12 +70,6 @@ void startIOServiceWorkers(asio::io_service &ioService, ThreadPool &threadPool) 
   threadPool.emplace_back(ioServiceWorker);
 }
 
-DBus::BusDispatcher dispatcher;
-
-void dbus_dispatcher() {
-  dispatcher.enter();
-}
-
 INITIALIZE_EASYLOGGINGPP
 
 bool running = true;
@@ -105,14 +99,6 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-#define HMI_BUS_ADDRESS "unix:path=/tmp/dbus_hmi_socket"
-#define SERVICE_BUS_ADDRESS "unix:path=/tmp/dbus_service_socket"
-  DBus::default_dispatcher = &dispatcher;
-  DBus::Connection hmiBus(HMI_BUS_ADDRESS, true);
-  hmiBus.register_bus();
-  DBus::Connection serviceBus(SERVICE_BUS_ADDRESS, true);
-  serviceBus.register_bus();
-
   asio::io_service ioService;
   asio::io_service::work work(ioService);
   std::vector<std::thread> threadPool;
@@ -122,11 +108,12 @@ int main(int argc, char *argv[]) {
   auto configuration = std::make_shared<autoapp::configuration::Configuration>();
   Signals signals = Signals();
 
-  AudioManagerClient audioManager(serviceBus, signals.audioSignals);
-  VideoManager videoManager(hmiBus, signals.videoSignals);
-  GPSManager gpsManager(serviceBus, signals.gpsSignals);
+  auto *audioManager = new AudioManagerClient("com.xsembedded.service.AudioManagement",
+                                              "/com/xse/service/AudioManagement/AudioApplication",
+                                              signals.audioSignals);
+  VideoManager videoManager(signals.videoSignals);
+//  GPSManager gpsManager(serviceBus, signals.gpsSignals);
   HttpManager httpManager(ioService, signals.videoSignals, signals.audioSignals, signals.aaSignals);
-  std::thread dbus_thread(dbus_dispatcher);
 
   aasdk::tcp::TCPWrapper tcpWrapper;
 
@@ -150,7 +137,7 @@ int main(int argc, char *argv[]) {
   app->waitForUSBDevice();
 
   // This needs to happen after the rest of openauto is setup, so it goes here.
-  BluetoothManager bluetoothManager(configuration, serviceBus, hmiBus);
+  BluetoothManager bluetoothManager(configuration);
 
   while (running) {
     sleep(1);
@@ -159,10 +146,16 @@ int main(int argc, char *argv[]) {
   LOG(DEBUG) << "Calling app->stop()";
   app->stop();
   sleep(5);
-  LOG(DEBUG) << "Calling dispatcher.leave()";
-  dispatcher.leave();
-  LOG(DEBUG) << "Calling dbus_thread.join()";
-  dbus_thread.join();
+  LOG(DEBUG) << "Stopping BluetoothManager";
+  bluetoothManager.stop();
+  LOG(DEBUG) << "Stopping HttpManager";
+  httpManager.stop();
+  LOG(DEBUG) << "Stopping GPSManager";
+//  gpsManager.stop();
+  LOG(DEBUG) << "Stopping AudioManager";
+  delete audioManager;
+  LOG(DEBUG) << "Stopping VideoManager";
+  videoManager.stop();
   LOG(DEBUG) << "Joining threads";
   std::for_each(threadPool.begin(), threadPool.end(), [](std::thread &thread) { thread.join(); });
   LOG(DEBUG) << "libusb_exit(usbContext)";

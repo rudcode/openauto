@@ -1,6 +1,7 @@
 #pragma once
 
-#include <dbus-c++/dbus.h>
+#include <sdbus-c++/sdbus-c++.h>
+
 #include <atomic>
 #include <set>
 #include <autoapp/Service/VideoService.hpp>
@@ -9,11 +10,17 @@
 #include <Mazda/Dbus/com.jci.nativeguictrl.h>
 #include <Mazda/Dbus/com.jci.bucpsa.h>
 
-class NativeGUICtrlClient : public com::jci::nativeguictrl_proxy,
-                            public DBus::ObjectProxy {
+class NativeGUICtrlClient : public sdbus::ProxyInterfaces<com::jci::nativeguictrl_proxy> {
  public:
-  explicit NativeGUICtrlClient(DBus::Connection &connection)
-      : DBus::ObjectProxy(connection, "/com/jci/nativeguictrl", "com.jci.nativeguictrl") {
+  NativeGUICtrlClient(std::unique_ptr<sdbus::IConnection> &connection, std::string destination, std::string objectPath)
+      : sdbus::ProxyInterfaces<com::jci::nativeguictrl_proxy>(std::move(connection),
+                                                              std::move(destination),
+                                                              std::move(objectPath)) {
+    registerProxy();
+  }
+
+  ~NativeGUICtrlClient() {
+    unregisterProxy();
   }
 
   enum SURFACES {
@@ -40,40 +47,43 @@ class NativeGUICtrlClient : public com::jci::nativeguictrl_proxy,
   }
 };
 
-class BucpsaClient : public com::jci::bucpsa_proxy,
-                     public DBus::ObjectProxy {
+class BucpsaClient : public sdbus::ProxyInterfaces<com::jci::bucpsa_proxy> {
 
  public:
   bool currentDisplayMode;
   VideoSignals::Pointer _videosignals;
 
-  BucpsaClient(DBus::Connection &hmiBus, VideoSignals::Pointer videosignals);
+  BucpsaClient(std::unique_ptr<sdbus::IConnection> &connection,
+               std::string destination,
+               std::string objectPath,
+               VideoSignals::Pointer videosignals);
 
-  ~BucpsaClient() override;
+  ~BucpsaClient() {
+    unregisterProxy();
+  }
 
-  void CommandResponse(const uint32_t &cmdResponse) override {}
+  void onCommandResponse(const uint32_t &cmdResponse) override {}
+  void onDisplayMode(const uint32_t &currentDisplayMode) override;
+  void onReverseStatusChanged(const int32_t &reverseStatus) override {}
+  void onPSMInstallStatusChanged(const uint8_t &psmInstalled) override {}
+  void onCameraType(const uint32_t &currentCameraType) override {}
+  void onSteeringWheelLocation(const uint32_t &currentSteeringWheelLocation) override {}
 
-  void DisplayMode(const uint32_t &currentDisplayMode) override;
-
-  void ReverseStatusChanged(const int32_t &reverseStatus) override {}
-
-  void PSMInstallStatusChanged(const uint8_t &psmInstalled) override {}
-
-  void CameraType(const uint32_t &currentCameraType) override {}
-
-  void SteeringWheelLocation(const uint32_t &currentSteeringWheelLocation) override {}
 };
 
 class VideoManager {
  private:
-  BucpsaClient bucpsa;
-  NativeGUICtrlClient gui;
+  BucpsaClient *bucpsa;
+  NativeGUICtrlClient *gui;
   VideoSignals::Pointer vs;
   bool waitsForFocus = false;
+  sigc::connection requestFocusConnection;
+  sigc::connection releaseFocusConnection;
 
  public:
-  VideoManager(DBus::Connection &hmiBus, VideoSignals::Pointer videosignals);
+  explicit VideoManager(VideoSignals::Pointer videosignals);
   ~VideoManager();
+  void stop();
 
   void requestFocus(VIDEO_FOCUS_REQUESTOR requestor);
   void releaseFocus(VIDEO_FOCUS_REQUESTOR requestor);

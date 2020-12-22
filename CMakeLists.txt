@@ -30,10 +30,12 @@ find_package(OpenSSL REQUIRED)
 find_package(ALSA REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(asio REQUIRED)
-pkg_check_modules(DBUS REQUIRED dbus-1)
-pkg_check_modules(DBUS_C++ REQUIRED dbus-c++-1)
+find_package(sdbus-c++ REQUIRED)
+#pkg_check_modules(DBUS REQUIRED dbus-1)
+#pkg_check_modules(DBUS_C++ REQUIRED dbus-c++-1)
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0)
 pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
+pkg_check_modules(Systemd REQUIRED libsystemd)
 
 SET(USE_STANDALONE_ASIO ON CACHE BOOL "use standalone Asio")
 SET(USE_OPENSSL OFF CACHE BOOL "Don't need SSL in our webserver")
@@ -54,7 +56,7 @@ add_subdirectory(external/toml++)
 
 
 find_package(Git)
-if(GIT_EXECUTABLE)
+if (GIT_EXECUTABLE)
     execute_process(
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
             COMMAND "${GIT_EXECUTABLE}" describe --tags --always
@@ -78,17 +80,17 @@ if(GIT_EXECUTABLE)
         )
         string(REGEX REPLACE "([^\\])[\\]([^\\])" "\\1\\\\\\\\\\2" GIT_USER ${GIT_USER})
         set(BUILD_HASH ${GIT_USER}@${GIT_HOST}-${GIT_HASH})
-    endif()
+    endif ()
 
     message("Git commit hash: ${BUILD_HASH}")
 
     configure_file(cmake/version.in.h ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
-endif()
+endif ()
 
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/Mazda/Dbus/)
 file(GLOB_RECURSE dbus_xml ${include_directory}/Mazda/Dbus/XML/*.xml)
-set(GEN_DBUS_HEADER_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/dbusxx-xml2cpp)
+set(GEN_DBUS_HEADER_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/sdbus-c++-xml2cpp)
 foreach (header ${dbus_xml})
     get_filename_component(header_file ${header} NAME)
     string(REGEX REPLACE "\\.[^.]*$" "" header_out ${header_file})
@@ -107,8 +109,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR}
         ${AASDK_PROTO_INCLUDE_DIRS}
         ${AASDK_INCLUDE_DIRS}
         ${ALSA_INCLUDE_DIRS}
-        ${DBUS_C++_INCLUDE_DIRS}
-        ${DBUS_C++-GLIB_INCLUDE_DIRS}
+        #        ${DBUS_C++_INCLUDE_DIRS}
+        #        ${DBUS_C++-GLIB_INCLUDE_DIRS}
         ${SIGC++_INCLUDE_DIRS}
         ${ASIO_INCLUDE_DIRS})
 
@@ -141,8 +143,11 @@ target_link_libraries(autoapp
         ${CMAKE_SYSROOT}/usr/lib/libaasdk_proto.a
         ${Protobuf_LIBRARIES}
         ${OPENSSL_LIBRARIES}
-        ${CMAKE_SYSROOT}/usr/lib/libdbus-c++-1.a
-        ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a
+        #        ${CMAKE_SYSROOT}/usr/lib/libdbus-c++-1.a
+        #        ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a
+        ${CMAKE_SYSROOT}/usr/lib/libsdbus-c++.a
+        ${CMAKE_SYSROOT}/usr/lib/libsystemd.a
+        ${CMAKE_SYSROOT}/usr/lib/libcap.a
         simple-web-server
         nlohmann_json::nlohmann_json
         easylogging++
