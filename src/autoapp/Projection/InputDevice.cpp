@@ -17,124 +17,172 @@
 
 #define EVENT_DEVICE_TS  "/dev/input/filtered-touchscreen0"
 #define EVENT_DEVICE_KBD "/dev/input/filtered-keyboard0"
-#define EVENT_DEVICE_UI  "/dev/uinput"
 
 #include <easylogging++.h>
 #include <autoapp/Projection/IInputDeviceEventHandler.hpp>
 #include <autoapp/Projection/InputDevice.hpp>
 
-static void emit(int fd, int type, int code, int val) {
-  struct input_event ie{};
-  ie.type = static_cast<__u16>(type);
-  ie.code = static_cast<__u16>(code);
-  ie.value = val;
-  ie.time.tv_sec = 0;
-  ie.time.tv_usec = 0;
-  write(fd, &ie, sizeof(ie));
-}
-
 namespace autoapp::projection {
+
 InputDevice::InputDevice(asio::io_service &ioService,
                          AudioSignals::Pointer audiosignals,
-                         VideoSignals::Pointer videosignals)
-    : ioService_(ioService),
-      audiosignals_(std::move(audiosignals)),
-      videosignals_(std::move(videosignals)),
-      eventHandler_(nullptr) {
-  audiosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
+                         VideoSignals::Pointer videosignals) :
+    timer_(ioService),
+    strand_(ioService),
+    audiosignals_(std::move(audiosignals)),
+    videosignals_(std::move(videosignals)),
+    eventHandler_(nullptr) {
+  keymap = {
+      {KEY_G, aasdk::proto::enums::ButtonCode_Enum_MICROPHONE_1},
+      {KEY_BACKSPACE, aasdk::proto::enums::ButtonCode_Enum_BACK},
+      {KEY_ENTER, aasdk::proto::enums::ButtonCode_Enum_ENTER},
+      {KEY_LEFT, aasdk::proto::enums::ButtonCode_Enum_LEFT},
+      {KEY_RIGHT, aasdk::proto::enums::ButtonCode_Enum_RIGHT},
+      {KEY_UP, aasdk::proto::enums::ButtonCode_Enum_UP},
+      {KEY_DOWN, aasdk::proto::enums::ButtonCode_Enum_DOWN},
+      {KEY_HOME, aasdk::proto::enums::ButtonCode_Enum_HOME},
+      {KEY_R, aasdk::proto::enums::ButtonCode_Enum_NAVIGATION},
+      {KEY_Z, aasdk::proto::enums::ButtonCode_Enum_PHONE},
+      {KEY_X, aasdk::proto::enums::ButtonCode_Enum_CALL_END},
+      {KEY_T, aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY},
+      {KEY_LEFTBRACE, aasdk::proto::enums::ButtonCode_Enum_NEXT},
+      {KEY_RIGHTBRACE, aasdk::proto::enums::ButtonCode_Enum_PREV},
+      {KEY_N, aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
+      {KEY_M, aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
+      {KEY_E, aasdk::proto::enums::ButtonCode_Enum_MEDIA}
+  };
 }
 
 void InputDevice::audio_focus(aasdk::proto::enums::AudioFocusState_Enum state) {
   audiofocus = state;
 }
 
+void InputDevice::video_focus(bool state) {
+  videoFocus_ = state;
+  if (videoFocus_) {
+    if (keyboard_dev != nullptr) {
+      libevdev_grab(keyboard_dev, LIBEVDEV_GRAB);
+    }
+  } else {
+    if (keyboard_dev != nullptr) {
+      libevdev_grab(keyboard_dev, LIBEVDEV_UNGRAB);
+    }
+  }
+}
+
 void InputDevice::start(IInputDeviceEventHandler &eventHandler) {
   std::lock_guard<decltype(mutex_)> lock(mutex_);
+  int rc;
 
   LOG(INFO) << "[InputDevice] start.";
   eventHandler_ = &eventHandler;
 
   /* Open Touchscreen Device */
-  touch_fd = open(EVENT_DEVICE_TS, O_RDONLY);
+  touch_fd = open(EVENT_DEVICE_TS, O_RDONLY | O_NONBLOCK);
 
   if (touch_fd < 0) {
     LOG(ERROR) << EVENT_DEVICE_TS << " is not a vaild device";
   }
 
-  if (ioctl(touch_fd, EVIOCGRAB, 1) < 0) {
-    LOG(ERROR) << "EVIOCGRAB failed on " << EVENT_DEVICE_TS;
+  rc = libevdev_new_from_fd(touch_fd, &touch_dev);
+  if (rc < 0) {
+    LOG(ERROR) << "Failed to init libevdev " << strerror(-rc);
   }
 
-  kbd_fd = open(EVENT_DEVICE_KBD, O_RDONLY);
+  if (libevdev_grab(touch_dev, LIBEVDEV_GRAB) < 0) {
+    LOG(ERROR) << "Failed to grab " << EVENT_DEVICE_TS;
+  }
+
+  kbd_fd = open(EVENT_DEVICE_KBD, O_RDONLY | O_NONBLOCK);
 
   if (kbd_fd < 0) {
     LOG(ERROR) << EVENT_DEVICE_KBD << " is not a vaild device";
   }
 
-  if (ioctl(kbd_fd, EVIOCGRAB, 1) < 0) {
-    LOG(ERROR) << "EVIOCGRAB failed on " << EVENT_DEVICE_KBD;
+  rc = libevdev_new_from_fd(kbd_fd, &keyboard_dev);
+  if (rc < 0) {
+    LOG(ERROR) << "Failed to init libevdev " << strerror(-rc);
   }
 
-  ui_fd = open(EVENT_DEVICE_UI, O_WRONLY | O_NONBLOCK);
-
-  if (ui_fd < 0) {
-    LOG(ERROR) << EVENT_DEVICE_UI << " is not a vaild device";
+  if (libevdev_grab(keyboard_dev, LIBEVDEV_GRAB) < 0) {
+    LOG(ERROR) << "Failed to grab " << EVENT_DEVICE_KBD;
   }
 
-  if (ioctl(ui_fd, UI_SET_EVBIT, EV_KEY) < 0) {
-    LOG(ERROR) << "UI_SET_EVBIT failed on " << EV_KEY;
+  struct libevdev *dev;
+  dev = libevdev_new();
+  libevdev_set_name(dev, "mzd-uinput");
+  libevdev_set_id_bustype(dev, BUS_USB);
+  libevdev_set_id_vendor(dev, 0x1);
+  libevdev_set_id_product(dev, 0x1);
+  libevdev_set_id_version(dev, 1);
+  libevdev_enable_event_type(dev, EV_KEY);
+  for (const auto &value: keymap) {
+    libevdev_enable_event_code(dev, EV_KEY, value.first, nullptr);
   }
-  if (ioctl(ui_fd, UI_SET_KEYBIT, KEY_LEFTBRACE) < 0) {
-    LOG(ERROR) << "UI_SET_KEYBIT failed on " << KEY_LEFTBRACE;
-  }
-  if (ioctl(ui_fd, UI_SET_KEYBIT, KEY_RIGHTBRACE) < 0) {
-    LOG(ERROR) << "UI_SET_KEYBIT failed on " << KEY_RIGHTBRACE;
-  }
-  if (ioctl(ui_fd, UI_SET_KEYBIT, KEY_E) < 0) {
-    LOG(ERROR) << "UI_SET_KEYBIT failed on " << KEY_E;
-  }
-  struct uinput_user_dev uidev{};
-  memset(&uidev, 0, sizeof(uidev));
-  snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, "mzd-uinput");
-  uidev.id.bustype = BUS_USB;
-  uidev.id.vendor = 0x1;
-  uidev.id.product = 0x1;
-  uidev.id.version = 1;
+  rc = libevdev_uinput_create_from_device(dev, LIBEVDEV_UINPUT_OPEN_MANAGED, &ui_dev);
 
-  if (write(ui_fd, &uidev, sizeof(uidev)) < 0) {
-    LOG(ERROR) << "Write uidev failed";
+  if (rc < 0) {
+    LOG(ERROR) << "Failed to init libevdev " << strerror(-rc);
   }
 
-  if (ioctl(ui_fd, UI_DEV_CREATE) < 0) {
-    LOG(ERROR) << "UI_DEV_CREATE failed on %s\n" << EVENT_DEVICE_UI;
+  audiosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
+  videosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::video_focus));
+
+  timer_.expires_from_now(std::chrono::milliseconds(50));
+  timer_.async_wait(strand_.wrap([this](asio::error_code ec) { this->poll(); }));
+
+}
+
+void InputDevice::poll() {
+  if (keyboard_dev == nullptr || touch_dev == nullptr) {
+    return;
+  }
+  int rc = 0;
+  while (rc != -EAGAIN) {
+    input_event ev{};
+    rc = libevdev_next_event(touch_dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
+    if (rc == LIBEVDEV_READ_STATUS_SYNC) {
+      LOG(ERROR) << "Input dropped";
+      while (rc == LIBEVDEV_READ_STATUS_SYNC) {
+        rc = libevdev_next_event(touch_dev, LIBEVDEV_READ_FLAG_SYNC, &ev);
+      }
+      LOG(DEBUG) << "Input resynced";
+    } else if (rc == LIBEVDEV_READ_STATUS_SUCCESS)
+      handle_touch(&ev);
   }
 
-  touchscreen = new asio::posix::stream_descriptor(ioService_, touch_fd);
-  keyboard = new asio::posix::stream_descriptor(ioService_, kbd_fd);
-  touch_events.resize(32);
-  touchscreen->async_read_some(asio::buffer(touch_events),
-                               [this](asio::error_code ec, size_t bytes_transferred) {
-                                 this->handle_touch(ec, bytes_transferred);
-                               });
-  key_events.resize(32);
-  keyboard->async_read_some(asio::buffer(key_events),
-                            [this](asio::error_code ec, size_t bytes_transferred) {
-                              this->handle_key(ec, bytes_transferred);
-                            });
+  rc = 0;
+  while (rc != -EAGAIN) {
+    input_event ev{};
+    rc = libevdev_next_event(keyboard_dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
+    if (rc == LIBEVDEV_READ_STATUS_SYNC) {
+      LOG(ERROR) << "Input dropped";
+      while (rc == LIBEVDEV_READ_STATUS_SYNC) {
+        rc = libevdev_next_event(keyboard_dev, LIBEVDEV_READ_FLAG_SYNC, &ev);
+      }
+      LOG(DEBUG) << "Input resynced";
+    } else if (rc == LIBEVDEV_READ_STATUS_SUCCESS) {
+      handle_key(&ev);
+    }
+  }
+
+  timer_.expires_from_now(std::chrono::milliseconds(50));
+  timer_.async_wait(strand_.wrap([this](asio::error_code ec) { this->poll(); }));
 }
 
 void InputDevice::stop() {
   std::lock_guard<decltype(mutex_)> lock(mutex_);
 
+  timer_.cancel();
+
   LOG(INFO) << "[InputDevice] stop.";
-  touchscreen->cancel();
-  touchscreen->close();
-  keyboard->cancel();
-  keyboard->close();
   eventHandler_ = nullptr;
 
-  ioctl(ui_fd, UI_DEV_DESTROY);
-  close(ui_fd);
+  libevdev_uinput_destroy(ui_dev);
+  libevdev_grab(touch_dev, LIBEVDEV_UNGRAB);
+  libevdev_free(touch_dev);
+  libevdev_grab(keyboard_dev, LIBEVDEV_UNGRAB);
+  libevdev_free(keyboard_dev);
   close(touch_fd);
   close(kbd_fd);
 
@@ -172,150 +220,126 @@ TouchscreenSize InputDevice::getTouchscreenGeometry() const {
   return TouchscreenSize{480, 800};
 }
 
-std::map<uint16_t, aasdk::proto::enums::ButtonCode_Enum> keymap = {
-    {KEY_G, aasdk::proto::enums::ButtonCode_Enum_MICROPHONE_1},
-    {KEY_BACKSPACE, aasdk::proto::enums::ButtonCode_Enum_BACK},
-    {KEY_ENTER, aasdk::proto::enums::ButtonCode_Enum_ENTER},
-    {KEY_LEFT, aasdk::proto::enums::ButtonCode_Enum_LEFT},
-    {KEY_RIGHT, aasdk::proto::enums::ButtonCode_Enum_RIGHT},
-    {KEY_UP, aasdk::proto::enums::ButtonCode_Enum_UP},
-    {KEY_DOWN, aasdk::proto::enums::ButtonCode_Enum_DOWN},
-    {KEY_HOME, aasdk::proto::enums::ButtonCode_Enum_HOME},
-    {KEY_R, aasdk::proto::enums::ButtonCode_Enum_NAVIGATION},
-    {KEY_Z, aasdk::proto::enums::ButtonCode_Enum_PHONE},
-    {KEY_X, aasdk::proto::enums::ButtonCode_Enum_CALL_END},
-    {KEY_T, aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY},
-    {KEY_LEFTBRACE, aasdk::proto::enums::ButtonCode_Enum_NEXT},
-    {KEY_RIGHTBRACE, aasdk::proto::enums::ButtonCode_Enum_PREV},
-    {KEY_N, aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
-    {KEY_M, aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
-    {KEY_E, aasdk::proto::enums::ButtonCode_Enum_NONE}
-};
-
-void InputDevice::handle_key(asio::error_code ec, size_t bytes_transferred) {
-  if (!ec) {
-    auto const n = bytes_transferred / sizeof(input_event);
-    for (size_t i = 0; i < n; i++) {
-      auto &event = key_events[i];
-      if (event.type == EV_KEY && (event.value == 1 || event.value == 0)) {
-        aasdk::proto::enums::ButtonCode::Enum scanCode;
-        WheelDirection direction = WheelDirection::NONE;
-        ButtonEventType eventType = (event.value == 1) ? ButtonEventType::PRESS
-                                                       : ButtonEventType::RELEASE;
-        bool isPressed = (event.value == 1);
-        bool hasMediaAudioFocus = audiofocus == aasdk::proto::enums::AudioFocusState_Enum_GAIN;
-
-        scanCode = keymap[event.code];
-        if (scanCode == aasdk::proto::enums::ButtonCode_Enum_NEXT ||
-            scanCode == aasdk::proto::enums::ButtonCode_Enum_PREV) {
-          if (!hasMediaAudioFocus) {
-            scanCode = aasdk::proto::enums::ButtonCode_Enum_NONE;
-            pass_key_to_mzd(event.type, event.code, event.value);
-          }
+void InputDevice::handle_key(input_event *ev) {
+  bool valid = true;
+  {
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+    for (auto value = mediaDebounce.cbegin(); value != mediaDebounce.cend();) {
+      if (std::chrono::duration_cast<std::chrono::milliseconds>(now - value->first).count() < 100) {
+        if (value->second.type == ev->type && value->second.code == ev->code && value->second.value == ev->value) {
+          valid = false;
         }
-        if (scanCode == aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) {
-          eventType = ButtonEventType::NONE;
-          if (event.code == KEY_M) {
-            direction = WheelDirection::RIGHT;
-          } else if (event.code == KEY_N) {
-            direction = WheelDirection::LEFT;
-          }
-        }
-
-        if (isPressed) {
-          pressScanCode = scanCode;
-          time(&pressedSince);
-        } else {
-          time_t now = time(nullptr);
-          if (now - pressedSince >= 2) {
-            if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY) {
-              audiosignals_->focusRelease.emit();
-            } else if (
-                pressScanCode == aasdk::proto::enums::ButtonCode_Enum_BACK ||
-                    pressScanCode == aasdk::proto::enums::ButtonCode_Enum_CALL_END) {
-              videosignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
-            } else if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_HOME) {
-              videosignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
-            }
-          }
-          pressScanCode = 0;
-        }
-
-        if (scanCode != 0 || direction != WheelDirection::NONE) {
-          eventHandler_->onButtonEvent({eventType, direction, scanCode});
-        }
+        value++;
+      } else {
+        mediaDebounce.erase(value++);
       }
     }
-    key_events.resize(32);
-    keyboard->async_read_some(asio::buffer(key_events),
-                              [this](asio::error_code ec, size_t bytes_transferred) {
-                                this->handle_key(ec, bytes_transferred);
-                              });
-  } else {
-    LOG(ERROR) << ec.message();
+  }
+  if (!valid) {
+    return;
+  }
+
+  el::Logger *defaultLogger = el::Loggers::getLogger("default");
+  defaultLogger->debug("Event: time %ld.%06ld, type %d (%s), code %d (%s), value %d",
+                       ev->time.tv_sec,
+                       ev->time.tv_usec,
+                       ev->type,
+                       libevdev_event_type_get_name(ev->type),
+                       ev->code,
+                       libevdev_event_code_get_name(ev->type, ev->code),
+                       ev->value);
+
+  if (ev->type == EV_KEY && (ev->value == 1 || ev->value == 0)) {
+    aasdk::proto::enums::ButtonCode::Enum scanCode;
+    WheelDirection direction = WheelDirection::NONE;
+    ButtonEventType eventType = (ev->value == 1) ? ButtonEventType::PRESS
+                                                 : ButtonEventType::RELEASE;
+    bool isPressed = (ev->value == 1);
+    bool hasMediaAudioFocus = audiofocus == aasdk::proto::enums::AudioFocusState_Enum_GAIN;
+
+    scanCode = keymap[ev->code];
+    if (scanCode == aasdk::proto::enums::ButtonCode_Enum_NEXT ||
+        scanCode == aasdk::proto::enums::ButtonCode_Enum_PREV ||
+        scanCode == aasdk::proto::enums::ButtonCode_Enum_MEDIA) {
+      if (!hasMediaAudioFocus) {
+        libevdev_grab(keyboard_dev, LIBEVDEV_UNGRAB);
+        libevdev_uinput_write_event(ui_dev, ev->type, ev->code, ev->value);
+        libevdev_uinput_write_event(ui_dev, EV_SYN, SYN_REPORT, 0);
+        mediaDebounce[std::chrono::steady_clock::now()] = *ev;
+        libevdev_grab(keyboard_dev, LIBEVDEV_GRAB);
+        scanCode = aasdk::proto::enums::ButtonCode_Enum_NONE;
+      }
+    }
+    if (scanCode == aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) {
+      eventType = ButtonEventType::NONE;
+      if (ev->code == KEY_M) {
+        direction = WheelDirection::RIGHT;
+      } else if (ev->code == KEY_N) {
+        direction = WheelDirection::LEFT;
+      }
+    }
+    if (!videoFocus_) {
+      scanCode = aasdk::proto::enums::ButtonCode_Enum_NONE;
+      direction = WheelDirection::NONE;
+    }
+
+    if (isPressed) {
+      pressScanCode = keymap[ev->code];
+      time(&pressedSince);
+    } else {
+      time_t now = time(nullptr);
+      if (now - pressedSince >= 2) {
+        if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY) {
+          audiosignals_->focusRelease.emit();
+        } else if (
+            pressScanCode == aasdk::proto::enums::ButtonCode_Enum_BACK ||
+                pressScanCode == aasdk::proto::enums::ButtonCode_Enum_CALL_END) {
+          videosignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+        } else if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_HOME) {
+          videosignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+        }
+      }
+      pressScanCode = 0;
+    }
+
+    if (scanCode != 0 || direction != WheelDirection::NONE) {
+      eventHandler_->onButtonEvent({eventType, direction, scanCode});
+    }
   }
 }
 
-void InputDevice::handle_touch(asio::error_code ec, size_t bytes_transferred) {
-  if (!ec) {
-    auto const n = bytes_transferred / sizeof(input_event);
-    for (size_t i = 0; i < n; i++) {
-      auto &event = touch_events[i];
-      switch (event.type) {
-        case EV_ABS:
-          switch (event.code) {
-            case ABS_MT_POSITION_X:mTouch.x = static_cast<uint32_t>(event.value * 800 / 4095);
-              break;
-            case ABS_MT_POSITION_Y:mTouch.y = static_cast<uint32_t>(event.value * 480 / 4095);
-              break;
-            default:break;
-          }
+void InputDevice::handle_touch(input_event *ev) {
+  switch (ev->type) {
+    case EV_ABS:
+      switch (ev->code) {
+        case ABS_MT_POSITION_X:mTouch.x = static_cast<uint32_t>(ev->value * 800 / 4095);
           break;
-        case EV_KEY:
-          if (event.code == BTN_TOUCH) {
-            mTouch.action_recvd = 1;
-            if (event.value == 1) {
-              mTouch.action = aasdk::proto::enums::TouchAction::PRESS;
-            } else {
-              mTouch.action = aasdk::proto::enums::TouchAction::RELEASE;
-            }
-          }
-          break;
-        case EV_SYN:
-          if (mTouch.action_recvd == 0) {
-            mTouch.action = aasdk::proto::enums::TouchAction::DRAG;
-          } else {
-            mTouch.action_recvd = 0;
-          }
-          eventHandler_->onTouchEvent({mTouch.action, mTouch.x, mTouch.y, 0});
+        case ABS_MT_POSITION_Y:mTouch.y = static_cast<uint32_t>(ev->value * 480 / 4095);
           break;
         default:break;
       }
-    }
-    touch_events.resize(32);
-    touchscreen->async_read_some(asio::buffer(touch_events),
-                                 [this](asio::error_code ec, size_t bytes_transferred) {
-                                   this->handle_touch(ec, bytes_transferred);
-                                 });
-  } else {
-    LOG(ERROR) << ec.message();
-  }
-}
-
-/**
-* Passes the keystroke to MZD by "ungrabbing" the kbd on key-down, simulating the same keystroke with uinput,
-* then "re-grabbing" the kbd on key-up.
-*/
-void InputDevice::pass_key_to_mzd(int type, int code, int val) const {
-  if (val && ioctl(kbd_fd, EVIOCGRAB, 0) < 0) {
-    fprintf(stderr, "EVIOCGRAB failed to release %s\n", EVENT_DEVICE_KBD);
-  }
-
-  emit(ui_fd, type, code, val);
-  emit(ui_fd, EV_SYN, SYN_REPORT, 0);
-
-  if (!val && ioctl(kbd_fd, EVIOCGRAB, 1) < 0) {
-    fprintf(stderr, "EVIOCGRAB failed to grab %s\n", EVENT_DEVICE_KBD);
+      break;
+    case EV_KEY:
+      if (ev->code == BTN_TOUCH) {
+        mTouch.action_recvd = 1;
+        if (ev->value == 1) {
+          mTouch.action = aasdk::proto::enums::TouchAction::PRESS;
+        } else {
+          mTouch.action = aasdk::proto::enums::TouchAction::RELEASE;
+        }
+      }
+      break;
+    case EV_SYN:
+      if (mTouch.action_recvd == 0) {
+        mTouch.action = aasdk::proto::enums::TouchAction::DRAG;
+      } else {
+        mTouch.action_recvd = 0;
+      }
+      if (videoFocus_) {
+        eventHandler_->onTouchEvent({mTouch.action, mTouch.x, mTouch.y, 0});
+      }
+      break;
+    default:break;
   }
 }
 

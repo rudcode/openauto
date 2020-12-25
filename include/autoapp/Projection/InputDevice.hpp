@@ -17,8 +17,12 @@
 
 #pragma once
 
+#include <chrono>
+
 #include <linux/input.h>
 #include <linux/uinput.h>
+#include "libevdev/libevdev.h"
+#include "libevdev/libevdev-uinput.h"
 
 #include <aasdk_proto/ButtonCodeEnum.pb.h>
 #include <aasdk_proto/TouchActionEnum.pb.h>
@@ -51,27 +55,30 @@ class InputDevice : public IInputDevice {
   [[nodiscard]] TouchscreenSize getTouchscreenGeometry() const override;
 
  private:
-  asio::io_service &ioService_;
+  asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
+  asio::io_service::strand strand_;
   AudioSignals::Pointer audiosignals_;
   VideoSignals::Pointer videosignals_;
-  asio::posix::stream_descriptor *touchscreen = nullptr;
-  asio::posix::stream_descriptor *keyboard = nullptr;
-  std::vector<input_event> touch_events;
-  std::vector<input_event> key_events;
   IInputDeviceEventHandler *eventHandler_;
   std::mutex mutex_;
-  int touch_fd = -1, kbd_fd = -1, ui_fd = -1;
+  int touch_fd = -1, kbd_fd = -1;
   uint32_t pressScanCode = 0;
   time_t pressedSince = 0;
   aasdk::proto::enums::AudioFocusState_Enum audiofocus = aasdk::proto::enums::AudioFocusState_Enum_NONE;
+  bool videoFocus_ = false;
   TouchScreenState mTouch{0, 0, (aasdk::proto::enums::TouchAction::Enum) 0, 0};
+  libevdev *touch_dev = nullptr;
+  libevdev *keyboard_dev = nullptr;
+  libevdev_uinput *ui_dev = nullptr;
+  std::map<std::chrono::steady_clock::time_point, input_event> mediaDebounce;
+  std::map<uint16_t, aasdk::proto::enums::ButtonCode_Enum> keymap;
 
-  void pass_key_to_mzd(int type, int code, int val) const;
+  void handle_key(input_event *ev);
 
-  void handle_key(asio::error_code ec, size_t bytes_transferred);
-
-  void handle_touch(asio::error_code ec, size_t bytes_transferred);
+  void handle_touch(input_event *ev);
 
   void audio_focus(aasdk::proto::enums::AudioFocusState_Enum state);
+  void video_focus(bool state);
+  void poll();
 };
 }

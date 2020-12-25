@@ -36,6 +36,8 @@ find_package(sdbus-c++ REQUIRED)
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0)
 pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
 pkg_check_modules(Systemd REQUIRED libsystemd)
+pkg_check_modules(LIBEVDEV REQUIRED libevdev)
+
 
 SET(USE_STANDALONE_ASIO ON CACHE BOOL "use standalone Asio")
 SET(USE_OPENSSL OFF CACHE BOOL "Don't need SSL in our webserver")
@@ -112,7 +114,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR}
         #        ${DBUS_C++_INCLUDE_DIRS}
         #        ${DBUS_C++-GLIB_INCLUDE_DIRS}
         ${SIGC++_INCLUDE_DIRS}
-        ${ASIO_INCLUDE_DIRS})
+        ${ASIO_INCLUDE_DIRS}
+        ${LIBEVDEV_INCLUDE_DIRS})
 
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
@@ -143,6 +146,7 @@ target_link_libraries(autoapp
         ${CMAKE_SYSROOT}/usr/lib/libaasdk_proto.a
         ${Protobuf_LIBRARIES}
         ${OPENSSL_LIBRARIES}
+        ${LIBEVDEV_LIBRARIES}
         #        ${CMAKE_SYSROOT}/usr/lib/libdbus-c++-1.a
         #        ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a
         ${CMAKE_SYSROOT}/usr/lib/libsdbus-c++.a
