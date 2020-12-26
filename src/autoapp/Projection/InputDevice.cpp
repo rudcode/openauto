@@ -53,8 +53,8 @@ InputDevice::InputDevice(asio::io_service &ioService,
       {KEY_M, ButtonCode::SCROLL_WHEEL},
       {KEY_E, ButtonCode::MEDIA}
   };
-  audiosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
-  videosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::video_focus));
+  audioFocusChanged = audiosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
+  videoFocusChanged = videosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::video_focus));
 }
 
 void InputDevice::audio_focus(aasdk::proto::enums::AudioFocusState_Enum state) {
@@ -185,6 +185,9 @@ void InputDevice::poll(asio::error_code ec) {
 
 void InputDevice::stop() {
   std::lock_guard<decltype(mutex_)> lock(mutex_);
+
+  audioFocusChanged.disconnect();
+  videoFocusChanged.disconnect();
 
   timer_.cancel();
 

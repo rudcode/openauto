@@ -72,6 +72,8 @@ class InputDevice : public IInputDevice {
   libevdev_uinput *ui_dev = nullptr;
   std::chrono::steady_clock::time_point mediaDebounce;
   std::map<uint16_t, aasdk::proto::enums::ButtonCode_Enum> keymap;
+  sigc::connection audioFocusChanged;
+  sigc::connection videoFocusChanged;
 
   void handle_key(input_event *ev);
 
