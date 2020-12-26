@@ -70,7 +70,7 @@ class InputDevice : public IInputDevice {
   libevdev *touch_dev = nullptr;
   libevdev *keyboard_dev = nullptr;
   libevdev_uinput *ui_dev = nullptr;
-  std::map<std::chrono::steady_clock::time_point, input_event> mediaDebounce;
+  std::chrono::steady_clock::time_point mediaDebounce;
   std::map<uint16_t, aasdk::proto::enums::ButtonCode_Enum> keymap;
 
   void handle_key(input_event *ev);
@@ -79,6 +79,6 @@ class InputDevice : public IInputDevice {
 
   void audio_focus(aasdk::proto::enums::AudioFocusState_Enum state);
   void video_focus(bool state);
-  void poll();
+  void poll(asio::error_code ec);
 };
 }
