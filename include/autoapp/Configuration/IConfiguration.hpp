@@ -47,7 +47,7 @@ class IConfiguration {
 
   virtual void setTouchscreenEnabled(bool value) = 0;
 
-  [[nodiscard]] virtual int wifiPort() = 0;
+  [[nodiscard]] virtual uint32_t wifiPort() = 0;
 
   virtual void wifiPort(int port) = 0;
 

@@ -19,7 +19,6 @@
 #include <Mazda/Dbus/com.jci.bds.h>
 #include <Mazda/Dbus/com.jci.bca.h>
 
-// DBus::ObjectProxy(connection, "/com/jci/bds", "com.jci.bds")
 
 class BDSClient : public sdbus::ProxyInterfaces<com::jci::bds_proxy> {
  public:
@@ -200,8 +199,8 @@ class BDSClient : public sdbus::ProxyInterfaces<com::jci::bds_proxy> {
                                                  const sdbus::Struct<std::vector<uint8_t>> &data) override {}
   void onSignalBTChipFailure_cb(const uint32_t &type, const sdbus::Struct<std::vector<uint8_t>> &data) override {}
   void onSignalDeviceAddressGet_cb(const uint32_t &type, const sdbus::Struct<std::vector<uint8_t>> &data) override {}
-  int serviceID = -1;
-  int wifiPort = 0;
+  uint32_t serviceID = 0;
+  uint32_t wifiPort = 0;
 };
 
 // DBus::ObjectProxy(connection, "/com/jci/bca", "com.jci.bca")
@@ -246,8 +245,8 @@ class BCAClient : public sdbus::ProxyInterfaces<com::jci::bca_proxy> {
   void onDisableBluetoothRsp(const uint32_t &activeCallStatus) override {}
   void onConnectingCarPlayError() override {}
 
-  int serviceID = -1;
-  int wifiPort = 0;
+  uint32_t serviceID = 0;
+  uint32_t wifiPort = 0;
 };
 
 class BluetoothManager {
@@ -257,7 +256,7 @@ class BluetoothManager {
  private:
   autoapp::configuration::IConfiguration::Pointer configuration_;
   bool bdsconfigured = false;
-  int serviceId = 0;
+  uint32_t serviceId = 0;
   BDSClient *bdsClient;
   BCAClient *bcaClient;
 
@@ -273,13 +272,13 @@ std::string hostapd_config(const std::string &key);
 
 class BluetoothConnection {
  public:
-  explicit BluetoothConnection(int port);
+  explicit BluetoothConnection(uint32_t port);
   void handle_connect(const std::string &pty);
 
  private:
   int fd = 0;
   connectionInfo info;
-  int port_;
+  uint32_t port_;
 
   void handleWifiInfoRequest(uint8_t *buffer, uint16_t length);
   void handleWifiSecurityRequest(__attribute__((unused)) uint8_t *buffer, __attribute__((unused)) uint16_t length);

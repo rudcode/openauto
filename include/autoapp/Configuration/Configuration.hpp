@@ -44,7 +44,7 @@ class Configuration : public IConfiguration {
 
   void setTouchscreenEnabled(bool value) override;
 
-  [[nodiscard]] int wifiPort() override;
+  [[nodiscard]] uint32_t wifiPort() override;
 
   void wifiPort(int port) override;
 
@@ -54,7 +54,7 @@ class Configuration : public IConfiguration {
   bool lefthandDrive_ = true;
   bool hideClock_ = false;
   bool enableTouchscreen_ = true;
-  int wifiPort_ = 30515;
+  uint32_t wifiPort_ = 30515;
 };
 
 }

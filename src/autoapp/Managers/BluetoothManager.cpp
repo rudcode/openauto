@@ -5,7 +5,6 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <arpa/inet.h>
-#include <unistd.h>
 #include <fcntl.h>
 
 BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration)
@@ -26,7 +25,7 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
       if (std::string(e->Attribute("name")) == "AndroidAuto") {
         LOG(INFO) << "BDSCONFIG: AndroidAuto Entry found";
         bdsconfigured = true;
-        serviceId = e->IntAttribute("id");
+        serviceId = static_cast<uint32_t>(e->IntAttribute("id"));
       }
       LOG(DEBUG) << "BDSCONFIG: " << e->Attribute("name");
     }
@@ -102,14 +101,11 @@ int BluetoothConnection::handleWifiInfoRequestResponse(uint8_t *buffer, uint16_t
   return msg.status();
 }
 
-BluetoothConnection::BluetoothConnection(int port) : port_(port) {
+BluetoothConnection::BluetoothConnection(uint32_t port) : port_(port) {
   update_connection_info(info);
   LOG(DEBUG) << "Got IP: " << info.ipAddress << " MAC: " << info.macAddress;
 
 }
-
-#include <ostream>
-#include <string>
 
 namespace neolib {
 template<class Elem, class Traits>
@@ -172,7 +168,7 @@ void BluetoothConnection::handle_connect(const std::string &pty) {
       auto *buffer = new uint8_t[size];
       i = 0;
       while (i < size) {
-        i += read(fd, buffer + i, size - i);
+        i += read(fd, buffer + i, static_cast<size_t>(size - i));
       }
       switch (type) {
         case 1:handleWifiInfoRequest(buffer, size);
@@ -199,7 +195,7 @@ void BCAClient::onConnectionStatusResp(
     const uint32_t &status,
     const sdbus::Struct<std::vector<uint8_t>> &terminalPath) {
   LOG(DEBUG) << "Saw Service: " << serviceId;
-  if (static_cast<int>(serviceId) == serviceID && connStatus == 3) {
+  if (serviceId == serviceID && connStatus == 3) {
     std::string pty(terminalPath.get<0>().begin(), terminalPath.get<0>().end());
     LOG(DEBUG) << "PTY: " << pty;
     BluetoothConnection connection(wifiPort);

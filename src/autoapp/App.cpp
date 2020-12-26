@@ -30,7 +30,7 @@ App::App(asio::io_service &ioService,
          service::IAndroidAutoEntityFactory &androidAutoEntityFactory,
          aasdk::usb::IUSBHub::Pointer usbHub,
          aasdk::usb::IConnectedAccessoriesEnumerator::Pointer connectedAccessoriesEnumerator,
-         int port)
+         uint32_t port)
     : ioService_(ioService),
       usbWrapper_(usbWrapper),
       tcpWrapper_(tcpWrapper),

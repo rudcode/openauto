@@ -34,7 +34,7 @@ void Pinger::ping(Promise::Pointer promise) {
       promise_->reject(aasdk::error::Error(aasdk::error::ErrorCode::OPERATION_IN_PROGRESS));
     } else {
       ++pingsCount_;
-      LOG(INFO) << "[Pinger] Ping counter: " << pingsCount_;
+//      LOG(INFO) << "[Pinger] Ping counter: " << pingsCount_;
 
       promise_ = std::move(promise);
       timer_.expires_from_now(std::chrono::milliseconds(duration_));
@@ -46,7 +46,7 @@ void Pinger::ping(Promise::Pointer promise) {
 void Pinger::pong() {
   strand_.dispatch([this, self = this->shared_from_this()]() {
     ++pongsCount_;
-    LOG(INFO) << "[Pinger] Pong counter: " << pongsCount_;
+//    LOG(INFO) << "[Pinger] Pong counter: " << pongsCount_;
   });
 }
 

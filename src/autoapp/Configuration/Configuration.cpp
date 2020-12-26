@@ -73,7 +73,7 @@ bool Configuration::getTouchscreenEnabled() const {
 void Configuration::setTouchscreenEnabled(bool value) {
   enableTouchscreen_ = value;
 }
-int Configuration::wifiPort() {
+uint32_t Configuration::wifiPort() {
   return wifiPort_;
 }
 void Configuration::wifiPort(int port) {
