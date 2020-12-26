@@ -34,8 +34,8 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
   if (bdsconfigured) {
     sleep(5);
     auto connection = sdbus::createSessionBusConnection();
-    bdsClient = new BDSClient("com.jci.bds", "/com/jci/bds");
-    bcaClient = new BCAClient(connection, "com.jci.bca", "/com/jci/bca");
+    bdsClient = new BDSClient();
+    bcaClient = new BCAClient(connection);
     bdsClient->serviceID = serviceId;
     bdsClient->wifiPort = configuration_->wifiPort();
     bcaClient->serviceID = serviceId;
@@ -51,8 +51,8 @@ void BluetoothManager::stop() {
 
 void BluetoothConnection::sendMessage(google::protobuf::MessageLite &message, uint16_t type) const {
   auto byteSize = static_cast<size_t>(message.ByteSizeLong());
-  auto sizeOut = static_cast<uint16_t>(htobe16(byteSize));
-  auto typeOut = static_cast<uint16_t>(htobe16(type));
+  uint16_t sizeOut = htobe16(static_cast<uint16_t>(byteSize));
+  uint16_t typeOut = htobe16(type);
   auto *out = new char[byteSize + 4];
   memcpy(out, &sizeOut, 2);
   memcpy(out + 2, &typeOut, 2);

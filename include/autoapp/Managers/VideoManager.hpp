@@ -10,7 +10,7 @@
 #include <Mazda/Dbus/com.jci.nativeguictrl.h>
 #include <Mazda/Dbus/com.jci.bucpsa.h>
 
-class NativeGUICtrlClient : public sdbus::ProxyInterfaces<com::jci::nativeguictrl_proxy> {
+class NativeGUICtrlClient final : public sdbus::ProxyInterfaces<com::jci::nativeguictrl_proxy> {
  public:
   NativeGUICtrlClient(std::unique_ptr<sdbus::IConnection> &connection, std::string destination, std::string objectPath)
       : sdbus::ProxyInterfaces<com::jci::nativeguictrl_proxy>(std::move(connection),
@@ -47,7 +47,7 @@ class NativeGUICtrlClient : public sdbus::ProxyInterfaces<com::jci::nativeguictr
   }
 };
 
-class BucpsaClient : public sdbus::ProxyInterfaces<com::jci::bucpsa_proxy> {
+class BucpsaClient final : public sdbus::ProxyInterfaces<com::jci::bucpsa_proxy> {
 
  public:
   bool currentDisplayMode;

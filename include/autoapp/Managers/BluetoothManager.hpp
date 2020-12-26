@@ -20,10 +20,10 @@
 #include <Mazda/Dbus/com.jci.bca.h>
 
 
-class BDSClient : public sdbus::ProxyInterfaces<com::jci::bds_proxy> {
+class BDSClient final : public sdbus::ProxyInterfaces<com::jci::bds_proxy> {
  public:
-  BDSClient(std::string destination, std::string objectPath)
-      : sdbus::ProxyInterfaces<com::jci::bds_proxy>(std::move(destination), std::move(objectPath)) {
+  BDSClient()
+      : sdbus::ProxyInterfaces<com::jci::bds_proxy>("com.jci.bds", "/com/jci/bds") {
     registerProxy();
   }
 
@@ -203,14 +203,10 @@ class BDSClient : public sdbus::ProxyInterfaces<com::jci::bds_proxy> {
   uint32_t wifiPort = 0;
 };
 
-// DBus::ObjectProxy(connection, "/com/jci/bca", "com.jci.bca")
-
-class BCAClient : public sdbus::ProxyInterfaces<com::jci::bca_proxy> {
+class BCAClient final : public sdbus::ProxyInterfaces<com::jci::bca_proxy> {
  public:
-  BCAClient(std::unique_ptr<sdbus::IConnection> &connection, std::string destination, std::string objectPath)
-      : sdbus::ProxyInterfaces<com::jci::bca_proxy>(std::move(connection),
-                                                    std::move(destination),
-                                                    std::move(objectPath)) {
+  explicit BCAClient(std::unique_ptr<sdbus::IConnection> &connection)
+      : sdbus::ProxyInterfaces<com::jci::bca_proxy>(std::move(connection), "com.jci.bca", "/com/jci/bca") {
     registerProxy();
   }
 

@@ -5,7 +5,7 @@
 
 #include <Mazda/Dbus/com.xsembedded.ServiceProvider.h>
 
-class AudioManagerClient : public sdbus::ProxyInterfaces<com::xsembedded::ServiceProvider_proxy> {
+class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::ServiceProvider_proxy> {
  private:
   std::map<std::string, int> streamToSessionIds;
   std::string aaStreamName = "MLENT";
