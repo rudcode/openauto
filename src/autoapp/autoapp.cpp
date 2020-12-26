@@ -42,7 +42,7 @@ using ThreadPool = std::vector<std::thread>;
 
 void startUSBWorkers(asio::io_service &ioService, libusb_context *usbContext, ThreadPool &threadPool) {
   auto usbWorker = [&ioService, usbContext]() {
-    timeval libusbEventTimeout{180, 0};
+    timeval libusbEventTimeout{10, 0};
 
     while (!ioService.stopped()) {
       libusb_handle_events_timeout_completed(usbContext, &libusbEventTimeout, nullptr);
@@ -75,7 +75,9 @@ INITIALIZE_EASYLOGGINGPP
 bool running = true;
 
 void signalHandler(int signum) {
-  running = false;
+  if (signum == SIGINT) {
+    running = false;
+  }
 }
 
 int main(int argc, char *argv[]) {
@@ -145,17 +147,18 @@ int main(int argc, char *argv[]) {
 
   LOG(DEBUG) << "Calling app->stop()";
   app->stop();
-  sleep(5);
   LOG(DEBUG) << "Stopping BluetoothManager";
   bluetoothManager.stop();
   LOG(DEBUG) << "Stopping HttpManager";
   httpManager.stop();
-  LOG(DEBUG) << "Stopping GPSManager";
+//  LOG(DEBUG) << "Stopping GPSManager";
 //  gpsManager.stop();
   LOG(DEBUG) << "Stopping AudioManager";
   delete audioManager;
   LOG(DEBUG) << "Stopping VideoManager";
   videoManager.stop();
+  LOG(DEBUG) << "Stopping ioService";
+  ioService.stop();
   LOG(DEBUG) << "Joining threads";
   std::for_each(threadPool.begin(), threadPool.end(), [](std::thread &thread) { thread.join(); });
   LOG(DEBUG) << "libusb_exit(usbContext)";
