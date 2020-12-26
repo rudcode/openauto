@@ -45,17 +45,33 @@ void GSTVideoOutput::spawn_gst() {
     close(p_stdin[0]);
     p_stdin[0] = tmp;
   }
-  char shell[2][3] = {"sh", "-c"};
-  char cmd[] = "gst-launch fdsrc fd=0 timeout=1000 do-timestamp=true ! queue ! h264parse " \
-                            "! vpudec low-latency=true framedrop=true framedrop-level-mask=0x200 frame-plus=1 "\
-                            "! mfw_isink name=mysink axis-left=0  axis-top=0 disp-width=800 disp-height=480 " \
-                            "max-lateness=1000000000 sync=false async=false 2>&1";
-  LOG(DEBUG) << cmd;
-  char *const launch[] = {shell[0], shell[1], cmd, nullptr};
+
+  char *const launch[] = {
+      (char *) "sh",
+      (char *) "-c",
+      (char *) "gst-launch fdsrc fd=0 timeout=1000 do-timestamp=true ! queue ! h264parse " \
+      "! vpudec low-latency=true framedrop=true framedrop-level-mask=0x200 frame-plus=1 "\
+      "! mfw_isink name=mysink axis-left=0  axis-top=0 disp-width=800 disp-height=480 " \
+      "max-lateness=1000000000 sync=false async=false 2>&1",
+      nullptr};
+
+  char *const environment[] = {
+      (char *) "USER=jci",
+      (char *) "LD_LIBRARY_PATH=/jci/lib:/jci/opera/3rdpartylibs/freetype:/usr/lib/imx-mm/audio-codec:/usr/lib/imx-mm/parser:/data_persist/dev/lib:",
+      (char *) "HOME=/root",
+      (char *) "WAYLAND_IVI_SURFACE_ID=2",
+      (char *) "PATH=/sbin:/usr/sbin:/bin:/usr/bin:/jci/bin/:/resources/dev/bin:/resources/dev/sbin:/data_persist/dev/bin:/data_persist/dev/sbin:/resources/dev/usr/bin",
+      (char *) "XDG_RUNTIME_DIR=/tmp",
+      (char *) "SHELL=/bin/sh",
+      (char *) "PWD=/tmp/root",
+      (char *) "GST_PLUGIN_PATH=/mnt/data_persist/dev/bin/headunit_libs:/usr/lib/gstreamer-0.10",
+      nullptr
+  };
+
   if (!posix_spawn_file_actions_init(&fa)) {
     if (!posix_spawn_file_actions_adddup2(&fa, p_stdin[0], 0)) {
       if (!posix_spawn_file_actions_adddup2(&fa, p_stdout[1], 1)) {
-        if (!posix_spawn(&gstpid, "/bin/sh", &fa, nullptr, launch, environ)) {
+        if (!posix_spawn(&gstpid, "/bin/sh", &fa, nullptr, launch, environment)) {
           posix_spawn_file_actions_destroy(&fa);
           fcntl(p_stdin[1], F_SETFD, 0);
           fcntl(p_stdout[0], F_SETFD, 0);
