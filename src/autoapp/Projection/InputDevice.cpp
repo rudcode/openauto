@@ -22,6 +22,8 @@
 #include <autoapp/Projection/IInputDeviceEventHandler.hpp>
 #include <autoapp/Projection/InputDevice.hpp>
 
+using ButtonCode = aasdk::proto::enums::ButtonCode;
+
 namespace autoapp::projection {
 
 InputDevice::InputDevice(asio::io_service &ioService,
@@ -33,23 +35,23 @@ InputDevice::InputDevice(asio::io_service &ioService,
     videosignals_(std::move(videosignals)),
     eventHandler_(nullptr) {
   keymap = {
-      {KEY_G, aasdk::proto::enums::ButtonCode_Enum_MICROPHONE_1},
-      {KEY_BACKSPACE, aasdk::proto::enums::ButtonCode_Enum_BACK},
-      {KEY_ENTER, aasdk::proto::enums::ButtonCode_Enum_ENTER},
-      {KEY_LEFT, aasdk::proto::enums::ButtonCode_Enum_LEFT},
-      {KEY_RIGHT, aasdk::proto::enums::ButtonCode_Enum_RIGHT},
-      {KEY_UP, aasdk::proto::enums::ButtonCode_Enum_UP},
-      {KEY_DOWN, aasdk::proto::enums::ButtonCode_Enum_DOWN},
-      {KEY_HOME, aasdk::proto::enums::ButtonCode_Enum_HOME},
-      {KEY_R, aasdk::proto::enums::ButtonCode_Enum_NAVIGATION},
-      {KEY_Z, aasdk::proto::enums::ButtonCode_Enum_PHONE},
-      {KEY_X, aasdk::proto::enums::ButtonCode_Enum_CALL_END},
-      {KEY_T, aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY},
-      {KEY_LEFTBRACE, aasdk::proto::enums::ButtonCode_Enum_NEXT},
-      {KEY_RIGHTBRACE, aasdk::proto::enums::ButtonCode_Enum_PREV},
-      {KEY_N, aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
-      {KEY_M, aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL},
-      {KEY_E, aasdk::proto::enums::ButtonCode_Enum_MEDIA}
+      {KEY_G, ButtonCode::MICROPHONE_1},
+      {KEY_BACKSPACE, ButtonCode::BACK},
+      {KEY_ENTER, ButtonCode::ENTER},
+      {KEY_LEFT, ButtonCode::LEFT},
+      {KEY_RIGHT, ButtonCode::RIGHT},
+      {KEY_UP, ButtonCode::UP},
+      {KEY_DOWN, ButtonCode::DOWN},
+      {KEY_HOME, ButtonCode::HOME},
+      {KEY_R, ButtonCode::NAVIGATION},
+      {KEY_Z, ButtonCode::PHONE},
+      {KEY_X, ButtonCode::CALL_END},
+      {KEY_T, ButtonCode::TOGGLE_PLAY},
+      {KEY_LEFTBRACE, ButtonCode::NEXT},
+      {KEY_RIGHTBRACE, ButtonCode::PREV},
+      {KEY_N, ButtonCode::SCROLL_WHEEL},
+      {KEY_M, ButtonCode::SCROLL_WHEEL},
+      {KEY_E, ButtonCode::MEDIA}
   };
   audiosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::audio_focus));
   videosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::video_focus));
@@ -204,26 +206,26 @@ bool InputDevice::hasTouchscreen() const {
 }
 
 IInputDevice::ButtonCodes InputDevice::getSupportedButtonCodes() const {
-  std::vector<aasdk::proto::enums::ButtonCode::Enum> buttons;
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_MENU);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_MICROPHONE_2);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_HOME);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_BACK);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_PHONE);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_CALL_END);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_UP);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_DOWN);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_LEFT);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_RIGHT);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_ENTER);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_MICROPHONE_1);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_NEXT);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_PREV);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_MUSIC);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_SCROLL_WHEEL);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_TEL);
-  buttons.push_back(aasdk::proto::enums::ButtonCode_Enum_NAVIGATION);
+  std::vector<ButtonCode::Enum> buttons;
+  buttons.push_back(ButtonCode::MENU);
+  buttons.push_back(ButtonCode::MICROPHONE_2);
+  buttons.push_back(ButtonCode::HOME);
+  buttons.push_back(ButtonCode::BACK);
+  buttons.push_back(ButtonCode::PHONE);
+  buttons.push_back(ButtonCode::CALL_END);
+  buttons.push_back(ButtonCode::UP);
+  buttons.push_back(ButtonCode::DOWN);
+  buttons.push_back(ButtonCode::LEFT);
+  buttons.push_back(ButtonCode::RIGHT);
+  buttons.push_back(ButtonCode::ENTER);
+  buttons.push_back(ButtonCode::MICROPHONE_1);
+  buttons.push_back(ButtonCode::TOGGLE_PLAY);
+  buttons.push_back(ButtonCode::NEXT);
+  buttons.push_back(ButtonCode::PREV);
+  buttons.push_back(ButtonCode::MUSIC);
+  buttons.push_back(ButtonCode::SCROLL_WHEEL);
+  buttons.push_back(ButtonCode::TEL);
+  buttons.push_back(ButtonCode::NAVIGATION);
   return buttons;
 }
 
@@ -235,7 +237,7 @@ void InputDevice::handle_key(input_event *ev) {
   std::chrono::steady_clock::time_point tpNow = std::chrono::steady_clock::now();
 
   if (ev->type == EV_KEY && (ev->value == 1 || ev->value == 0)) {
-    aasdk::proto::enums::ButtonCode::Enum scanCode;
+    ButtonCode::Enum scanCode;
     WheelDirection direction = WheelDirection::NONE;
     ButtonEventType eventType = (ev->value == 1) ? ButtonEventType::PRESS
                                                  : ButtonEventType::RELEASE;
@@ -243,9 +245,7 @@ void InputDevice::handle_key(input_event *ev) {
     bool hasMediaAudioFocus = audiofocus == aasdk::proto::enums::AudioFocusState_Enum_GAIN;
 
     scanCode = keymap[ev->code];
-    if (scanCode == aasdk::proto::enums::ButtonCode_Enum_NEXT ||
-        scanCode == aasdk::proto::enums::ButtonCode_Enum_PREV ||
-        scanCode == aasdk::proto::enums::ButtonCode_Enum_MEDIA) {
+    if (scanCode == ButtonCode::NEXT || scanCode == ButtonCode::PREV || scanCode == ButtonCode::MEDIA) {
       if (!hasMediaAudioFocus && videoFocus_) {
         if (std::chrono::duration_cast<std::chrono::milliseconds>(tpNow - mediaDebounce).count() > 200
             && ev->value == 1) {
@@ -260,7 +260,7 @@ void InputDevice::handle_key(input_event *ev) {
         return;
       }
     }
-    if (scanCode == aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) {
+    if (scanCode == ButtonCode::SCROLL_WHEEL) {
       if (ev->value == 0) {
         eventType = ButtonEventType::NONE;
         if (ev->code == KEY_M) {
@@ -269,7 +269,7 @@ void InputDevice::handle_key(input_event *ev) {
           direction = WheelDirection::LEFT;
         }
       } else {
-        scanCode = aasdk::proto::enums::ButtonCode::NONE;
+        scanCode = ButtonCode::NONE;
       }
     }
 
@@ -279,14 +279,15 @@ void InputDevice::handle_key(input_event *ev) {
     } else {
       time_t now = time(nullptr);
       if (now - pressedSince >= 2) {
-        if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_TOGGLE_PLAY) {
-          audiosignals_->focusRelease.emit();
-        } else if (
-            pressScanCode == aasdk::proto::enums::ButtonCode_Enum_BACK ||
-                pressScanCode == aasdk::proto::enums::ButtonCode_Enum_CALL_END) {
-          videosignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
-        } else if (pressScanCode == aasdk::proto::enums::ButtonCode_Enum_HOME) {
-          videosignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+        switch (pressScanCode) {
+          case ButtonCode::TOGGLE_PLAY:audiosignals_->focusRelease.emit();
+            break;
+          case ButtonCode::BACK: // We use both these buttons for releasing focus, so fall through to the next case.
+          case ButtonCode::CALL_END:videosignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+            break;
+          case ButtonCode::HOME:videosignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+            break;
+          default:break;
         }
       }
       pressScanCode = 0;
