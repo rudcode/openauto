@@ -46,7 +46,7 @@ class Configuration : public IConfiguration {
 
   [[nodiscard]] uint32_t wifiPort() override;
 
-  void wifiPort(int port) override;
+  void wifiPort(uint32_t port) override;
 
  private:
   toml::table config;

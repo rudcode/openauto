@@ -31,7 +31,7 @@ Configuration::Configuration() {
     if (config.contains("enableTouchscreen"))
       enableTouchscreen_ = config["enableTouchscreen"].as_boolean();
     if (config.contains("wifiPort"))
-      wifiPort_ = static_cast<int>(static_cast<long long>(*config["wifiPort"].as_integer()));
+      wifiPort_ = static_cast<uint32_t>(static_cast<long long>(*config["wifiPort"].as_integer()));
     LOG(DEBUG) << config;
   }
   catch (const toml::parse_error &err) {
@@ -76,7 +76,7 @@ void Configuration::setTouchscreenEnabled(bool value) {
 uint32_t Configuration::wifiPort() {
   return wifiPort_;
 }
-void Configuration::wifiPort(int port) {
+void Configuration::wifiPort(uint32_t port) {
   wifiPort_ = port;
 }
 

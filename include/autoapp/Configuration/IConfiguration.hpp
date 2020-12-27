@@ -49,7 +49,7 @@ class IConfiguration {
 
   [[nodiscard]] virtual uint32_t wifiPort() = 0;
 
-  virtual void wifiPort(int port) = 0;
+  virtual void wifiPort(uint32_t port) = 0;
 
 };
 
