@@ -34,19 +34,41 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
   if (bdsconfigured) {
     sleep(5);
     auto connection = sdbus::createSessionBusConnection();
-    bdsClient = new BDSClient();
-    bcaClient = new BCAClient(connection);
-    bdsClient->serviceID = serviceId;
-    bdsClient->wifiPort = configuration_->wifiPort();
-    bcaClient->serviceID = serviceId;
-    bcaClient->wifiPort = configuration_->wifiPort();
-    bcaClient->StartAdd(serviceId);
+    bdsClient = sdbus::createProxy("com.jci.bds", "/com/jci/bds");
+    bdsClient->uponSignal("SignalConnected_cb").onInterface("com.jci.bds").call(
+        [this](const uint32_t &type, const sdbus::Struct<std::vector<uint8_t>> &data) {
+          printf("Saw Service: %u", data.get<0>()[36]);
+          if (data.get<0>()[36] == serviceId) {
+            std::string pty((char *) &data.get<0>()[48]);
+            LOG(DEBUG) << "PTY: " << pty;
+            BluetoothConnection connection(configuration_->wifiPort());
+            connection.handle_connect(pty);
+          }
+        });
+    bdsClient->finishRegistration();
+    bcaClient = sdbus::createProxy(std::move(connection), "com.jci.bca", "/com/jci/bca");
+    bcaClient->uponSignal("ConnectionStatusResp").onInterface("com.jci.bca").call(
+        [this](const uint32_t &found_serviceId,
+               const uint32_t &connStatus,
+               const uint32_t &btDeviceId,
+               const uint32_t &status,
+               const sdbus::Struct<std::vector<uint8_t>> &terminalPath) {
+          LOG(DEBUG) << "Saw Service: " << found_serviceId;
+          if (found_serviceId == serviceId && connStatus == 3) {
+            std::string pty(terminalPath.get<0>().begin(), terminalPath.get<0>().end());
+            LOG(DEBUG) << "PTY: " << pty;
+            BluetoothConnection connection(configuration_->wifiPort());
+            connection.handle_connect(pty);
+          }
+        });
+    bcaClient->finishRegistration();
+    bcaClient->callMethod("StartAdd").onInterface("com.jci.bca").withArguments(serviceId).withTimeout(1000).dontExpectReply();
   }
 
 }
 void BluetoothManager::stop() {
-  delete bdsClient;
-  delete bcaClient;
+  bdsClient.reset();
+  bcaClient.reset();
 }
 
 void BluetoothConnection::sendMessage(google::protobuf::MessageLite &message, uint16_t type) const {
@@ -107,110 +129,60 @@ BluetoothConnection::BluetoothConnection(uint32_t port) : port_(port) {
 
 }
 
-namespace neolib {
-template<class Elem, class Traits>
-inline void hex_dump(const void *aData,
-                     std::size_t aLength,
-                     std::basic_ostream<Elem, Traits> &aStream,
-                     std::size_t aWidth = 16) {
-  const char *const start = static_cast<const char *>(aData);
-  const char *const end = start + aLength;
-  const char *line = start;
-  while (line != end) {
-    aStream.width(4);
-    aStream.fill('0');
-    aStream << std::hex << line - start << " : ";
-    std::size_t lineLength = std::min(aWidth, static_cast<std::size_t>(end - line));
-    for (std::size_t pass = 1; pass <= 2; ++pass) {
-      for (const char *next = line; next != end && next != line + aWidth; ++next) {
-        char ch = *next;
-        switch (pass) {
-          case 1:aStream << (ch < 32 ? '.' : ch);
-            break;
-          case 2:
-            if (next != line)
-              aStream << " ";
-            aStream.width(2);
-            aStream.fill('0');
-            aStream << std::hex << std::uppercase << static_cast<int>(static_cast<unsigned char>(ch));
-            break;
-        }
-      }
-      if (pass == 1 && lineLength != aWidth)
-        aStream << std::string(aWidth - lineLength, ' ');
-      aStream << " ";
-    }
-    aStream << std::endl;
-    line = line + lineLength;
-  }
-}
-}
-
 void BluetoothConnection::handle_connect(const std::string &pty) {
-  char buf[100];
+//  char buf[100];
+  std::vector<char> buf;
   LOG(DEBUG) << "PTY: " << pty;
-  fd = open(pty.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+  fd = open(pty.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
   aasdk::proto::messages::WifiInfoRequest request;
   request.set_ip_address(info.ipAddress.c_str());
   request.set_port(port_);
 
   sendMessage(request, 1);
+  char tmp[100];
+  uint16_t msgLen;
+  uint16_t msg;
 
-  ssize_t len = 0;
-  int loop = 1;
-  while (loop) {
-    ssize_t i = read(fd, buf, 4);
-    len += i;
-    if (len == 4) {
-      auto size = static_cast<uint16_t>(be16toh(*(uint16_t *) buf));
-      auto type = static_cast<uint16_t>(be16toh(*(uint16_t *) (buf + 2)));
-      LOG(DEBUG) << "Size: " << size << " MessageID: " << type;
-      auto *buffer = new uint8_t[size];
-      i = 0;
-      while (i < size) {
-        i += read(fd, buffer + i, static_cast<size_t>(size - i));
-      }
-      switch (type) {
-        case 1:handleWifiInfoRequest(buffer, size);
-          break;
-        case 2:handleWifiSecurityRequest(buffer, size);
-          break;
-        case 7:
-          if (handleWifiInfoRequestResponse(buffer, size) == 0) {
-            loop = 0;
-          }
-          break;
-        default:neolib::hex_dump(buffer, size, std::cout);
-          break;
-      }
-      delete[] buffer;
+  fd_set set;
+  timeval timeout{1, 0};
+
+  FD_ZERO(&set);
+  FD_SET(fd, &set);
+
+  while (true) {
+    if (select(fd + 1, &set, nullptr, nullptr, &timeout) <= 0) {
+      break;
     }
-  }
-}
+    ssize_t i = read(fd, &tmp, 100);
+    if (i > 0) {
+      buf.insert(buf.cend(), tmp, tmp + i);
+    }
+    if (buf.size() < 4)
+      continue;
 
-void BCAClient::onConnectionStatusResp(
-    const uint32_t &serviceId,
-    const uint32_t &connStatus,
-    const uint32_t &btDeviceId,
-    const uint32_t &status,
-    const sdbus::Struct<std::vector<uint8_t>> &terminalPath) {
-  LOG(DEBUG) << "Saw Service: " << serviceId;
-  if (serviceId == serviceID && connStatus == 3) {
-    std::string pty(terminalPath.get<0>().begin(), terminalPath.get<0>().end());
-    LOG(DEBUG) << "PTY: " << pty;
-    BluetoothConnection connection(wifiPort);
-    connection.handle_connect(pty);
-  }
-}
+    msgLen = static_cast<uint16_t>(be16toh(*(uint16_t *) buf.data()));
+    msg = static_cast<uint16_t>(be16toh(*(uint16_t *) (buf.data() + 2)));
+    LOG(DEBUG) << "MSG Type: " << msg << " Size: " << msgLen;
 
-void BDSClient::onSignalConnected_cb(const uint32_t &type, const sdbus::Struct<std::vector<uint8_t>> &data) {
-  printf("Saw Service: %u", data.get<0>()[36]);
-  if (data.get<0>()[36] == serviceID) {
-    std::string pty((char *) &data.get<0>()[48]);
-    LOG(DEBUG) << "PTY: " << pty;
-    BluetoothConnection connection(wifiPort);
-    connection.handle_connect(pty);
+    if (buf.size() < msgLen + 4)
+      continue;
+
+    auto *buffer = new uint8_t[msgLen];
+    std::copy(buf.cbegin() + 4, buf.cbegin() + msgLen, buffer);
+    switch (msg) {
+      case 1:handleWifiInfoRequest(buffer, msgLen);
+        break;
+      case 2:handleWifiSecurityRequest(buffer, msgLen);
+        break;
+      case 7:handleWifiInfoRequestResponse(buffer, msgLen);
+        break;
+      default:break;
+    }
+    delete[] buffer;
+    buf.erase(buf.cbegin(), buf.cbegin() + msgLen + 4);
   }
+
+  close(fd);
 }
 
 std::string hostapd_config(const std::string &key) {

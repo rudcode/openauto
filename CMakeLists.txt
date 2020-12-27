@@ -129,10 +129,7 @@ add_executable(autoapp
         "Mazda/Dbus/com.jci.bucpsa.h"
         "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
         "Mazda/Dbus/com.jci.lds.control.h"
-        "Mazda/Dbus/com.jci.lds.data.h"
-        "Mazda/Dbus/com.jci.pa.h"
-        "Mazda/Dbus/com.jci.bds.h"
-        "Mazda/Dbus/com.jci.bca.h")
+        "Mazda/Dbus/com.jci.lds.data.h")
 target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/)
 target_include_directories(autoapp PRIVATE ${include_directory})
 
