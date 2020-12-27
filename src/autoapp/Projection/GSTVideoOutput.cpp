@@ -1,9 +1,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <autoapp/Projection/GSTVideoOutput.hpp>
-#include <csignal>
 #include <easylogging++.h>
-#include <fcntl.h>
 #include <spawn.h>
 #include <regex>
 
@@ -12,20 +10,22 @@ namespace autoapp::projection {
 GSTVideoOutput::GSTVideoOutput(asio::io_service &ioService) : ioService_(ioService) {}
 
 void GSTVideoOutput::message_handler(asio::error_code ec, size_t bytes_transferred) {
-  if (!bytes_transferred) return;
+  if (bytes_transferred || !ec) {
+    std::string s((std::istreambuf_iterator<char>(&buffer)), std::istreambuf_iterator<char>());
+    buffer.consume(bytes_transferred);
+    unsigned int newline = s.rfind('\n');
+    s.erase(newline); // Remove extranious new line
 
-  std::string s((std::istreambuf_iterator<char>(&buffer)), std::istreambuf_iterator<char>());
-  buffer.consume(bytes_transferred);
-  unsigned int newline = s.rfind('\n');
-  s.erase(newline); // Remove extranious new line
+    std::smatch m;
+    std::regex e("\x1b[[0-9;]*m");
 
-  std::smatch m;
-  std::regex e("\x1b[[0-9;]*m");
-
-  LOG(INFO) << regex_replace(s, e, "");
-  asio::async_read_until(*sd, buffer, '\n', [this](asio::error_code ec, size_t bytes_transferred) {
-    this->message_handler(ec, bytes_transferred);
-  });
+    LOG(INFO) << regex_replace(s, e, "");
+  }
+  if (ec != asio::error::operation_aborted) {
+    asio::async_read_until(*sd, buffer, '\n', [this](asio::error_code ec, size_t bytes_transferred) {
+      this->message_handler(ec, bytes_transferred);
+    });
+  }
 }
 
 void GSTVideoOutput::spawn_gst() {
@@ -111,8 +111,9 @@ void GSTVideoOutput::write(__attribute__((unused)) uint64_t timestamp,
 }
 
 void GSTVideoOutput::stop() {
+  fclose(gst_file);
+  close(p_stdin[1]);
   sd->close();
-  kill(gstpid, SIGQUIT);
 }
 
 GSTVideoOutput::~GSTVideoOutput() = default;

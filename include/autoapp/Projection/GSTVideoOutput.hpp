@@ -40,8 +40,8 @@ class GSTVideoOutput : public IVideoOutput {
 
  private:
   asio::io_service &ioService_;
-  pid_t gstpid;
-  int p_stdin[2], p_stdout[2];
+  pid_t gstpid{};
+  int p_stdin[2]{}, p_stdout[2]{};
   asio::streambuf buffer;
   asio::posix::stream_descriptor *sd = nullptr;
 
