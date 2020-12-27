@@ -23,7 +23,7 @@ namespace autoapp::configuration {
 
 Configuration::Configuration() {
   try {
-    config = toml::parse_file("/mnt/data_persist/dev/bin/autoapp_configuration.toml");
+    toml::table config = toml::parse_file("/mnt/data_persist/dev/bin/autoapp_configuration.toml");
     if (config.contains("lefthandDrive"))
       lefthandDrive_ = config["lefthandDrive"].as_boolean();
     if (config.contains("hideClock"))

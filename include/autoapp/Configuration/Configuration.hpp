@@ -19,7 +19,11 @@
 #pragma once
 
 #include <autoapp/Configuration/IConfiguration.hpp>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 #include <toml.hpp>
+#pragma GCC diagnostic pop
+
 #include <fstream>
 
 namespace autoapp::configuration {
@@ -49,7 +53,6 @@ class Configuration : public IConfiguration {
   void wifiPort(uint32_t port) override;
 
  private:
-  toml::table config;
 
   bool lefthandDrive_ = true;
   bool hideClock_ = false;
