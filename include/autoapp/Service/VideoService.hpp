@@ -66,6 +66,8 @@ class VideoService
   aasdk::channel::av::VideoServiceChannel::Pointer channel_;
   projection::IVideoOutput::Pointer videoOutput_;
   int32_t session_;
+  sigc::connection focusRequest;
+  sigc::connection focusRelease;
 };
 
 }
