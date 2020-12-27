@@ -134,6 +134,17 @@ void BluetoothConnection::handle_connect(const std::string &pty) {
   std::vector<char> buf;
   LOG(DEBUG) << "PTY: " << pty;
   fd = open(pty.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+
+  char iptables[100];
+  sprintf(iptables, "iptables -L |grep -c %u", port_);
+  LOG(DEBUG) << iptables;
+  int result = system(iptables);
+  if (result) {
+    sprintf(iptables, "iptables -A INPUT -p tcp --dport %u -m state --state NEW,ESTABLISHED -j ACCEPT", port_);
+    LOG(DEBUG) << iptables;
+    system(iptables);
+  }
+
   aasdk::proto::messages::WifiInfoRequest request;
   request.set_ip_address(info.ipAddress.c_str());
   request.set_port(port_);
@@ -164,7 +175,7 @@ void BluetoothConnection::handle_connect(const std::string &pty) {
     msg = static_cast<uint16_t>(be16toh(*(uint16_t *) (buf.data() + 2)));
     LOG(DEBUG) << "MSG Type: " << msg << " Size: " << msgLen;
 
-    if (buf.size() < msgLen + 4)
+    if (static_cast<uint16_t>(buf.size()) < msgLen + 4)
       continue;
 
     auto *buffer = new uint8_t[msgLen];

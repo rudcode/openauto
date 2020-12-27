@@ -81,6 +81,20 @@ void signalHandler(int signum) {
 }
 
 int main(int argc, char *argv[]) {
+  /* Do some Mazda Specific Setup */
+  setenv("DBUS_SYSTEM_BUS_ADDRESS", "unix:path=/tmp/dbus_service_socket", true);
+  setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/tmp/dbus_hmi_socket", true);
+
+  int fd;
+  fd = open("/sys/bus/usb/devices/usb1/authorized_default", O_WRONLY);
+  write(fd, "1", 1);
+  close(fd);
+  fd = open("/sys/bus/usb/devices/usb2/authorized_default", O_WRONLY);
+  write(fd, "1", 1);
+  close(fd);
+
+  /*                              */
+
   el::Configurations defaultConf;
   defaultConf.setToDefault();
   // Values are always std::string
