@@ -95,8 +95,16 @@ int main(int argc, char *argv[]) {
 
   /*                              */
 
+  auto configuration = std::make_shared<autoapp::configuration::Configuration>();
+
   el::Configurations defaultConf;
   defaultConf.setToDefault();
+  el::Loggers::addFlag(el::LoggingFlag::HierarchicalLogging);
+  if (!configuration->logFile().empty()) {
+    defaultConf.set(el::Level::Global, el::ConfigurationType::Filename, configuration->logFile());
+    defaultConf.set(el::Level::Global, el::ConfigurationType::ToFile, "true");
+    defaultConf.set(el::Level::Global, el::ConfigurationType::ToStandardOutput, "false");
+  }
   // Values are always std::string
   defaultConf.set(el::Level::Info,
                   el::ConfigurationType::Format, "%datetime %levshort [%fbase] %msg");
@@ -106,6 +114,7 @@ int main(int argc, char *argv[]) {
                   el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
   // default logger uses default configurations
   el::Loggers::reconfigureLogger("default", defaultConf);
+  el::Loggers::setLoggingLevel(configuration->logLevel());
 
   LOG(INFO) << "[OpenAuto] starting";
   signal(SIGINT, signalHandler);
@@ -121,7 +130,6 @@ int main(int argc, char *argv[]) {
   startUSBWorkers(ioService, usbContext, threadPool);
   startIOServiceWorkers(ioService, threadPool);
 
-  auto configuration = std::make_shared<autoapp::configuration::Configuration>();
   Signals signals = Signals();
 
   auto *audioManager = new AudioManagerClient("com.xsembedded.service.AudioManagement",

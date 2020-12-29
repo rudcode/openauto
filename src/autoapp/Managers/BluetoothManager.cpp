@@ -37,7 +37,7 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
     bdsClient = sdbus::createProxy("com.jci.bds", "/com/jci/bds");
     bdsClient->uponSignal("SignalConnected_cb").onInterface("com.jci.bds").call(
         [this](const uint32_t &type, const sdbus::Struct<std::vector<uint8_t>> &data) {
-          printf("Saw Service: %u", data.get<0>()[36]);
+          LOG(DEBUG) << "Saw Service: " << data.get<0>()[36];
           if (data.get<0>()[36] == serviceId) {
             std::string pty((char *) &data.get<0>()[48]);
             LOG(DEBUG) << "PTY: " << pty;

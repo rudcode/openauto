@@ -32,7 +32,18 @@ Configuration::Configuration() {
       enableTouchscreen_ = config["enableTouchscreen"].as_boolean();
     if (config.contains("wifiPort"))
       wifiPort_ = static_cast<uint32_t>(static_cast<long long>(*config["wifiPort"].as_integer()));
-    LOG(DEBUG) << config;
+    if (config.contains("logLevel")) {
+      std::optional<std::string> level = config["logLevel"].value<std::string>();
+      if (level == "debug") {
+        logLevel_ = el::Level::Debug;
+      } else {
+        logLevel_ = el::Level::Fatal;
+      }
+    }
+    if (config.contains("logFile")) {
+      std::optional<std::string> logfile = config["logFile"].value<std::string>();
+      logFile_.assign(*logfile);
+    }
   }
   catch (const toml::parse_error &err) {
     LOG(ERROR) << err;
@@ -78,6 +89,14 @@ uint32_t Configuration::wifiPort() {
 }
 void Configuration::wifiPort(uint32_t port) {
   wifiPort_ = port;
+}
+
+el::Level Configuration::logLevel() {
+  return logLevel_;
+}
+
+std::string Configuration::logFile() {
+  return std::string(logFile_);
 }
 
 }

@@ -23,6 +23,8 @@
 #include <aasdk_proto/VideoResolutionEnum.pb.h>
 #include <aasdk_proto/ButtonCodeEnum.pb.h>
 
+#include "easylogging++.h"
+
 namespace autoapp::configuration {
 
 class IConfiguration {
@@ -50,6 +52,10 @@ class IConfiguration {
   [[nodiscard]] virtual uint32_t wifiPort() = 0;
 
   virtual void wifiPort(uint32_t port) = 0;
+
+  [[nodiscard]] virtual el::Level logLevel() = 0;
+
+  [[nodiscard]] virtual std::string logFile() = 0;
 
 };
 

@@ -134,17 +134,6 @@ void InputDevice::start(IInputDeviceEventHandler &eventHandler) {
 
 }
 
-void print_ev(input_event *ev) {
-  printf("Event: time %ld.%06ld, type %d (%s), code %d (%s), value %d\n",
-         ev->time.tv_sec,
-         ev->time.tv_usec,
-         ev->type,
-         libevdev_event_type_get_name(ev->type),
-         ev->code,
-         libevdev_event_code_get_name(ev->type, ev->code),
-         ev->value);
-}
-
 void InputDevice::poll(asio::error_code ec) {
   if (ec == asio::error::operation_aborted) {
     return;
@@ -174,7 +163,6 @@ void InputDevice::poll(asio::error_code ec) {
       }
       LOG(DEBUG) << "Input resynced";
     } else if (rc == LIBEVDEV_READ_STATUS_SUCCESS) {
-      print_ev(&ev);
       handle_key(&ev);
     }
   }

@@ -107,7 +107,7 @@ void AudioManagerClient::populateStreamTable() {
         continue;
       }
 
-      printf("Found stream %s session id %i\n", streamName.c_str(), sessionId);
+      LOG(DEBUG) << "Found stream " << streamName.c_str() << " session id " << sessionId;
       if (streamName == aaStreamName) {
         if (aaSessionID < 0)
           aaSessionID = sessionId;

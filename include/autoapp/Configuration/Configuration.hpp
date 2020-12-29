@@ -52,12 +52,18 @@ class Configuration : public IConfiguration {
 
   void wifiPort(uint32_t port) override;
 
+  [[nodiscard]] el::Level logLevel() override;
+
+  [[nodiscard]] std::string logFile() override;
+
  private:
 
   bool lefthandDrive_ = true;
   bool hideClock_ = false;
   bool enableTouchscreen_ = true;
   uint32_t wifiPort_ = 30515;
+  el::Level logLevel_ = el::Level::Debug;
+  std::string logFile_;
 };
 
 }
