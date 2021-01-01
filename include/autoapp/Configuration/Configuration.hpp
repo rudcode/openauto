@@ -56,6 +56,10 @@ class Configuration : public IConfiguration {
 
   [[nodiscard]] std::string logFile() override;
 
+  [[nodiscard]] std::string wifiSSID() override;
+
+  [[nodiscard]] std::string wifiPassword() override;
+
  private:
 
   bool lefthandDrive_ = true;
@@ -64,6 +68,8 @@ class Configuration : public IConfiguration {
   uint32_t wifiPort_ = 30515;
   el::Level logLevel_ = el::Level::Debug;
   std::string logFile_;
+  std::string wifiSSID_;
+  std::string wifiPassword_;
 };
 
 }

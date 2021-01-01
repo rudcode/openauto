@@ -34,17 +34,16 @@ struct connectionInfo {
 };
 
 int update_connection_info(connectionInfo &info);
-std::string hostapd_config(const std::string &key);
 
 class BluetoothConnection {
  public:
-  explicit BluetoothConnection(uint32_t port);
+  explicit BluetoothConnection(autoapp::configuration::IConfiguration::Pointer configuration);
   void handle_connect(const std::string &pty);
 
  private:
   int fd = 0;
   connectionInfo info;
-  uint32_t port_;
+  autoapp::configuration::IConfiguration::Pointer configuration_;
 
   void handleWifiInfoRequest(uint8_t *buffer, uint16_t length);
   void handleWifiSecurityRequest(__attribute__((unused)) uint8_t *buffer, __attribute__((unused)) uint16_t length);

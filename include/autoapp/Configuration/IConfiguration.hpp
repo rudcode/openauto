@@ -57,6 +57,10 @@ class IConfiguration {
 
   [[nodiscard]] virtual std::string logFile() = 0;
 
+  [[nodiscard]] virtual std::string wifiSSID() = 0;
+
+  [[nodiscard]] virtual std::string wifiPassword() = 0;
+
 };
 
 }

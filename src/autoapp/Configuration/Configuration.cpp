@@ -44,6 +44,14 @@ Configuration::Configuration() {
       std::optional<std::string> logfile = config["logFile"].value<std::string>();
       logFile_.assign(*logfile);
     }
+    if (config.contains("wifiSSID")) {
+      std::optional<std::string> wifissid = config["wifiSSID"].value<std::string>();
+      wifiSSID_.assign(*wifissid);
+    }
+    if (config.contains("wifiPassword")) {
+      std::optional<std::string> wifipassword = config["wifiPassword"].value<std::string>();
+      wifiPassword_.assign(*wifipassword);
+    }
   }
   catch (const toml::parse_error &err) {
     LOG(ERROR) << err;
@@ -97,6 +105,48 @@ el::Level Configuration::logLevel() {
 
 std::string Configuration::logFile() {
   return std::string(logFile_);
+}
+
+std::string hostapd_config(const std::string &key) {
+  std::ifstream hostapd_file;
+  hostapd_file.open("/tmp/current-session-hostapd.conf");
+
+  if (hostapd_file) {
+    std::string line;
+    size_t pos;
+    while (hostapd_file.good()) {
+      getline(hostapd_file, line); // get line from file
+      if (line[0] != '#') {
+        pos = line.find(key); // search
+        if (pos != std::string::npos) // string::npos is returned if string is not found
+        {
+          size_t equalPosition = line.find('=');
+          std::string value = line.substr(equalPosition + 1);
+          LOG(DEBUG) << value;
+          return value;
+        }
+      }
+    }
+    return "";
+  } else {
+    return "";
+  }
+}
+
+std::string Configuration::wifiSSID() {
+  if (wifiSSID_.empty()) {
+    return hostapd_config("ssid");
+  } else {
+    return std::string(wifiSSID_);
+  }
+}
+
+std::string Configuration::wifiPassword() {
+  if (wifiPassword_.empty()) {
+    return hostapd_config("wpa_passphrase");
+  } else {
+    return std::string(wifiPassword_);
+  }
 }
 
 }
