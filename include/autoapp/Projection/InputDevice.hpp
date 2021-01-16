@@ -62,7 +62,7 @@ class InputDevice : public IInputDevice {
   IInputDeviceEventHandler *eventHandler_;
   std::mutex mutex_;
   int touch_fd = -1, kbd_fd = -1;
-  uint32_t pressScanCode = 0;
+  aasdk::proto::enums::ButtonCode::Enum pressScanCode = aasdk::proto::enums::ButtonCode::NONE;
   time_t pressedSince = 0;
   aasdk::proto::enums::AudioFocusState_Enum audiofocus = aasdk::proto::enums::AudioFocusState_Enum_NONE;
   bool videoFocus_ = false;
@@ -79,7 +79,7 @@ class InputDevice : public IInputDevice {
 
   void handle_touch(input_event *ev);
 
-  void audio_focus(aasdk::proto::enums::AudioFocusState_Enum state);
+  void audio_focus(aasdk::messenger::ChannelId channel_id, aasdk::proto::enums::AudioFocusState_Enum state);
   void video_focus(bool state);
   void poll(asio::error_code ec);
 };

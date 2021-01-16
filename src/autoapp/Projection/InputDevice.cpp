@@ -57,8 +57,10 @@ InputDevice::InputDevice(asio::io_service &ioService,
   videoFocusChanged = videosignals_->focusChanged.connect(sigc::mem_fun(*this, &InputDevice::video_focus));
 }
 
-void InputDevice::audio_focus(aasdk::proto::enums::AudioFocusState_Enum state) {
-  audiofocus = state;
+void InputDevice::audio_focus(aasdk::messenger::ChannelId channel_id, aasdk::proto::enums::AudioFocusState_Enum state) {
+  if (channel_id == aasdk::messenger::ChannelId::MEDIA_AUDIO) {
+    audiofocus = state;
+  }
 }
 
 void InputDevice::video_focus(bool state) {
@@ -233,10 +235,10 @@ void InputDevice::handle_key(input_event *ev) {
     ButtonEventType eventType = (ev->value == 1) ? ButtonEventType::PRESS
                                                  : ButtonEventType::RELEASE;
     bool isPressed = (ev->value == 1);
-    bool hasMediaAudioFocus = audiofocus == aasdk::proto::enums::AudioFocusState_Enum_GAIN;
+    bool hasMediaAudioFocus = audiofocus != aasdk::proto::enums::AudioFocusState_Enum_LOSS;
 
     scanCode = keymap[ev->code];
-    if (scanCode == ButtonCode::NEXT || scanCode == ButtonCode::PREV || scanCode == ButtonCode::MEDIA) {
+    if (scanCode == ButtonCode::NEXT || scanCode == ButtonCode::PREV) {
       if (!hasMediaAudioFocus && videoFocus_) {
         if (std::chrono::duration_cast<std::chrono::milliseconds>(tpNow - mediaDebounce).count() > 200
             && ev->value == 1) {
@@ -264,24 +266,28 @@ void InputDevice::handle_key(input_event *ev) {
       }
     }
 
+    LOG(DEBUG) << ButtonCode::Enum_Name(scanCode);
+
     if (isPressed) {
-      pressScanCode = keymap[ev->code];
+      pressScanCode = scanCode;
       time(&pressedSince);
-    } else {
+    } else if (pressScanCode == scanCode) {
       time_t now = time(nullptr);
       if (now - pressedSince >= 2) {
         switch (pressScanCode) {
-          case ButtonCode::TOGGLE_PLAY:audiosignals_->focusRelease.emit();
-            break;
+          case ButtonCode::MEDIA:LOG(DEBUG) << "Release Audio Focus";
+            audiosignals_->focusRelease.emit(aasdk::messenger::ChannelId::MEDIA_AUDIO);
+            return;
           case ButtonCode::BACK: // We use both these buttons for releasing focus, so fall through to the next case.
-          case ButtonCode::CALL_END:videosignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
-            break;
+          case ButtonCode::CALL_END:LOG(DEBUG) << "Release Video Focus";
+            videosignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+            return;
           case ButtonCode::HOME:videosignals_->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
-            break;
+            return;
           default:break;
         }
       }
-      pressScanCode = 0;
+      pressScanCode = ButtonCode::NONE;
     }
     if (videoFocus_) {
       if (scanCode != 0) {
