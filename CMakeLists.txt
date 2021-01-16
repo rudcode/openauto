@@ -52,6 +52,7 @@ set(BUILD_TESTS OFF CACHE INTERNAL "")
 add_subdirectory(external/tinyxml2)
 
 add_compile_definitions(ELPP_THREAD_SAFE)
+add_compile_definitions(ELPP_STL_LOGGING)
 add_subdirectory(external/easylogging++)
 
 add_subdirectory(external/toml++)
@@ -178,3 +179,63 @@ add_custom_command(
         COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=autoapp.debug autoapp
         WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
 )
+
+add_custom_command(
+        TARGET autoapp POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${EXECUTABLE_OUTPUT_PATH}/autoapp
+        ${base_directory}/install/mnt/data_persist/dev/bin/)
+
+
+set(installer_sources_directory ${sources_directory}/installer)
+set(installer_include_directory)
+file(GLOB_RECURSE installer_source_files ${installer_sources_directory}/*.cpp)
+
+add_executable(installer
+        ${installer_source_files})
+target_include_directories(installer PRIVATE ${include_directories})
+target_include_directories(installer PRIVATE external/mINI/src/mini)
+target_include_directories(installer PRIVATE ${include_directory})
+
+target_link_libraries(installer
+        nlohmann_json::nlohmann_json
+        easylogging++
+        toml++
+        tinyxml2
+        -static
+        -static-libstdc++
+        -static-libgcc
+        -pthread
+        )
+
+add_custom_command(
+        TARGET installer
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} --only-keep-debug installer installer.debug
+        WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+)
+add_custom_command(
+        TARGET installer
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} --strip-all installer
+        WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+)
+add_custom_command(
+        TARGET installer
+        POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=installer.debug installer
+        WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+)
+
+add_custom_command(
+        TARGET installer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${EXECUTABLE_OUTPUT_PATH}/installer
+        ${base_directory}/install/mnt/data_persist/dev/bin/)
+
+
+add_custom_target(create_tar ALL COMMAND
+        external/makeself.sh --target / --notemp --keep-umask --nochown install openauto_installer.run openauto /mnt/data_persist/dev/bin/installer
+        WORKING_DIRECTORY ${base_directory})
+add_dependencies(create_tar autoapp)
+add_dependencies(create_tar installer)

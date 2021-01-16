@@ -1,0 +1,7 @@
+[
+  {
+    "name": "_androidauto",
+    "label": "Android Auto",
+    "preload": "preload.js"
+  }
+]
