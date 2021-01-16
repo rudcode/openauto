@@ -27,7 +27,8 @@ class SpeechAudioService : public AudioService {
  public:
   SpeechAudioService(asio::io_service &ioService,
                      aasdk::messenger::IMessenger::Pointer messenger,
-                     projection::IAudioOutput::Pointer audioOutput);
+                     projection::IAudioOutput::Pointer audioOutput,
+                     AudioSignals::Pointer audiosignals);
 };
 
 }

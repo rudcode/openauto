@@ -23,10 +23,11 @@ namespace autoapp::service {
 
 SpeechAudioService::SpeechAudioService(asio::io_service &ioService,
                                        aasdk::messenger::IMessenger::Pointer messenger,
-                                       projection::IAudioOutput::Pointer audioOutput)
+                                       projection::IAudioOutput::Pointer audioOutput,
+                                       AudioSignals::Pointer audiosignals)
     : AudioService(ioService,
                    std::make_shared<aasdk::channel::av::SpeechAudioServiceChannel>(strand_, std::move(messenger)),
-                   std::move(audioOutput)) {
+                   std::move(audioOutput), std::move(audiosignals)) {
 
 }
 

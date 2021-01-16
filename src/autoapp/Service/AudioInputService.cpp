@@ -165,7 +165,7 @@ void AudioInputService::onAudioInputOpenSucceed() {
   this->readAudioInput();
 }
 
-void AudioInputService::onAudioInputDataReady(aasdk::common::Data data) {
+void AudioInputService::onAudioInputDataReady(const aasdk::common::Data &data) {
   auto sendPromise = aasdk::channel::SendPromise::defer(strand_);
   sendPromise->then([&]() { readAudioInput(); },
                     [&](const aasdk::error::Error &e) { onChannelError(e); });
@@ -178,7 +178,7 @@ void AudioInputService::onAudioInputDataReady(aasdk::common::Data data) {
 void AudioInputService::readAudioInput() {
   if (audioInput_->isActive()) {
     auto readPromise = projection::IAudioInput::ReadPromise::defer(strand_);
-    readPromise->then([&](aasdk::common::Data data) { onAudioInputDataReady(std::move(data)); },
+    readPromise->then([&](const aasdk::common::Data &data) { onAudioInputDataReady(data); },
                       [this, self = this->shared_from_this()]() {
                         LOG(INFO) << "[AudioInputService] audio input read rejected.";
                       });

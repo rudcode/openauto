@@ -195,14 +195,30 @@ void AndroidAutoEntity::onAudioFocusRequest(const aasdk::proto::messages::AudioF
   LOG(INFO) << "[AndroidAutoEntity] requested audio focus, type: "
             << aasdk::proto::enums::AudioFocusType_Enum_Name(request.audio_focus_type());
 
-  if (request.audio_focus_type() == aasdk::proto::enums::AudioFocusType::RELEASE) {
-    signals_.audioSignals->focusRelease();
-  } else {
-    signals_.audioSignals->focusRequest(request.audio_focus_type());
+  switch (request.audio_focus_type()) {
+
+    case aasdk::proto::enums::AudioFocusType_Enum_NONE:break;
+    case aasdk::proto::enums::AudioFocusType_Enum_GAIN:
+      signals_.audioSignals->focusRequest(aasdk::messenger::ChannelId::MEDIA_AUDIO,
+                                          request.audio_focus_type());
+      break;
+    case aasdk::proto::enums::AudioFocusType_Enum_GAIN_TRANSIENT:
+      signals_.audioSignals->focusRequest(aasdk::messenger::ChannelId::SYSTEM_AUDIO,
+                                          request.audio_focus_type());
+      break;
+    case aasdk::proto::enums::AudioFocusType_Enum_GAIN_NAVI:
+      signals_.audioSignals->focusRequest(aasdk::messenger::ChannelId::SPEECH_AUDIO,
+                                          request.audio_focus_type());
+      break;
+    case aasdk::proto::enums::AudioFocusType_Enum_RELEASE:
+      onAudioFocusResponse(aasdk::messenger::ChannelId::NONE,
+                           aasdk::proto::enums::AudioFocusState_Enum::AudioFocusState_Enum_LOSS);
+      break;
   }
 }
 
-void AndroidAutoEntity::onAudioFocusResponse(const aasdk::proto::enums::AudioFocusState_Enum state) {
+void AndroidAutoEntity::onAudioFocusResponse(aasdk::messenger::ChannelId channel_id,
+                                             const aasdk::proto::enums::AudioFocusState_Enum state) {
   LOG(INFO) << "[AndroidAutoEntity] audio focus state: " << aasdk::proto::enums::AudioFocusState_Enum_Name(state);
 
   aasdk::proto::messages::AudioFocusResponse response;

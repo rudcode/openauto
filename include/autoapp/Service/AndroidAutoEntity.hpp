@@ -56,7 +56,7 @@ class AndroidAutoEntity
   void onHandshake(const aasdk::common::DataConstBuffer &payload) override;
   void onServiceDiscoveryRequest(const aasdk::proto::messages::ServiceDiscoveryRequest &request) override;
   void onAudioFocusRequest(const aasdk::proto::messages::AudioFocusRequest &request) override;
-  void onAudioFocusResponse(aasdk::proto::enums::AudioFocusState_Enum state);
+  void onAudioFocusResponse(aasdk::messenger::ChannelId channel_id, aasdk::proto::enums::AudioFocusState_Enum state);
   void onShutdownRequest(const aasdk::proto::messages::ShutdownRequest &request) override;
   void onShutdownResponse(const aasdk::proto::messages::ShutdownResponse &response) override;
   void onNavigationFocusRequest(const aasdk::proto::messages::NavigationFocusRequest &request) override;

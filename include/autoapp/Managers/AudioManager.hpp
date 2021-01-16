@@ -5,34 +5,45 @@
 
 #include <Mazda/Dbus/com.xsembedded.ServiceProvider.h>
 
+#include <thread>
+
+struct Stream {
+  std::string name;
+  int id;
+  bool focus = false;
+  std::string mode;
+  std::string type;
+};
+
 class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::ServiceProvider_proxy> {
  private:
-  std::map<std::string, int> streamToSessionIds;
-  std::string aaStreamName = "MLENT";
-  int aaSessionID = -1;
-  int aaTransientSessionID = -1;
-  int previousSessionID = -1;
-  bool waitingForFocusLostEvent = false;
-  FocusType currentFocus = FocusType::NONE;
   AudioSignals::Pointer audiosignals_;
   bool inCall = false;
+  std::vector<std::string> MazdaDestinations;
+  std::map<aasdk::messenger::ChannelId, Stream> streams;
+  std::map<std::string, int> ExistingStreams;
 
-  //These IDs are usually the same, but they depend on the startup order of the services on the car so we can't assume them 100% reliably
+  void RegisterStream(std::string StreamName,
+                      aasdk::messenger::ChannelId ChannelId,
+                      std::string StreamMode,
+                      std::string StreamType);
+
+  void populateData();
+
   void populateStreamTable();
 
-  void aaRegisterStream();
+  std::thread dbus_thread;
 
  public:
   AudioManagerClient(std::string destination, std::string objectPath, AudioSignals::Pointer audiosignals);
 
   ~AudioManagerClient();
 
-  bool canSwitchAudio() const;
-
   //calling requestAudioFocus directly doesn't work on the audio mgr
-  void audioMgrRequestAudioFocus(aasdk::proto::enums::AudioFocusType_Enum aa_type);
+  void audioMgrRequestAudioFocus(aasdk::messenger::ChannelId, aasdk::proto::enums::AudioFocusType_Enum aa_type);
 
-  void audioMgrReleaseAudioFocus();
+  void audioMgrReleaseAudioFocus(aasdk::messenger::ChannelId);
 
   void onNotify(const std::string &signalName, const std::string &payload) override;
+
 };

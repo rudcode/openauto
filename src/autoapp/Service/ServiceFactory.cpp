@@ -76,13 +76,22 @@ IService::Pointer ServiceFactory::createInputService(aasdk::messenger::IMessenge
 void ServiceFactory::createAudioServices(ServiceList &serviceList,
                                          const aasdk::messenger::IMessenger::Pointer &messenger) {
   auto mediaAudioOutput = std::make_shared<projection::AlsaAudioOutput>(2, 48000, "entertainmentMl");
-  serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_, messenger, std::move(mediaAudioOutput)));
+  serviceList.emplace_back(std::make_shared<MediaAudioService>(ioService_,
+                                                               messenger,
+                                                               std::move(mediaAudioOutput),
+                                                               signals_.audioSignals));
 
   auto speechAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationNavi");
-  serviceList.emplace_back(std::make_shared<SpeechAudioService>(ioService_, messenger, std::move(speechAudioOutput)));
+  serviceList.emplace_back(std::make_shared<SpeechAudioService>(ioService_,
+                                                                messenger,
+                                                                std::move(speechAudioOutput),
+                                                                signals_.audioSignals));
 
-  auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "informationGeneric");
-  serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_, messenger, std::move(systemAudioOutput)));
+  auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "vrGeneric");
+  serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_,
+                                                                messenger,
+                                                                std::move(systemAudioOutput),
+                                                                signals_.audioSignals));
 }
 
 }

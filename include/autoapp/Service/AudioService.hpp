@@ -22,6 +22,7 @@
 #include <aasdk/Channel/AV/IAudioServiceChannelEventHandler.hpp>
 #include <autoapp/Projection/IAudioOutput.hpp>
 #include <autoapp/Service/IService.hpp>
+#include <autoapp/Signals/AudioSignals.hpp>
 
 namespace autoapp::service {
 
@@ -34,7 +35,8 @@ class AudioService
 
   AudioService(asio::io_service &ioService,
                aasdk::channel::av::IAudioServiceChannel::Pointer channel,
-               projection::IAudioOutput::Pointer audioOutput);
+               projection::IAudioOutput::Pointer audioOutput,
+               AudioSignals::Pointer audiosignals);
 
   void start() override;
   void stop() override;
@@ -57,6 +59,7 @@ class AudioService
   aasdk::channel::av::IAudioServiceChannel::Pointer channel_;
   projection::IAudioOutput::Pointer audioOutput_;
   int32_t session_;
+  AudioSignals::Pointer audiosignals_;
 };
 
 }

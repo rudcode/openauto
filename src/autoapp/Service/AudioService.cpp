@@ -23,8 +23,12 @@ namespace autoapp::service {
 
 AudioService::AudioService(asio::io_service &ioService,
                            aasdk::channel::av::IAudioServiceChannel::Pointer channel,
-                           projection::IAudioOutput::Pointer audioOutput)
-    : strand_(ioService), channel_(std::move(channel)), audioOutput_(std::move(audioOutput)), session_(-1) {
+                           projection::IAudioOutput::Pointer audioOutput, AudioSignals::Pointer audiosignals)
+    : strand_(ioService),
+      channel_(std::move(channel)),
+      audioOutput_(std::move(audioOutput)),
+      session_(-1),
+      audiosignals_(std::move(audiosignals)) {
 
 }
 
@@ -130,6 +134,8 @@ void AudioService::onAVChannelStartIndication(const aasdk::proto::messages::AVCh
   LOG(INFO) << "[AudioService] start indication"
             << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
             << ", session: " << indication.session();
+  if (channel_->getId() != aasdk::messenger::ChannelId::MEDIA_AUDIO)
+    audiosignals_->focusRequest(channel_->getId(), aasdk::proto::enums::AudioFocusType_Enum_GAIN);
   session_ = indication.session();
   audioOutput_->start();
   channel_->receive(this->shared_from_this());
@@ -139,6 +145,8 @@ void AudioService::onAVChannelStopIndication(const aasdk::proto::messages::AVCha
   LOG(INFO) << "[AudioService] stop indication"
             << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId())
             << ", session: " << session_;
+  if (channel_->getId() != aasdk::messenger::ChannelId::MEDIA_AUDIO)
+    audiosignals_->focusRelease(channel_->getId());
   session_ = -1;
   audioOutput_->suspend();
   channel_->receive(this->shared_from_this());

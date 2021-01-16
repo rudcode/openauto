@@ -17,18 +17,18 @@ void AlsaAudioInput::read(ReadPromise::Pointer promise) {
 void AlsaAudioInput::handler(asio::error_code ec) {
   std::lock_guard<decltype(mutex_)> lock(mutex_);
 
-  LOG(DEBUG) << "AlsaAudioInput::handler called";
+  VLOG(9) << "AlsaAudioInput::handler called";
 
   if (snd_pcm_state(pcm_handle) != SND_PCM_STATE_RUNNING || ec == asio::error::operation_aborted) {
-    LOG(DEBUG) << "mic handler stopped";
+    VLOG(9) << "mic handler stopped";
     return;
   }
 
   snd_pcm_sframes_t avail = snd_pcm_avail_update(pcm_handle);
-  LOG(DEBUG) << "Avail: " << avail;
+  VLOG(9) << "Avail: " << avail;
   if (avail > 0) {
     auto readSize = snd_pcm_frames_to_bytes(pcm_handle, avail);
-    LOG(DEBUG) << "Read:  " << readSize;
+    VLOG(9) << "Read:  " << readSize;
     auto tempBuffer = new uint8_t[readSize];
     snd_pcm_sframes_t frames = snd_pcm_readi(pcm_handle, tempBuffer, static_cast<snd_pcm_uframes_t>(avail));
     if (frames < 0) {
@@ -47,7 +47,7 @@ void AlsaAudioInput::handler(asio::error_code ec) {
       readPromise_->reject();
       readPromise_.reset();
     }
-    LOG(DEBUG) << "left: " << avail;
+    VLOG(9) << "left: " << avail;
 
   } else if (avail < 0) {
     LOG(ERROR) << "Mic read error: " << snd_strerror(avail);
