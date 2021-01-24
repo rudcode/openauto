@@ -31,13 +31,14 @@ find_package(ALSA REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(asio REQUIRED)
 find_package(sdbus-c++ REQUIRED)
-#pkg_check_modules(DBUS REQUIRED dbus-1)
-#pkg_check_modules(DBUS_C++ REQUIRED dbus-c++-1)
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0)
 pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
 pkg_check_modules(Systemd REQUIRED libsystemd)
 pkg_check_modules(LIBEVDEV REQUIRED libevdev)
 
+SET(AASDK_BUILD_STATIC ON CACHE BOOL "Build Static AASDK")
+SET(AASDK_BUILD_SHARED OFF CACHE BOOL "Don't Build Shared AASDK")
+add_subdirectory(external/aasdk)
 
 SET(USE_STANDALONE_ASIO ON CACHE BOOL "use standalone Asio")
 SET(USE_OPENSSL OFF CACHE BOOL "Don't need SSL in our webserver")
@@ -109,11 +110,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR}
         ${LIBUSB_INCLUDE_DIRS}
         ${PROTOBUF_INCLUDE_DIR}
         ${OPENSSL_INCLUDE_DIR}
-        ${AASDK_PROTO_INCLUDE_DIRS}
-        ${AASDK_INCLUDE_DIRS}
         ${ALSA_INCLUDE_DIRS}
-        #        ${DBUS_C++_INCLUDE_DIRS}
-        #        ${DBUS_C++-GLIB_INCLUDE_DIRS}
         ${SIGC++_INCLUDE_DIRS}
         ${ASIO_INCLUDE_DIRS}
         ${LIBEVDEV_INCLUDE_DIRS})
@@ -136,17 +133,16 @@ target_include_directories(autoapp PRIVATE ${include_directory})
 
 target_compile_options(autoapp PUBLIC "-ffile-prefix-map=${CMAKE_SOURCE_DIR}=.")
 
+target_link_libraries(autoapp aasdk_static)
+target_link_libraries(autoapp aasdk_proto_static)
+
 target_link_libraries(autoapp
         ${SIGC++_LIBRARIES}
         ${LIBUSB_LIBRARIES}
         ${ALSA_LIBRARIES}
-        ${CMAKE_SYSROOT}/usr/lib/libaasdk.a
-        ${CMAKE_SYSROOT}/usr/lib/libaasdk_proto.a
         ${Protobuf_LIBRARIES}
         ${OPENSSL_LIBRARIES}
         ${LIBEVDEV_LIBRARIES}
-        #        ${CMAKE_SYSROOT}/usr/lib/libdbus-c++-1.a
-        #        ${CMAKE_SYSROOT}/usr/lib/libdbus-1.a
         ${CMAKE_SYSROOT}/usr/lib/libsdbus-c++.a
         ${CMAKE_SYSROOT}/usr/lib/libsystemd.a
         ${CMAKE_SYSROOT}/usr/lib/libcap.a

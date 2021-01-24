@@ -7,3 +7,9 @@
 [submodule "external/tinyxml2"]
 	path = external/tinyxml2
 	url = https://github.com/leethomason/tinyxml2.git
+[submodule "external/mINI"]
+	path = external/mINI
+	url = https://github.com/pulzed/mINI.git
+[submodule "external/aasdk"]
+	path = external/aasdk
+	url = https://github.com/silverchris/aasdk.git
