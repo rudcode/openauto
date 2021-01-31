@@ -32,8 +32,6 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
 
   void populateStreamTable();
 
-  std::thread dbus_thread;
-
  public:
   AudioManagerClient(std::string destination, std::string objectPath, AudioSignals::Pointer audiosignals);
 
