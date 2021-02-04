@@ -1,0 +1,14 @@
+language: c++
+
+services:
+  - docker
+
+before_install:
+  - docker pull thesilverchris/openauto-mazda-build:test
+  - docker run -it -d --name build thesilverchris/openauto-mazda-build bash
+  - docker exec build git clone https://github.com/silverchris/openauto.git
+  - docker exec build git --git-dir=/openauto/.git --work-tree=/openauto submodule init
+  - docker exec build git --git-dir=/openauto/.git --work-tree=/openauto submodule update
+script:
+  - docker exec build cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=/openauto/external/openauto-mazda-build/arm-mazda-linux-musleabi.toolchain openauto -Bbuild
+  - docker exec build cmake --build /build
