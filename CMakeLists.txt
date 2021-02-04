@@ -176,6 +176,8 @@ add_custom_command(
         WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
 )
 
+
+file(MAKE_DIRECTORY ${base_directory}/install/mnt/data_persist/dev/bin/)
 add_custom_command(
         TARGET autoapp POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
