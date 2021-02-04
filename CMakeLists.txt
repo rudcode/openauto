@@ -20,7 +20,7 @@ set(Protobuf_USE_STATIC_LIBS ON) #Statically link protobuf for Mazda target
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 SET(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_INIT} -Wall -pedantic -Wno-psabi")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O3")
 set(CMAKE_CXX_FLAGS_RELEASE "-g -O3")
 
 message("CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}")
@@ -32,7 +32,7 @@ find_package(PkgConfig REQUIRED)
 find_package(asio REQUIRED)
 find_package(sdbus-c++ REQUIRED)
 pkg_check_modules(SIGC++ REQUIRED sigc++-2.0)
-pkg_check_modules(LIBUSB REQUIRED libusb-1.0)
+find_package(libusb-1.0 REQUIRED)
 pkg_check_modules(Systemd REQUIRED libsystemd)
 pkg_check_modules(LIBEVDEV REQUIRED libevdev)
 
@@ -107,7 +107,6 @@ foreach (header ${dbus_xml})
 endforeach ()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR}
-        ${LIBUSB_INCLUDE_DIRS}
         ${PROTOBUF_INCLUDE_DIR}
         ${OPENSSL_INCLUDE_DIR}
         ${ALSA_INCLUDE_DIRS}
@@ -135,10 +134,10 @@ target_compile_options(autoapp PUBLIC "-ffile-prefix-map=${CMAKE_SOURCE_DIR}=.")
 
 target_link_libraries(autoapp aasdk_static)
 target_link_libraries(autoapp aasdk_proto_static)
+target_link_libraries(autoapp libusb)
 
 target_link_libraries(autoapp
         ${SIGC++_LIBRARIES}
-        ${LIBUSB_LIBRARIES}
         ${ALSA_LIBRARIES}
         ${Protobuf_LIBRARIES}
         ${OPENSSL_LIBRARIES}
@@ -187,13 +186,13 @@ set(installer_sources_directory ${sources_directory}/installer)
 set(installer_include_directory)
 file(GLOB_RECURSE installer_source_files ${installer_sources_directory}/*.cpp)
 
-add_executable(installer
+add_executable(aa_installer
         ${installer_source_files})
-target_include_directories(installer PRIVATE ${include_directories})
-target_include_directories(installer PRIVATE external/mINI/src/mini)
-target_include_directories(installer PRIVATE ${include_directory})
+target_include_directories(aa_installer PRIVATE ${include_directories})
+target_include_directories(aa_installer PRIVATE external/mINI/src/mini)
+target_include_directories(aa_installer PRIVATE ${include_directory})
 
-target_link_libraries(installer
+target_link_libraries(aa_installer
         nlohmann_json::nlohmann_json
         easylogging++
         toml++
@@ -205,33 +204,33 @@ target_link_libraries(installer
         )
 
 add_custom_command(
-        TARGET installer
+        TARGET aa_installer
         POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} --only-keep-debug installer installer.debug
+        COMMAND ${CMAKE_OBJCOPY} --only-keep-debug aa_installer aa_installer.debug
         WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
 )
 add_custom_command(
-        TARGET installer
+        TARGET aa_installer
         POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} --strip-all installer
+        COMMAND ${CMAKE_OBJCOPY} --strip-all aa_installer
         WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
 )
 add_custom_command(
-        TARGET installer
+        TARGET aa_installer
         POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=installer.debug installer
+        COMMAND ${CMAKE_OBJCOPY} --add-gnu-debuglink=aa_installer.debug aa_installer
         WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
 )
 
 add_custom_command(
-        TARGET installer POST_BUILD
+        TARGET aa_installer POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${EXECUTABLE_OUTPUT_PATH}/installer
+        ${EXECUTABLE_OUTPUT_PATH}/aa_installer
         ${base_directory}/install/mnt/data_persist/dev/bin/)
 
 
 add_custom_target(create_tar ALL COMMAND
-        external/makeself.sh --target / --notemp --keep-umask --nochown install openauto_installer.run openauto /mnt/data_persist/dev/bin/installer
+        external/makeself.sh --target / --notemp --keep-umask --nochown install installer/openauto_installer.run openauto /mnt/data_persist/dev/bin/aa_installer
         WORKING_DIRECTORY ${base_directory})
 add_dependencies(create_tar autoapp)
-add_dependencies(create_tar installer)
+add_dependencies(create_tar aa_installer)
