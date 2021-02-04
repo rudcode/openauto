@@ -5,7 +5,7 @@ services:
 
 before_install:
   - docker pull thesilverchris/openauto-mazda-build:test
-  - docker run -it -d --name build thesilverchris/openauto-mazda-build bash
+  - docker run -it -d --name build thesilverchris/openauto-mazda-build:test bash
   - docker exec build git clone https://github.com/silverchris/openauto.git
   - docker exec build git --git-dir=/openauto/.git --work-tree=/openauto submodule init
   - docker exec build git --git-dir=/openauto/.git --work-tree=/openauto submodule update
