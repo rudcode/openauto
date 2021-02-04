@@ -39,3 +39,14 @@ jobs:
         run: |
           cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=$GITHUB_WORKSPACE/external/openauto-mazda-build/arm-mazda-linux-musleabi.toolchain $GITHUB_WORKSPACE -B$GITHUB_WORKSPACE/build
           cmake --build $GITHUB_WORKSPACE/build
+          
+      - name: Zip
+        run: zip -r ${{ github.sha }}.zip $GITHUB_WORKSPACE/installer/*
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build ${{ github.sha }}"
+          files: |
+            ${{ github.sha }}.zip
