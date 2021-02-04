@@ -31,8 +31,8 @@ jobs:
           submodules: recursive
 
       # Runs a single command using the runners shell
-      - name: chmod +x sdbus-c++-xml2cpp
-        run: chmod +x $GITHUB_WORKSPACE/sdbus-c++-xml2cpp
+      - name: chmod +x external/makeself.sh
+        run: chmod +x $GITHUB_WORKSPACE/external/makeself.sh
 
       # Runs a set of commands using the runners shell
       - name: Build
