@@ -95,7 +95,7 @@ endif ()
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/Mazda/Dbus/)
 file(GLOB_RECURSE dbus_xml ${include_directory}/Mazda/Dbus/XML/*.xml)
-set(GEN_DBUS_HEADER_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/sdbus-c++-xml2cpp)
+set(GEN_DBUS_HEADER_COMMAND sdbus-c++-xml2cpp)
 foreach (header ${dbus_xml})
     get_filename_component(header_file ${header} NAME)
     string(REGEX REPLACE "\\.[^.]*$" "" header_out ${header_file})
@@ -176,6 +176,8 @@ add_custom_command(
         WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
 )
 
+
+file(MAKE_DIRECTORY ${base_directory}/install/mnt/data_persist/dev/bin/)
 add_custom_command(
         TARGET autoapp POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
