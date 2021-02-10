@@ -39,6 +39,7 @@ pkg_check_modules(LIBEVDEV REQUIRED libevdev)
 
 SET(AASDK_BUILD_STATIC ON CACHE BOOL "Build Static AASDK")
 SET(AASDK_BUILD_SHARED OFF CACHE BOOL "Don't Build Shared AASDK")
+SET(AASDK_TEST OFF CACHE BOOL "Don't Test AASDK")
 add_subdirectory(external/aasdk)
 
 SET(USE_STANDALONE_ASIO ON CACHE BOOL "use standalone Asio")
