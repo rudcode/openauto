@@ -41,7 +41,7 @@ jobs:
           cmake --build $GITHUB_WORKSPACE/build
           
       - name: Zip
-        run: zip -r ${{ github.sha }}.zip $GITHUB_WORKSPACE/installer/*
+        run: zip --junk-paths ${{ github.sha }}.zip $GITHUB_WORKSPACE/installer/*
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
