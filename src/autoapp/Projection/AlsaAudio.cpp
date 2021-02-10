@@ -17,7 +17,7 @@ AlsaAudioOutput::AlsaAudioOutput(unsigned int channels, unsigned int rate, const
 bool AlsaAudioOutput::open() {
   int err;
   if ((err = snd_pcm_set_params(aud_handle, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED,
-                                _channels, _rate, 1, 1000000)) < 0) {   /* 1.0sec */
+                                _channels, _rate, 1, 500000)) < 0) {   /* 1.0sec */
     LOG(ERROR) << "Playback open error: " << snd_strerror(err);
     return false;
   }
