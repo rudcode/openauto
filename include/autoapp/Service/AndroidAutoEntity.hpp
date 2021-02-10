@@ -23,10 +23,12 @@
 #include <aasdk/Channel/Control/IControlServiceChannel.hpp>
 #include <aasdk/Channel/Control/IControlServiceChannelEventHandler.hpp>
 #include <aasdk/Channel/AV/VideoServiceChannel.hpp>
+#include <aasdk/IO/Promise.hpp>
 #include <autoapp/Configuration/IConfiguration.hpp>
 #include <autoapp/Service/IAndroidAutoEntity.hpp>
 #include <autoapp/Service/IService.hpp>
 #include <autoapp/Service/IPinger.hpp>
+#include <autoapp/Service/AudioFocus.hpp>
 #include <autoapp/Signals/Signals.hpp>
 
 namespace autoapp::service {
@@ -43,7 +45,8 @@ class AndroidAutoEntity
                     configuration::IConfiguration::Pointer configuration,
                     ServiceList serviceList,
                     IPinger::Pointer pinger,
-                    const Signals &signals);
+                    const Signals &signals,
+                    AudioFocusRequest::Pointer audioFocusRequest);
   ~AndroidAutoEntity() override;
 
   void start(IAndroidAutoEntityEventHandler &eventHandler) override;
@@ -81,6 +84,7 @@ class AndroidAutoEntity
   IPinger::Pointer pinger_;
   IAndroidAutoEntityEventHandler *eventHandler_;
   Signals signals_;
+  AudioFocusRequest::Pointer audioFocusRequest_;
 };
 
 }

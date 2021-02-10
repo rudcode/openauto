@@ -5,6 +5,72 @@
 
 using json = nlohmann::json;
 
+void AudioManagerClient::print_dbus(sdbus::MethodCall call) {
+  std::string func;
+  std::string args;
+  call >> func;
+  call >> args;
+  LOG(DEBUG) << func << " " << args;
+  auto result = json::parse(args);
+  if (streamsByID.count(result["sessionId"].get<int>())) {
+    auto stream = streamsByID[result["sessionId"].get<int>()];
+    if (func == "onRequestAudioFocusResult") {
+      if (result["newFocus"].get<std::string>() == "granted") {
+        stream->focus = true;
+        switch (stream->channelId) {
+          case aasdk::messenger::ChannelId::MEDIA_AUDIO:
+            audiosignals_->focusChanged.emit(stream->channelId,
+                                             aasdk::proto::enums::AudioFocusState::GAIN_MEDIA_ONLY);
+            break;
+          case aasdk::messenger::ChannelId::SPEECH_AUDIO:
+            audiosignals_->focusChanged.emit(stream->channelId,
+                                             aasdk::proto::enums::AudioFocusState::GAIN_TRANSIENT_GUIDANCE_ONLY);
+            break;
+          case aasdk::messenger::ChannelId::SYSTEM_AUDIO:
+            audiosignals_->focusChanged.emit(stream->channelId,
+                                             aasdk::proto::enums::AudioFocusState::GAIN_TRANSIENT);
+            break;
+          default:break;
+        }
+      } else {
+        stream->focus = false;
+        audiosignals_->focusChanged.emit(stream->channelId,
+                                         aasdk::proto::enums::AudioFocusState::NONE);
+      }
+    } else if (func == "onAudioFocusChange") {
+      auto focus = result["newFocus"].get<std::string>();
+      if (focus == "lost") {
+        stream->focus = false;
+        audiosignals_->focusChanged.emit(stream->channelId,
+                                         aasdk::proto::enums::AudioFocusState::LOSS);
+      } else if (focus == "temporarilyLost") {
+        stream->focus = false;
+        audiosignals_->focusChanged.emit(stream->channelId,
+                                         aasdk::proto::enums::AudioFocusState::LOSS_TRANSIENT);
+      }
+    }
+  }
+}
+
+void AudioManagerClient::listen_thread() {
+  // Create D-Bus connection to the system bus and requests name on it.
+  const char *serviceName = "com.androidauto.audio";
+  connection = sdbus::createSystemBusConnection(serviceName);
+
+  // Create concatenator D-Bus object.
+  const char *objectPath = "/com/androidauto/audio";
+  auto audio_callback = sdbus::createObject(*connection, objectPath);
+
+  // Register D-Bus methods and signals on the concatenator object, and exports the object.
+  const char *interfaceName = "com.xsembedded.ServiceProvider";
+  audio_callback->registerMethod(interfaceName, "Request", "ss", "",
+                                 [&](sdbus::MethodCall call) { print_dbus(std::move(call)); });
+  audio_callback->finishRegistration();
+
+  // Run the I/O event loop on the bus connection.
+  connection->enterEventLoop();
+}
+
 void AudioManagerClient::RegisterStream(std::string StreamName,
                                         aasdk::messenger::ChannelId ChannelId,
                                         std::string StreamMode,
@@ -15,15 +81,15 @@ void AudioManagerClient::RegisterStream(std::string StreamName,
   if (std::find(MazdaDestinations.begin(), MazdaDestinations.end(), StreamType) == MazdaDestinations.end()) {
     return;
   }
-  if (ExistingStreams.count(StreamName)) {
-    auto stream = new Stream;
-    stream->name.assign(StreamName);
-    stream->id = ExistingStreams[StreamName];
-    stream->mode = StreamMode;
-    stream->type = StreamType;
-    streams.insert(std::pair<aasdk::messenger::ChannelId, Stream>(ChannelId, *stream));
-    return;
-  }
+//  if (ExistingStreams.count(StreamName)) {
+//    auto stream = new Stream;
+//    stream->name.assign(StreamName);
+//    stream->id = ExistingStreams[StreamName];
+//    stream->mode = StreamMode;
+//    stream->type = StreamType;
+//    streams.insert(std::pair<aasdk::messenger::ChannelId, Stream>(ChannelId, *stream));
+//    return;
+//  }
   // First open a new Stream
   json sessArgs = {
       {"busName", "com.androidauto.audio"},
@@ -51,7 +117,9 @@ void AudioManagerClient::RegisterStream(std::string StreamName,
     stream->id = SessionID;
     stream->mode = StreamMode;
     stream->type = StreamType;
-    streams.insert(std::pair<aasdk::messenger::ChannelId, Stream>(ChannelId, *stream));
+    stream->channelId = ChannelId;
+    streams.insert(std::pair<aasdk::messenger::ChannelId, Stream *>(ChannelId, stream));
+    streamsByID.insert(std::pair<int, Stream *>(SessionID, stream));
   }
   catch (const std::domain_error &ex) {
     LOG(ERROR) << "Failed to parse state json: " << ex.what();
@@ -152,32 +220,35 @@ AudioManagerClient::AudioManagerClient(std::string destination,
   RegisterStream("SYSVR", aasdk::messenger::ChannelId::SYSTEM_AUDIO, "transient", "VR");
   RegisterStream("Navi", aasdk::messenger::ChannelId::SPEECH_AUDIO, "transient", "InfoMix");
   for (auto &stream : streams)
-    LOG(DEBUG) << aasdk::messenger::channelIdToString(stream.first) << " " << stream.second.id << ": "
-               << stream.second.name;
+    LOG(DEBUG) << aasdk::messenger::channelIdToString(stream.first) << " " << stream.second->id << ": "
+               << stream.second->name;
 
   audiosignals_->focusRelease.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrReleaseAudioFocus));
   audiosignals_->focusRequest.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrRequestAudioFocus));
+  dbus_thread = std::thread(&AudioManagerClient::listen_thread, this);
 
 }
 
 AudioManagerClient::~AudioManagerClient() {
   for (auto &stream : streams) {
-    if (stream.second.id >= 0) {
+    if (stream.second->id >= 0) {
       audioMgrReleaseAudioFocus(stream.first);
-      json args = {{"sessionId", stream.second.id}};
+      json args = {{"sessionId", stream.second->id}};
       std::string result = Request("closeSession", args.dump());
       LOG(DEBUG) << "closeSession(" << args.dump().c_str() << ")\n" << result.c_str() << "\n";
     }
-    stream.second.id = -1;
+    stream.second->id = -1;
   }
+  connection->leaveEventLoop();
+  dbus_thread.join();
   unregisterProxy();
 }
 
 void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::messenger::ChannelId channel_id,
                                                    aasdk::proto::enums::AudioFocusType_Enum aa_type) {
   if (streams.count(channel_id)) {
-    if (!streams[channel_id].focus) {
-      json args = {{"sessionId", streams[channel_id].id}};
+    if (!streams[channel_id]->focus) {
+      json args = {{"sessionId", streams[channel_id]->id}};
       LOG(DEBUG) << args;
       try {
         std::string result = Request("requestAudioFocus", args.dump());
@@ -209,8 +280,8 @@ void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::messenger::ChannelId c
 void AudioManagerClient::audioMgrReleaseAudioFocus(aasdk::messenger::ChannelId channel_id) {
   LOG(INFO) << "audioMgrReleaseAudioFocus()";
   if (streams.count(channel_id)) {
-    if (streams[channel_id].focus) {
-      json args = {{"sessionId", streams[channel_id].id}};
+    if (streams[channel_id]->focus) {
+      json args = {{"sessionId", streams[channel_id]->id}};
       LOG(DEBUG) << args;
       try {
         std::string result = Request("abandonAudioFocus", args.dump());
@@ -219,88 +290,6 @@ void AudioManagerClient::audioMgrReleaseAudioFocus(aasdk::messenger::ChannelId c
       catch (sdbus::Error &e) {
         LOG(ERROR) << e.what();
       }
-    }
-  }
-}
-
-void AudioManagerClient::onNotify(const std::string &signalName, const std::string &payload) {
-  LOG(INFO) << "AudioManagerClient::Notify signalName=" << signalName.c_str() << " payload=" << payload.c_str();
-  if (signalName == "audioFocusChangeEvent") {
-    try {
-      auto result = json::parse(payload);
-      auto streamName = result["streamName"].get<std::string>();
-      auto newFocus = result["newFocus"].get<std::string>();
-      auto focusType = result["focusType"].get<std::string>();
-      auto streamType = result["streamType"].get<std::string>();
-
-      if (streamType == "Telephony") {
-        if (newFocus == "gained") {
-          inCall = true;
-          LOG(DEBUG) << "In Call";
-        } else if (newFocus == "lost") {
-          inCall = false;
-          LOG(DEBUG) << "Left Call";
-        }
-      }
-
-      bool changed = false;
-
-      for (auto &stream: streams) {
-        if (stream.second.name == streamName) {
-          bool focus = (newFocus == "gained");
-          LOG(DEBUG) << stream.second.name << ": " << newFocus << " " << focus;
-          if (stream.second.focus != focus) {
-            stream.second.focus = focus;
-            changed = true;
-            LOG(DEBUG) << stream.second.name << ": " << stream.second.focus;
-            if (focus) {
-              switch (stream.first) {
-                case aasdk::messenger::ChannelId::MEDIA_AUDIO:
-                  audiosignals_->focusChanged.emit(stream.first,
-                                                   aasdk::proto::enums::AudioFocusState::GAIN_MEDIA_ONLY);
-                  break;
-                case aasdk::messenger::ChannelId::SPEECH_AUDIO:
-                  audiosignals_->focusChanged.emit(stream.first,
-                                                   aasdk::proto::enums::AudioFocusState::GAIN_TRANSIENT_GUIDANCE_ONLY);
-                  break;
-                case aasdk::messenger::ChannelId::SYSTEM_AUDIO:
-                  audiosignals_->focusChanged.emit(stream.first,
-                                                   aasdk::proto::enums::AudioFocusState::GAIN_TRANSIENT);
-                  break;
-                default:break;
-              }
-            } else {
-              if (stream.first == aasdk::messenger::ChannelId::MEDIA_AUDIO) {
-                audiosignals_->focusChanged.emit(stream.first,
-                                                 (newFocus == "temporarilyLost")
-                                                 ? aasdk::proto::enums::AudioFocusState::LOSS_TRANSIENT
-                                                 : aasdk::proto::enums::AudioFocusState::LOSS);
-              }
-            }
-          }
-          break;
-        }
-      }
-      if (changed) {
-        bool focus = false;
-        for (auto &stream: streams) {
-          LOG(DEBUG) << stream.second.name << ": " << stream.second.focus;
-          if (stream.second.focus) {
-            focus = true;
-          }
-        }
-        if (!focus) {
-          audiosignals_->focusChanged.emit(aasdk::messenger::ChannelId::MEDIA_AUDIO,
-                                           aasdk::proto::enums::AudioFocusState::LOSS);
-        }
-      }
-    }
-
-    catch (const std::domain_error &ex) {
-      LOG(ERROR) << "Failed to parse state json: " << ex.what();
-    }
-    catch (const std::invalid_argument &ex) {
-      LOG(ERROR) << "Failed to parse state json: " << ex.what();
     }
   }
 }

@@ -10,6 +10,7 @@
 struct Stream {
   std::string name;
   int id;
+  aasdk::messenger::ChannelId channelId;
   bool focus = false;
   std::string mode;
   std::string type;
@@ -20,8 +21,12 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
   AudioSignals::Pointer audiosignals_;
   bool inCall = false;
   std::vector<std::string> MazdaDestinations;
-  std::map<aasdk::messenger::ChannelId, Stream> streams;
+  std::map<aasdk::messenger::ChannelId, Stream *> streams;
   std::map<std::string, int> ExistingStreams;
+  std::map<int, Stream *> streamsByID;
+
+  std::thread dbus_thread;
+  std::unique_ptr<sdbus::IConnection> connection;
 
   void RegisterStream(std::string StreamName,
                       aasdk::messenger::ChannelId ChannelId,
@@ -31,6 +36,9 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
   void populateData();
 
   void populateStreamTable();
+
+  void print_dbus(sdbus::MethodCall call);
+  void listen_thread();
 
  public:
   AudioManagerClient(std::string destination, std::string objectPath, AudioSignals::Pointer audiosignals);
@@ -42,6 +50,6 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
 
   void audioMgrReleaseAudioFocus(aasdk::messenger::ChannelId);
 
-  void onNotify(const std::string &signalName, const std::string &payload) override;
+  void onNotify(const std::string &signalName, const std::string &payload) override {};
 
 };
