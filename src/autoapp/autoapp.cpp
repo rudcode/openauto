@@ -77,6 +77,10 @@ bool running = true;
 void signalHandler(int signum) {
   if (signum == SIGINT) {
     running = false;
+    LOG(INFO) << "Received SIGINT";
+  } else if (signum == SIGTERM) {
+    running = false;
+    LOG(INFO) << "Received SIGTERM";
   }
 }
 
@@ -118,6 +122,7 @@ int main(int argc, char *argv[]) {
 
   LOG(INFO) << "[OpenAuto] starting";
   signal(SIGINT, signalHandler);
+  signal(SIGTERM, signalHandler);
   libusb_context *usbContext;
   if (libusb_init(&usbContext) != 0) {
     LOG(ERROR) << "[OpenAuto] libusb init failed.";
