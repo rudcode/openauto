@@ -50,16 +50,13 @@ class SensorService
   using std::enable_shared_from_this<SensorService>::shared_from_this;
   void sendDrivingStatusUnrestricted();
   void sendNightData();
-  void sendGPSLocationData(uint64_t time, int32_t latitude, int32_t longitude, uint32_t accuracy,
-                           int32_t altitude, int32_t speed, int32_t bearing);
+  void sendGPSLocationData();
   void sensorPolling();
   bool firstRun = true;
 
   asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
   asio::io_service::strand strand_;
   aasdk::channel::sensor::SensorServiceChannel::Pointer channel_;
-//    struct gps_data_t gpsData_;
-  bool gpsEnabled_ = true;
   GpsSignals::Pointer gpssignals_;
   sigc::connection signal_returnUpdate_;
 };

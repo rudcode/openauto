@@ -32,11 +32,11 @@ SensorService::SensorService(asio::io_service &ioService, aasdk::messenger::IMes
 }
 
 void SensorService::start() {
-  signal_returnUpdate_ = gpssignals_->returnUpdate.connect(sigc::mem_fun(*this, &SensorService::sendGPSLocationData));
   strand_.dispatch([this, self = this->shared_from_this()]() {
     if (checkNight()) {
       this->isNight = true;
     }
+    this->stopPolling = false;
     this->sensorPolling();
 
     LOG(INFO) << "[SensorService] start.";
@@ -47,7 +47,6 @@ void SensorService::start() {
 
 void SensorService::stop() {
   this->stopPolling = true;
-  signal_returnUpdate_.disconnect();
   LOG(INFO) << "[SensorService] stop.";
 }
 
@@ -104,6 +103,9 @@ void SensorService::onSensorStartRequest(const aasdk::proto::messages::SensorSta
   } else if (request.sensor_type() == aasdk::proto::enums::SensorType::NIGHT_DATA) {
     promise->then([&]() { sendNightData(); },
                   [&](const aasdk::error::Error &e) { onChannelError(e); });
+  } else if (request.sensor_type() == aasdk::proto::enums::SensorType::LOCATION) {
+    promise->then([&]() { sendGPSLocationData(); },
+                  [&](const aasdk::error::Error &e) { onChannelError(e); });
   } else {
     promise->then([]() {}, [&](const aasdk::error::Error &e) { onChannelError(e); });
   }
@@ -141,17 +143,16 @@ void SensorService::sendNightData() {
   }
 }
 
-void SensorService::sendGPSLocationData(uint64_t time, int32_t latitude, int32_t longitude, uint32_t accuracy,
-                                        int32_t altitude, int32_t speed, int32_t bearing) {
+void SensorService::sendGPSLocationData() {
+  aasdk::proto::data::GPSLocation gps = gpssignals_->requestUpdate.emit();
+
+  if (!gps.has_accuracy()) {
+    return;
+  }
+
   aasdk::proto::messages::SensorEventIndication indication;
   auto *locInd = indication.add_gps_location();
-  locInd->set_timestamp(time);
-  locInd->set_latitude(latitude);
-  locInd->set_longitude(longitude);
-  locInd->set_accuracy(accuracy);
-  locInd->set_altitude(altitude);
-  locInd->set_speed(speed);
-  locInd->set_bearing(bearing);
+  locInd->CopyFrom(gps);
 
   auto promise = aasdk::channel::SendPromise::defer(strand_);
   promise->then([]() {}, [&](const aasdk::error::Error &e) { onChannelError(e); });
@@ -166,10 +167,7 @@ void SensorService::sensorPolling() {
         this->previous = this->isNight;
         this->sendNightData();
       }
-
-//                if (this->gpsEnabled_) {
-//                    gpssignals_->requestUpdate.emit();
-//                }
+      this->sendGPSLocationData();
       timer_.expires_from_now(std::chrono::milliseconds(250));
       timer_.async_wait(strand_.wrap([this](asio::error_code ec) { this->sensorPolling(); }));
     });

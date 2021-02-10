@@ -33,7 +33,7 @@
 #include <easylogging++.h>
 #include <autoapp/Managers/VideoManager.hpp>
 #include <autoapp/Managers/AudioManager.hpp>
-//#include <autoapp/Managers/GPSManager.hpp>
+#include <autoapp/Managers/GPSManager.hpp>
 #include <autoapp/Managers/HttpManager.hpp>
 #include <autoapp/Managers/BluetoothManager.hpp>
 #include <autoapp/Configuration/Configuration.hpp>
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
                                               "/com/xse/service/AudioManagement/AudioApplication",
                                               signals.audioSignals);
   VideoManager videoManager(signals.videoSignals);
-//  GPSManager gpsManager(serviceBus, signals.gpsSignals);
+  GPSManager gpsManager(signals.gpsSignals);
   HttpManager httpManager(ioService, signals.videoSignals, signals.audioSignals, signals.aaSignals);
 
   aasdk::tcp::TCPWrapper tcpWrapper;
@@ -173,8 +173,8 @@ int main(int argc, char *argv[]) {
   bluetoothManager.stop();
   LOG(DEBUG) << "Stopping HttpManager";
   httpManager.stop();
-//  LOG(DEBUG) << "Stopping GPSManager";
-//  gpsManager.stop();
+  LOG(DEBUG) << "Stopping GPSManager";
+  gpsManager.stop();
   LOG(DEBUG) << "Stopping AudioManager";
   delete audioManager;
   LOG(DEBUG) << "Stopping VideoManager";
