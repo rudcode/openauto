@@ -51,9 +51,8 @@ void VideoManager::releaseFocus(VIDEO_FOCUS_REQUESTOR requestor) {
   vs->focusChanged.emit(false);
 }
 
-VideoManager::~VideoManager() = default;
-
-void VideoManager::stop() {
+VideoManager::~VideoManager() {
+  LOG(DEBUG) << "Stopping VideoManager";
   releaseFocusConnection.disconnect();
   requestFocusConnection.disconnect();
   releaseFocus(VIDEO_FOCUS_REQUESTOR::HEADUNIT);

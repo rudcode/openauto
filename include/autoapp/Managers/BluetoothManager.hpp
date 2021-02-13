@@ -18,7 +18,7 @@
 class BluetoothManager {
  public:
   explicit BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration);
-  void stop();
+  ~BluetoothManager();
  private:
   autoapp::configuration::IConfiguration::Pointer configuration_;
   bool bdsconfigured = false;

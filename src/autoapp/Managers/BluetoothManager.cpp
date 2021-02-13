@@ -66,7 +66,9 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
   }
 
 }
-void BluetoothManager::stop() {
+
+BluetoothManager::~BluetoothManager() {
+  LOG(DEBUG) << "Stopping BluetoothManager";
   bdsClient.reset();
   bcaClient.reset();
 }

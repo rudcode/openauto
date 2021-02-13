@@ -83,7 +83,6 @@ class VideoManager {
  public:
   explicit VideoManager(VideoSignals::Pointer videosignals);
   ~VideoManager();
-  void stop();
 
   void requestFocus(VIDEO_FOCUS_REQUESTOR requestor);
   void releaseFocus(VIDEO_FOCUS_REQUESTOR requestor);

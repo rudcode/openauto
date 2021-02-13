@@ -46,8 +46,6 @@ class GPSManager {
 
   aasdk::proto::data::GPSLocation update_position();
 
-  void stop();
-
  private:
   GPSLDSCLient *gpsclient;
   GPSLDSControl *gpscontrol;

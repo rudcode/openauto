@@ -58,7 +58,8 @@ GPSManager::GPSManager(GpsSignals::Pointer gs)
 
 }
 
-void GPSManager::stop() {
+GPSManager::~GPSManager() {
+  LOG(DEBUG) << "Stopping GPSManager";
   try {
     gpscontrol->ReadControl(0);
   }
@@ -68,8 +69,4 @@ void GPSManager::stop() {
 
   delete gpscontrol;
   delete gpsclient;
-}
-
-GPSManager::~GPSManager() {
-
 }

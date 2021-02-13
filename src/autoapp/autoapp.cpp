@@ -137,9 +137,9 @@ int main(int argc, char *argv[]) {
 
   Signals signals = Signals();
 
-  auto *audioManager = new AudioManagerClient("com.xsembedded.service.AudioManagement",
-                                              "/com/xse/service/AudioManagement/AudioApplication",
-                                              signals.audioSignals);
+  AudioManagerClient audioManager("com.xsembedded.service.AudioManagement",
+                                  "/com/xse/service/AudioManagement/AudioApplication",
+                                  signals.audioSignals);
   VideoManager videoManager(signals.videoSignals);
   GPSManager gpsManager(signals.gpsSignals);
   HttpManager httpManager(signals.videoSignals, signals.aaSignals);
@@ -163,6 +163,10 @@ int main(int argc, char *argv[]) {
                                             std::move(connectedAccessoriesEnumerator),
                                             configuration->wifiPort());
 
+  signals.aaSignals->connected.connect([](bool connected_) {
+    connected = connected_;
+  });
+
   app->waitForUSBDevice();
 
   // This needs to happen after the rest of openauto is setup, so it goes here.
@@ -174,16 +178,9 @@ int main(int argc, char *argv[]) {
 
   LOG(DEBUG) << "Calling app->stop()";
   app->stop();
-  LOG(DEBUG) << "Stopping BluetoothManager";
-  bluetoothManager.stop();
-  LOG(DEBUG) << "Stopping HttpManager";
-  httpManager.stop();
-  LOG(DEBUG) << "Stopping GPSManager";
-  gpsManager.stop();
-  LOG(DEBUG) << "Stopping AudioManager";
-  delete audioManager;
-  LOG(DEBUG) << "Stopping VideoManager";
-  videoManager.stop();
+  while (connected) {
+    sleep(1);
+  }
   LOG(DEBUG) << "Stopping ioService";
   ioService.stop();
   LOG(DEBUG) << "Joining threads";
