@@ -32,6 +32,7 @@ void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
             break;
           default:break;
         }
+        LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Granted";
       } else {
         stream->focus = false;
         audiosignals_->focusChanged.emit(stream->channelId,
@@ -43,10 +44,12 @@ void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
         stream->focus = false;
         audiosignals_->focusChanged.emit(stream->channelId,
                                          aasdk::proto::enums::AudioFocusState::LOSS);
+        LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Lost";
       } else if (focus == "temporarilyLost") {
         stream->focus = false;
         audiosignals_->focusChanged.emit(stream->channelId,
                                          aasdk::proto::enums::AudioFocusState::LOSS_TRANSIENT);
+        LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Temporarily Lost";
       }
     }
   }
@@ -81,15 +84,6 @@ void AudioManagerClient::RegisterStream(std::string StreamName,
   if (std::find(MazdaDestinations.begin(), MazdaDestinations.end(), StreamType) == MazdaDestinations.end()) {
     return;
   }
-//  if (ExistingStreams.count(StreamName)) {
-//    auto stream = new Stream;
-//    stream->name.assign(StreamName);
-//    stream->id = ExistingStreams[StreamName];
-//    stream->mode = StreamMode;
-//    stream->type = StreamType;
-//    streams.insert(std::pair<aasdk::messenger::ChannelId, Stream>(ChannelId, *stream));
-//    return;
-//  }
   // First open a new Stream
   json sessArgs = {
       {"busName", "com.androidauto.audio"},
@@ -230,6 +224,7 @@ AudioManagerClient::AudioManagerClient(std::string destination,
 }
 
 AudioManagerClient::~AudioManagerClient() {
+  LOG(DEBUG) << "Stopping AudioManager";
   for (auto &stream : streams) {
     if (stream.second->id >= 0) {
       audioMgrReleaseAudioFocus(stream.first);
