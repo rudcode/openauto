@@ -5,7 +5,7 @@
 
 using json = nlohmann::json;
 
-void AudioManagerClient::print_dbus(sdbus::MethodCall call) {
+void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
   std::string func;
   std::string args;
   call >> func;
@@ -64,7 +64,7 @@ void AudioManagerClient::listen_thread() {
   // Register D-Bus methods and signals on the concatenator object, and exports the object.
   const char *interfaceName = "com.xsembedded.ServiceProvider";
   audio_callback->registerMethod(interfaceName, "Request", "ss", "",
-                                 [&](sdbus::MethodCall call) { print_dbus(std::move(call)); });
+                                 [&](sdbus::MethodCall call) { notificationHandler(std::move(call)); });
   audio_callback->finishRegistration();
 
   // Run the I/O event loop on the bus connection.

@@ -37,7 +37,7 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
 
   void populateStreamTable();
 
-  void print_dbus(sdbus::MethodCall call);
+  void notificationHandler(sdbus::MethodCall call);
   void listen_thread();
 
  public:
