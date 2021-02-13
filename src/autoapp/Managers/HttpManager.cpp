@@ -2,13 +2,9 @@
 #include <easylogging++.h>
 #include "version.h"
 
-HttpManager::HttpManager(asio::io_service &ioService,
-                         VideoSignals::Pointer videosignals,
-                         AudioSignals::Pointer audiosignals,
-                         AASignals::Pointer aasignals)
-    : videosignals_(std::move(videosignals)), audiosignals_(std::move(audiosignals)), aasignals_(std::move(aasignals)) {
+HttpManager::HttpManager(VideoSignals::Pointer videosignals, AASignals::Pointer aasignals)
+    : videosignals_(std::move(videosignals)), aasignals_(std::move(aasignals)) {
   server.config.port = 9999;
-  server.io_service.reset(&ioService);
 
   // Add resources using path-regex and method-string, and an anonymous function
   // POST-example for the path /string, responds the posted string
@@ -70,14 +66,16 @@ HttpManager::HttpManager(asio::io_service &ioService,
     LOG(DEBUG) << "Webserver Error" << ec;
   };
 
-  server.start();
+  serverThread = std::thread([&]() { server.start(); });
   videosignals_->focusChanged.connect(sigc::mem_fun(*this, &HttpManager::handle_video_focus));
   aasignals_->connected.connect(sigc::mem_fun(*this, &HttpManager::handle_aa_connect));
-//    audiosignals_->focusChanged(sigc::mem_fun(*this, &HttpManager::handle_audio_focus));
 }
 
 HttpManager::~HttpManager() {
+  LOG(DEBUG) << "Stopping HttpManager";
   server.stop();
+  serverThread.join();
+//  server.stop();
 }
 
 void HttpManager::handle_video_focus(bool state) {
@@ -87,10 +85,3 @@ void HttpManager::handle_video_focus(bool state) {
 void HttpManager::handle_aa_connect(bool state) {
   aa_connected = state;
 }
-void HttpManager::stop() {
-  server.stop();
-}
-
-//void HttpManager::handle_audio_focus() {
-//    has_audio_focus = state;
-//}

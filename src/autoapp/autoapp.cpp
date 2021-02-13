@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
                                               signals.audioSignals);
   VideoManager videoManager(signals.videoSignals);
   GPSManager gpsManager(signals.gpsSignals);
-  HttpManager httpManager(ioService, signals.videoSignals, signals.audioSignals, signals.aaSignals);
+  HttpManager httpManager(signals.videoSignals, signals.aaSignals);
 
   aasdk::tcp::TCPWrapper tcpWrapper;
 
