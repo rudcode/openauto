@@ -40,20 +40,38 @@
 
 using ThreadPool = std::vector<std::thread>;
 
-void startUSBWorkers(asio::io_service &ioService, libusb_context *usbContext, ThreadPool &threadPool) {
-  auto usbWorker = [&ioService, usbContext]() {
+class usbThreadPool {
+ public:
+  explicit usbThreadPool(libusb_context *usbContext) {
+    for (unsigned i = 0; i < 4; ++i) {
+      threads.emplace_back(&usbThreadPool::USBWorkers, this);
+    }
+  }
+  ~usbThreadPool() {
+    LOG(DEBUG) << "Stopping USB Threads";
+    done = true;
+    for (auto &thread : threads) {
+      if (thread.joinable()) {
+        thread.join();
+      }
+    }
+    libusb_exit(usbContext_);
+  }
+
+ private:
+  libusb_context *usbContext_{};
+  std::vector<std::thread> threads;
+  bool done{};
+
+  void USBWorkers() {
     timeval libusbEventTimeout{10, 0};
 
-    while (!ioService.stopped()) {
-      libusb_handle_events_timeout_completed(usbContext, &libusbEventTimeout, nullptr);
+    while (!done) {
+      libusb_handle_events_timeout_completed(usbContext_, &libusbEventTimeout, nullptr);
     }
-  };
+  }
 
-  threadPool.emplace_back(usbWorker);
-  threadPool.emplace_back(usbWorker);
-  threadPool.emplace_back(usbWorker);
-  threadPool.emplace_back(usbWorker);
-}
+};
 
 void startIOServiceWorkers(asio::io_service &ioService, ThreadPool &threadPool) {
   auto ioServiceWorker = [&ioService]() {
@@ -73,6 +91,7 @@ void startIOServiceWorkers(asio::io_service &ioService, ThreadPool &threadPool) 
 INITIALIZE_EASYLOGGINGPP
 
 bool running = true;
+bool connected = false;
 
 void signalHandler(int signum) {
   if (signum == SIGINT) {
@@ -132,7 +151,7 @@ int main(int argc, char *argv[]) {
   asio::io_service ioService;
   asio::io_service::work work(ioService);
   std::vector<std::thread> threadPool;
-  startUSBWorkers(ioService, usbContext, threadPool);
+  usbThreadPool usb_thread_pool(usbContext);
   startIOServiceWorkers(ioService, threadPool);
 
   Signals signals = Signals();
@@ -185,7 +204,5 @@ int main(int argc, char *argv[]) {
   ioService.stop();
   LOG(DEBUG) << "Joining threads";
   std::for_each(threadPool.begin(), threadPool.end(), [](std::thread &thread) { thread.join(); });
-  LOG(DEBUG) << "libusb_exit(usbContext)";
-  libusb_exit(usbContext);
   return 0;
 }
