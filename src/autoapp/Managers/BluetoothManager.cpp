@@ -27,7 +27,7 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
         bdsconfigured = true;
         serviceId = static_cast<uint32_t>(e->IntAttribute("id"));
       }
-      LOG(DEBUG) << "BDSCONFIG: " << e->Attribute("name");
+      VLOG(9) << "BDSCONFIG: " << e->Attribute("name");
     }
   }
 

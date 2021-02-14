@@ -10,7 +10,7 @@ void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
   std::string args;
   call >> func;
   call >> args;
-  LOG(DEBUG) << func << " " << args;
+  VLOG(9) << func << " " << args;
   auto result = json::parse(args);
   if (streamsByID.count(result["sessionId"].get<int>())) {
     auto stream = streamsByID[result["sessionId"].get<int>()];
@@ -92,7 +92,7 @@ void AudioManagerClient::RegisterStream(std::string StreamName,
   };
   try {
     std::string sessString = Request("openSession", sessArgs.dump());
-    LOG(DEBUG) << "openSession(" << sessArgs.dump().c_str() << ")\n" << sessString.c_str() << "\n";
+    VLOG(9) << "openSession(" << sessArgs.dump().c_str() << ")\n" << sessString.c_str() << "\n";
     int SessionID = json::parse(sessString)["sessionId"];
 
     // Register the stream
@@ -104,7 +104,7 @@ void AudioManagerClient::RegisterStream(std::string StreamName,
         {"streamType", StreamType}
     };
     std::string regString = Request("registerAudioStream", regArgs.dump());
-    LOG(DEBUG) << "registerAudioStream(" << regArgs.dump().c_str() << ")\n" << regString.c_str() << "\n";
+    VLOG(9) << "registerAudioStream(" << regArgs.dump().c_str() << ")\n" << regString.c_str() << "\n";
     // Stream is registered add it to the array
     auto stream = new Stream;
     stream->name.assign(StreamName);
@@ -130,7 +130,7 @@ void AudioManagerClient::populateData() {
       {"pretty", false}
   };
   std::string resultString = Request("dumpState", requestArgs.dump());
-  LOG(DEBUG) << "dumpState(" << requestArgs.dump().c_str() << ")\n" << resultString.c_str() << "\n";
+  VLOG(9) << "dumpState(" << requestArgs.dump().c_str() << ")\n" << resultString.c_str() << "\n";
   try {
     auto result = json::parse(resultString);
     for (json::iterator it = result["Cabin"]["reqMatrixIdx"].begin(); it != result["Cabin"]["reqMatrixIdx"].end();
@@ -147,7 +147,7 @@ void AudioManagerClient::populateData() {
     LOG(ERROR) << resultString.c_str();
   }
   for (auto &Dest : MazdaDestinations)
-    LOG(DEBUG) << Dest;
+    VLOG(9) << Dest;
 }
 
 void AudioManagerClient::populateStreamTable() {
@@ -156,7 +156,7 @@ void AudioManagerClient::populateStreamTable() {
       {"pretty", false}
   };
   std::string resultString = Request("dumpState", requestArgs.dump());
-  LOG(DEBUG) << "dumpState(" << requestArgs.dump().c_str() << ")\n" << resultString.c_str() << "\n";
+  VLOG(9) << "dumpState(" << requestArgs.dump().c_str() << ")\n" << resultString.c_str() << "\n";
   /*
        * An example resonse:
        *
