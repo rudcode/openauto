@@ -51,6 +51,10 @@ void Pinger::pong() {
 }
 
 void Pinger::onTimerExceeded(const asio::error_code &error) {
+  if ((pingsCount_ - pongsCount_) > missedCount_) {
+    missedCount_ = pingsCount_ - pongsCount_;
+    LOG(INFO) << "[Pinger] Ping missed. Count: " << missedCount_;
+  }
   if (promise_ == nullptr) {
     return;
   } else if (error == asio::error::operation_aborted || cancelled_) {

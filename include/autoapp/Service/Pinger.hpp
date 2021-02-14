@@ -42,6 +42,7 @@ class Pinger : public IPinger, public std::enable_shared_from_this<Pinger> {
   Promise::Pointer promise_;
   int64_t pingsCount_;
   int64_t pongsCount_;
+  int64_t missedCount_;
 };
 
 }

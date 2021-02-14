@@ -294,7 +294,7 @@ void AndroidAutoEntity::onPingRequest(const aasdk::proto::messages::PingRequest 
 }
 
 void AndroidAutoEntity::onPingResponse(const aasdk::proto::messages::PingResponse &response) {
-  LOG(INFO) << "[AndroidAutoEntity] Ping response, timestamp: " << response.timestamp();
+  VLOG(9) << "[AndroidAutoEntity] Ping response, timestamp: " << response.timestamp();
   pinger_->pong();
   controlServiceChannel_->receive(this->shared_from_this());
 }
