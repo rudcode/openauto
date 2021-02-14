@@ -104,6 +104,7 @@ void signalHandler(int signum) {
 }
 
 int main(int argc, char *argv[]) {
+  auto start_time = std::chrono::high_resolution_clock::now();
   /* Do some Mazda Specific Setup */
   setenv("DBUS_SYSTEM_BUS_ADDRESS", "unix:path=/tmp/dbus_service_socket", true);
   setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/tmp/dbus_hmi_socket", true);
@@ -128,13 +129,26 @@ int main(int argc, char *argv[]) {
     defaultConf.set(el::Level::Global, el::ConfigurationType::ToFile, "true");
     defaultConf.set(el::Level::Global, el::ConfigurationType::ToStandardOutput, "false");
   }
+  el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%ts",
+                                                                      [start_time](const el::LogMessage *) {
+                                                                        auto current_time =
+                                                                            std::chrono::high_resolution_clock::now();
+                                                                        char buf[50];
+                                                                        float_t ts =
+                                                                            std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                                                current_time - start_time).count()
+                                                                                / 1000.00;
+                                                                        snprintf(buf, sizeof(buf), "%.3f", ts);
+                                                                        std::string out = buf;
+                                                                        return out;
+                                                                      }));
   // Values are always std::string
   defaultConf.set(el::Level::Info,
-                  el::ConfigurationType::Format, "%datetime %levshort [%fbase] %msg");
+                  el::ConfigurationType::Format, "%ts %levshort [%fbase] %msg");
   defaultConf.set(el::Level::Debug,
-                  el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
+                  el::ConfigurationType::Format, "%ts %levshort [%fbase] [%func] %msg");
   defaultConf.set(el::Level::Error,
-                  el::ConfigurationType::Format, "%datetime %levshort [%fbase] [%func] %msg");
+                  el::ConfigurationType::Format, "%ts %levshort [%fbase] [%func] %msg");
   // default logger uses default configurations
   el::Loggers::reconfigureLogger("default", defaultConf);
   el::Loggers::setLoggingLevel(configuration->logLevel());
