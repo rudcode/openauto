@@ -60,6 +60,8 @@ class AudioService
                projection::IAudioOutput::Pointer audioOutput,
                AudioSignals::Pointer audiosignals);
 
+  ~AudioService() noexcept override;
+
   void start() override;
   void stop() override;
   void pause() override;

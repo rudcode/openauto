@@ -40,6 +40,8 @@ class VideoService
                projection::IVideoOutput::Pointer videoOutput,
                VideoSignals::Pointer videoSignals);
 
+  ~VideoService() noexcept override;
+
   void start() override;
   void stop() override;
   void pause() override;

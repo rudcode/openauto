@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
   LOG(INFO) << "[OpenAuto] starting";
   signal(SIGINT, signalHandler);
   signal(SIGTERM, signalHandler);
+  signal(SIGPIPE, SIG_IGN);
   libusb_context *usbContext;
   if (libusb_init(&usbContext) != 0) {
     LOG(ERROR) << "[OpenAuto] libusb init failed.";
@@ -210,11 +211,14 @@ int main(int argc, char *argv[]) {
     sleep(1);
   }
 
-  signals.aaSignals->shutdown.emit();
-
-  while (connected) {
-    sleep(1);
-  }
+  signals.audioSignals->focusRelease.emit(aasdk::messenger::ChannelId::MEDIA_AUDIO);
+  signals.videoSignals->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::HEADUNIT);
+  sleep(2);
+//  signals.aaSignals->shutdown.emit();
+//
+//  while (connected) {
+//    sleep(1);
+//  }
   LOG(DEBUG) << "Calling app->stop()";
   app->stop();
   LOG(DEBUG) << "Stopping ioService";
