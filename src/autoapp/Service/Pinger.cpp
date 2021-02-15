@@ -69,6 +69,7 @@ void Pinger::onTimerExceeded(const asio::error_code &error) {
 }
 
 void Pinger::cancel() {
+  LOG(DEBUG) << "Pinger Cancel";
   strand_.dispatch([this, self = this->shared_from_this()]() {
     cancelled_ = true;
     timer_.cancel();

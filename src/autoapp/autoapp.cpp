@@ -197,6 +197,7 @@ int main(int argc, char *argv[]) {
                                             configuration->wifiPort());
 
   signals.aaSignals->connected.connect([](bool connected_) {
+    LOG(INFO) << "Android Auto " << (connected_ ? "Connected" : "Disconnected");
     connected = connected_;
   });
 
@@ -209,11 +210,13 @@ int main(int argc, char *argv[]) {
     sleep(1);
   }
 
-  LOG(DEBUG) << "Calling app->stop()";
-  app->stop();
+  signals.aaSignals->shutdown.emit();
+
   while (connected) {
     sleep(1);
   }
+  LOG(DEBUG) << "Calling app->stop()";
+  app->stop();
   LOG(DEBUG) << "Stopping ioService";
   ioService.stop();
   LOG(DEBUG) << "Joining threads";

@@ -58,6 +58,7 @@ void AndroidAutoEntity::start(IAndroidAutoEntityEventHandler &eventHandler) {
 
     signals_.audioSignals->focusChanged.connect(sigc::mem_fun(*this, &AndroidAutoEntity::onAudioFocusResponse));
     signals_.aaSignals->connected.emit(true);
+    signals_.aaSignals->shutdown.connect(sigc::mem_fun(*this, &AndroidAutoEntity::sendShutdownRequest));
 
     auto versionRequestPromise = aasdk::channel::SendPromise::defer(strand_);
     versionRequestPromise->then([]() {}, [&](const aasdk::error::Error &e) { onChannelError(e); });
@@ -254,6 +255,16 @@ void AndroidAutoEntity::onShutdownRequest(const aasdk::proto::messages::Shutdown
                 [&](const aasdk::error::Error &e) { onChannelError(e); });
 
   controlServiceChannel_->sendShutdownResponse(response, std::move(promise));
+}
+
+void AndroidAutoEntity::sendShutdownRequest() {
+  aasdk::proto::messages::ShutdownRequest request;
+  request.set_reason(aasdk::proto::enums::ShutdownReason::QUIT);
+  auto promise = aasdk::channel::SendPromise::defer(strand_);
+  promise->then([]() {},
+                [&](const aasdk::error::Error &e) { onChannelError(e); });
+
+  controlServiceChannel_->sendShutdownRequest(request, std::move(promise));
 }
 
 void AndroidAutoEntity::onShutdownResponse(const aasdk::proto::messages::ShutdownResponse &) {
