@@ -28,7 +28,7 @@ void AudioFocusRequest::request(Promise::Pointer promise) {
     } else {
 
       promise_ = std::move(promise);
-      timer_.expires_from_now(std::chrono::milliseconds(500));
+      timer_.expires_from_now(std::chrono::seconds(1));
       timer_.async_wait(strand_.wrap([this](const asio::error_code &error) { onTimerExceeded(error); }));
     }
   });

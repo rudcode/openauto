@@ -216,9 +216,9 @@ void AndroidAutoEntity::onAudioFocusRequest(const aasdk::proto::messages::AudioF
                                           request.audio_focus_type());
       break;
     case aasdk::proto::enums::AudioFocusType_Enum_GAIN_TRANSIENT:
-      signals_.audioSignals->focusRequest(aasdk::messenger::ChannelId::SYSTEM_AUDIO,
-                                          request.audio_focus_type());
-      break;
+//      signals_.audioSignals->focusRequest(aasdk::messenger::ChannelId::SYSTEM_AUDIO,
+//                                          request.audio_focus_type());
+//      break;
     case aasdk::proto::enums::AudioFocusType_Enum_GAIN_NAVI:
       signals_.audioSignals->focusRequest(aasdk::messenger::ChannelId::SPEECH_AUDIO,
                                           request.audio_focus_type());

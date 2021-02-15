@@ -87,11 +87,11 @@ void ServiceFactory::createAudioServices(ServiceList &serviceList,
                                                                 std::move(speechAudioOutput),
                                                                 signals_.audioSignals));
 
-  auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "vrGeneric");
-  serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_,
-                                                                messenger,
-                                                                std::move(systemAudioOutput),
-                                                                signals_.audioSignals));
+//  auto systemAudioOutput = std::make_shared<projection::AlsaAudioOutput>(1, 16000, "vrGeneric");
+//  serviceList.emplace_back(std::make_shared<SystemAudioService>(ioService_,
+//                                                                messenger,
+//                                                                std::move(systemAudioOutput),
+//                                                                signals_.audioSignals));
 }
 
 }
