@@ -34,7 +34,7 @@ class GSTVideoOutput : public IVideoOutput {
   [[nodiscard]] aasdk::proto::enums::VideoResolution::Enum
   getVideoResolution() const override { return aasdk::proto::enums::VideoResolution::Enum::VideoResolution_Enum__480p; }
 
-  [[nodiscard]] size_t getScreenDPI() const override { return 132; }
+  [[nodiscard]] size_t getScreenDPI() const override { return 141; }
 
   [[nodiscard]] VideoMargins getVideoMargins() const override;
 
