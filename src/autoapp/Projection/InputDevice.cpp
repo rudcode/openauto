@@ -130,14 +130,14 @@ void InputDevice::start(IInputDeviceEventHandler &eventHandler) {
   if (rc < 0) {
     LOG(ERROR) << "Failed to init libevdev " << strerror(-rc);
   }
-
+  canceled_ = false;
   timer_.expires_from_now(std::chrono::milliseconds(50));
   timer_.async_wait(strand_.wrap([this](asio::error_code ec) { this->poll(ec); }));
 
 }
 
 void InputDevice::poll(asio::error_code ec) {
-  if (ec == asio::error::operation_aborted) {
+  if (ec == asio::error::operation_aborted || canceled_) {
     return;
   }
   int rc = 0;
@@ -175,6 +175,7 @@ void InputDevice::poll(asio::error_code ec) {
 
 void InputDevice::stop() {
   std::lock_guard<decltype(mutex_)> lock(mutex_);
+  canceled_ = true;
 
   audioFocusChanged.disconnect();
   videoFocusChanged.disconnect();
