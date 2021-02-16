@@ -107,12 +107,11 @@ void AudioInputService::onAVChannelSetupRequest(const aasdk::proto::messages::AV
 }
 
 void AudioInputService::onAVInputOpenRequest(const aasdk::proto::messages::AVInputOpenRequest &request) {
-  LOG(INFO) << "[AudioInputService] input open request, open: " << request.open()
-            << ", anc: " << request.anc()
-            << ", ec: " << request.ec()
-            << ", max unacked: " << request.max_unacked();
-
   if (request.open()) {
+    LOG(INFO) << "[AudioInputService] input open request, open: " << request.open()
+              << ", anc: " << request.anc()
+              << ", ec: " << request.ec()
+              << ", max unacked: " << request.max_unacked();
     auto startPromise = projection::IAudioInput::StartPromise::defer(strand_);
     startPromise->then([this]() { onAudioInputOpenSucceed(); },
                        [this, self = this->shared_from_this()]() {
@@ -129,6 +128,10 @@ void AudioInputService::onAVInputOpenRequest(const aasdk::proto::messages::AVInp
 
     audioInput_->start(std::move(startPromise));
   } else {
+    LOG(INFO) << "[AudioInputService] input close request, open: " << request.open()
+              << ", anc: " << request.anc()
+              << ", ec: " << request.ec()
+              << ", max unacked: " << request.max_unacked();
     audioInput_->stop();
 
     aasdk::proto::messages::AVInputOpenResponse response;
