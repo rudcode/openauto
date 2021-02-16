@@ -40,10 +40,15 @@ void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
           audiosignals_->focusChanged.emit(stream->channelId, AudioFocusState::LOSS);
         LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Lost";
       } else if (focus == "temporarilyLost") {
-//        stream->focus = false;
-//        if (focusCount > 1)
-//          audiosignals_->focusChanged.emit(stream->channelId, AudioFocusState::LOSS_TRANSIENT);
-//        LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Temporarily Lost";
+        stream->focus = false;
+        json activeargs = {
+            {"sessionId", stream->id},
+            {"playing", false}
+        };
+        Request("audioActive", activeargs.dump());
+        if (stream->channelId == aasdk::messenger::ChannelId::MEDIA_AUDIO)
+          audiosignals_->focusChanged.emit(stream->channelId, AudioFocusState::LOSS_TRANSIENT);
+        LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Temporarily Lost";
       } else if (result["newFocus"].get<std::string>() == "gained") {
         stream->focus = true;
         switch (stream->channelId) {
