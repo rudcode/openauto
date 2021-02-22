@@ -32,19 +32,6 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
   }
 
   if (bdsconfigured) {
-    sleep(5);
-    bdsClient = sdbus::createProxy("com.jci.bds", "/com/jci/bds");
-    bdsClient->uponSignal("SignalConnected_cb").onInterface("com.jci.bds").call(
-        [this](const uint32_t &type, const sdbus::Struct<std::vector<uint8_t>> &data) {
-          LOG(DEBUG) << "Saw Service: " << data.get<0>()[36];
-          if (data.get<0>()[36] == serviceId) {
-            std::string pty((char *) &data.get<0>()[48]);
-            LOG(DEBUG) << "PTY: " << pty;
-            BluetoothConnection bconnection(configuration_);
-            bconnection.handle_connect(pty);
-          }
-        });
-    bdsClient->finishRegistration();
     auto connection = sdbus::createSessionBusConnection();
     bcaClient = sdbus::createProxy(std::move(connection), "com.jci.bca", "/com/jci/bca");
     bcaClient->uponSignal("ConnectionStatusResp").onInterface("com.jci.bca").call(
@@ -54,7 +41,11 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
                const uint32_t &status,
                const sdbus::Struct<std::vector<uint8_t>> &terminalPath) {
           LOG(DEBUG) << "Saw Service: " << found_serviceId;
-          if (found_serviceId == serviceId && connStatus == 3) {
+          if(found_serviceId == 1 && connStatus == 3){
+            LOG(DEBUG) << "Saw Service: Handsfree. Inititating connection";
+            this->bcaClient->callMethod("StartAdd").onInterface("com.jci.bca").withArguments(this->serviceId).withTimeout(1000).dontExpectReply();
+          }
+          else if (found_serviceId == serviceId && connStatus == 3) {
             std::string pty(terminalPath.get<0>().begin(), terminalPath.get<0>().end());
             LOG(DEBUG) << "PTY: " << pty;
             BluetoothConnection bconnection(configuration_);
@@ -69,7 +60,6 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
 
 BluetoothManager::~BluetoothManager() {
   LOG(DEBUG) << "Stopping BluetoothManager";
-  bdsClient.reset();
   bcaClient.reset();
 }
 

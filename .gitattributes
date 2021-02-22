@@ -9,3 +9,4 @@
 *.cpp text
 *.xml text
 *.txt text
+*.sh text

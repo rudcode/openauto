@@ -23,7 +23,6 @@ class BluetoothManager {
   autoapp::configuration::IConfiguration::Pointer configuration_;
   bool bdsconfigured = false;
   uint32_t serviceId = 0;
-  std::unique_ptr<sdbus::IProxy> bdsClient;
   std::unique_ptr<sdbus::IProxy> bcaClient;
 
 };
