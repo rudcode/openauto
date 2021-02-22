@@ -46,7 +46,6 @@ void VideoService::stop() {
     focusRelease.disconnect();
     focusRequest.disconnect();
     videoSignals_->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO);
-    videoOutput_->stop();
   });
 }
 
@@ -64,8 +63,7 @@ void VideoService::resume() {
 
 void VideoService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpenRequest &request) {
   LOG(INFO) << "[VideoService] open request, priority: " << request.priority();
-  const aasdk::proto::enums::Status::Enum
-      status = videoOutput_->open() ? aasdk::proto::enums::Status::OK : aasdk::proto::enums::Status::FAIL;
+  const aasdk::proto::enums::Status::Enum status = aasdk::proto::enums::Status::OK;
   focusRequest = videoSignals_->focusRequest.connect(sigc::mem_fun(*this, &VideoService::sendVideoFocusIndication));
   focusRelease = videoSignals_->focusRelease.connect(sigc::mem_fun(*this, &VideoService::sendVideoFocusLost));
   LOG(INFO) << "[VideoService] open status: " << status;
@@ -104,12 +102,14 @@ void VideoService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChann
 void VideoService::onAVChannelStartIndication(const aasdk::proto::messages::AVChannelStartIndication &indication) {
   LOG(INFO) << "[VideoService] start indication, session: " << indication.session();
   session_ = indication.session();
+  videoOutput_->open();
 
   channel_->receive(this->shared_from_this());
 }
 
 void VideoService::onAVChannelStopIndication(const aasdk::proto::messages::AVChannelStopIndication &indication) {
   LOG(INFO) << "[VideoService] stop indication, session: " << session_;
+  videoOutput_->stop();
 
   channel_->receive(this->shared_from_this());
 }

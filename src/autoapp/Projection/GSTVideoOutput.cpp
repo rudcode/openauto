@@ -49,17 +49,16 @@ void GSTVideoOutput::spawn_gst() {
   char *const launch[] = {
       (char *) "sh",
       (char *) "-c",
-      (char *) "gst-launch fdsrc fd=0 timeout=1000 do-timestamp=true ! queue ! h264parse " \
+      (char *) "gst-launch fdsrc fd=0 timeout=1000 do-timestamp=true ! queue max-size-buffers=600 ! h264parse " \
       "! vpudec low-latency=true framedrop=true framedrop-level-mask=0x200 frame-plus=1 "\
-      "! mfw_isink name=mysink axis-left=0  axis-top=0 disp-width=800 disp-height=480 " \
-      "max-lateness=1000000000 sync=false async=false 2>&1",
+      "!  mfw_v4lsink name=aavideo 2>&1",
       nullptr};
 
   char *const environment[] = {
       (char *) "USER=jci",
       (char *) "LD_LIBRARY_PATH=/jci/lib:/jci/opera/3rdpartylibs/freetype:/usr/lib/imx-mm/audio-codec:/usr/lib/imx-mm/parser:/data_persist/dev/lib:",
       (char *) "HOME=/root",
-      (char *) "WAYLAND_IVI_SURFACE_ID=2",
+      (char *) "WAYLAND_IVI_SURFACE_ID=1",
       (char *) "PATH=/sbin:/usr/sbin:/bin:/usr/bin:/jci/bin/:/resources/dev/bin:/resources/dev/sbin:/data_persist/dev/bin:/data_persist/dev/sbin:/resources/dev/usr/bin",
       (char *) "XDG_RUNTIME_DIR=/tmp",
       (char *) "SHELL=/bin/sh",
@@ -92,12 +91,14 @@ bool GSTVideoOutput::open() {
   std::ofstream ofs("/proc/sys/vm/drop_caches");
   ofs << "3" << std::endl;
 
-  spawn_gst();
+  if(gstpid == -1){
+    spawn_gst();
 
-  sd = new asio::posix::stream_descriptor(ioService_, p_stdout[0]);
-  asio::async_read_until(*sd, buffer, '\n', [this](asio::error_code ec, size_t bytes_transferred) {
-    this->message_handler(ec, bytes_transferred);
-  });
+    sd = new asio::posix::stream_descriptor(ioService_, p_stdout[0]);
+    asio::async_read_until(*sd, buffer, '\n', [this](asio::error_code ec, size_t bytes_transferred) {
+      this->message_handler(ec, bytes_transferred);
+    });
+  }
   return true;
 }
 
@@ -107,13 +108,19 @@ bool GSTVideoOutput::init() {
 
 void GSTVideoOutput::write(__attribute__((unused)) uint64_t timestamp,
                            const aasdk::common::DataConstBuffer &buf) {
-  fwrite(buf.cdata, sizeof(buf.cdata[0]), buf.size, gst_file);
+  if(gstpid != -1) {
+    fwrite(buf.cdata, sizeof(buf.cdata[0]), buf.size, gst_file);
+  }
 }
 
 void GSTVideoOutput::stop() {
-  fclose(gst_file);
-  close(p_stdin[1]);
-  sd->close();
+  if(gstpid != -1){
+    kill(gstpid, SIGTERM);
+    gstpid = -1;
+    fclose(gst_file);
+    close(p_stdin[1]);
+    sd->close();
+  }
 }
 
 GSTVideoOutput::~GSTVideoOutput() = default;

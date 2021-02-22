@@ -124,7 +124,6 @@ file(GLOB_RECURSE autoapp_source_files ${autoapp_sources_directory}/*.cpp)
 
 add_executable(autoapp
         ${autoapp_source_files}
-        "Mazda/Dbus/com.jci.nativeguictrl.h"
         "Mazda/Dbus/com.jci.bucpsa.h"
         "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
         "Mazda/Dbus/com.jci.lds.control.h"
