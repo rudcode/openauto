@@ -27,7 +27,7 @@ enum MazdaIcons {
   RIGHT = 3,
   SLIGHT_LEFT = 4,
   SLIGHT_RIGHT = 5,
-  DESTINATION  = 8,
+  DESTINATION = 8,
   DESTINATION_LEFT = 33,
   DESTINATION_RIGHT = 34,
   SHARP_LEFT = 11,
@@ -45,7 +45,7 @@ enum MazdaIcons {
   OFF_RAMP_RIGHT = 30
 };
 
-enum MazdaDistanceUnits: uint8_t {
+enum MazdaDistanceUnits : uint8_t {
   METERS = 1,
   MILES = 2,
   KILOMETERS = 3,
@@ -56,7 +56,9 @@ enum MazdaDistanceUnits: uint8_t {
 class HUDSettingsCLient final : public sdbus::ProxyInterfaces<com::jci::navi2IHU::HUDSettings_proxy> {
  public:
   HUDSettingsCLient(std::unique_ptr<sdbus::IConnection> &connection, std::string destination, std::string objectPath)
-      : sdbus::ProxyInterfaces<com::jci::navi2IHU::HUDSettings_proxy>(std::move(connection), std::move(destination), std::move(objectPath)) {
+      : sdbus::ProxyInterfaces<com::jci::navi2IHU::HUDSettings_proxy>(std::move(connection),
+                                                                      std::move(destination),
+                                                                      std::move(objectPath)) {
   }
  private:
   void onHUDInstalledChanged(const bool &hUDInstalled) override {}
@@ -93,11 +95,11 @@ class NaviCLient final : public sdbus::ProxyInterfaces<com::jci::vbs::navi_proxy
       : sdbus::ProxyInterfaces<com::jci::vbs::navi_proxy>(std::move(destination), std::move(objectPath)) {
   }
  private:
-   void onFuelTypeResp(const uint8_t& fuelType) override {}
-   void onHUDResp(const uint8_t& hudStatus) override {}
-   void onTSRResp(const uint8_t& tsrStatus) override {}
-   void onGccConfigMgmtResp(const sdbus::Struct<std::vector<uint8_t>>& vin_Character) override {}
-   void onTSRFeatureMode(const uint8_t& tsrMode) override {}
+  void onFuelTypeResp(const uint8_t &fuelType) override {}
+  void onHUDResp(const uint8_t &hudStatus) override {}
+  void onTSRResp(const uint8_t &tsrStatus) override {}
+  void onGccConfigMgmtResp(const sdbus::Struct<std::vector<uint8_t>> &vin_Character) override {}
+  void onTSRFeatureMode(const uint8_t &tsrMode) override {}
 };
 
 class NavigationManager {
@@ -108,7 +110,11 @@ class NavigationManager {
  private:
   void onNavigationStart();
   void onNavigationStop();
-  void onNavigationTurn(int, std::string, aasdk::proto::enums::NavigationTurnSide_Enum, aasdk::proto::enums::NavigationTurnEvent_Enum, int);
+  void onNavigationTurn(int,
+                        std::string,
+                        aasdk::proto::enums::NavigationTurnSide_Enum,
+                        aasdk::proto::enums::NavigationTurnEvent_Enum,
+                        int);
   void onNavigationDistance([[maybe_unused]] int,
                             [[maybe_unused]] int, int, aasdk::proto::enums::NavigationDistanceUnit_Enum);
   static uint32_t roundabout(int, aasdk::proto::enums::NavigationTurnSide_Enum side);

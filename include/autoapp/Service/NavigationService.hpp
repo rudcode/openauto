@@ -23,7 +23,6 @@
 #include <autoapp/Service/IService.hpp>
 #include <autoapp/Signals/NavigationSignals.hpp>
 
-
 namespace autoapp::service {
 
 class NavigationService
@@ -32,7 +31,7 @@ class NavigationService
       public std::enable_shared_from_this<NavigationService> {
  public:
   NavigationService(asio::io_service &ioService,
-                aasdk::messenger::IMessenger::Pointer messenger, NavigationSignals::Pointer navSignals);
+                    aasdk::messenger::IMessenger::Pointer messenger, NavigationSignals::Pointer navSignals);
 
   void start() override;
   void stop() override;
@@ -45,9 +44,9 @@ class NavigationService
  private:
   using std::enable_shared_from_this<NavigationService>::shared_from_this;
 
-  void onNavigationStatus(const aasdk::proto::messages::NavigationRequestMessage& request) override;
-  void onNavigationTurn(const aasdk::proto::messages::NavigationTurnMessage& request) override;
-  void onNavigationDistance(const aasdk::proto::messages::NavigationDistanceMessage& request) override;
+  void onNavigationStatus(const aasdk::proto::messages::NavigationRequestMessage &request) override;
+  void onNavigationTurn(const aasdk::proto::messages::NavigationTurnMessage &request) override;
+  void onNavigationDistance(const aasdk::proto::messages::NavigationDistanceMessage &request) override;
 
   asio::io_service::strand strand_;
   aasdk::channel::navigation::NavigationChannel::Pointer channel_;

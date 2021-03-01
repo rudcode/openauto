@@ -46,11 +46,11 @@ NavigationManager::NavigationManager(NavigationSignals::Pointer navSignals) : na
                                    MazdaIcons::DESTINATION})); //TURN_DESTINATION
 
 //  if (hudSettings_->GetHUDIsInstalled()) {
-    LOG(INFO) << "HUD DETECTED";
-    navSignals_->onNavigationDistance.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationDistance));
-    navSignals_->onNavigationTurn.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationTurn));
-    navSignals_->onNavigationStart.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationStart));
-    navSignals_->onNavigationStop.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationStop));
+  LOG(INFO) << "HUD DETECTED";
+  navSignals_->onNavigationDistance.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationDistance));
+  navSignals_->onNavigationTurn.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationTurn));
+  navSignals_->onNavigationStart.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationStart));
+  navSignals_->onNavigationStop.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationStop));
 //  }
 //  else {
 //    LOG(INFO) << "HUD NOT DETECTED";
@@ -90,7 +90,6 @@ void NavigationManager::onNavigationTurn(int turn_number,
 
   LOG(DEBUG) << "msg" << navi_data->msg << " " << turn_name;
 
-
   tmcClient_->SetHUD_Display_Msg2(guidancePointData(turn_name,
                                                     navi_data->msg));
 
@@ -108,9 +107,8 @@ void NavigationManager::onNavigationDistance([[maybe_unused]] int distance,
     diricon = roundabout(navi_data->turn_angle, navi_data->turn_side);
   } else {
     if (AA2MAZ.count(navi_data->turn_event)) {
-      diricon = AA2MAZ[navi_data->turn_event][navi_data->turn_side-1];
-    }
-    else {
+      diricon = AA2MAZ[navi_data->turn_event][navi_data->turn_side - 1];
+    } else {
       LOG(DEBUG) << "No matching navigation icon for " << navi_data->turn_event << " " << navi_data->turn_side;
     }
   }
@@ -133,8 +131,7 @@ void NavigationManager::onNavigationDistance([[maybe_unused]] int distance,
     case aasdk::proto::enums::NavigationDistanceUnit::YARDS:nowDistance = displayDistance / 100;
       nowUnit = MazdaDistanceUnits::YARDS;
       break;
-    default:
-      break;
+    default:break;
   }
 
   LOG(DEBUG) << "msg" << navi_data->msg << " " << static_cast<int>(diricon) << " " << nowDistance << " " << nowUnit;

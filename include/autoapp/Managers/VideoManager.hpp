@@ -19,7 +19,6 @@ class VideoManager {
   bool currentDisplayMode;
   bool hasFocus = false;
 
-
  public:
   explicit VideoManager(VideoSignals::Pointer videosignals);
   ~VideoManager();

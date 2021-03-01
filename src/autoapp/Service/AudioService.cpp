@@ -157,7 +157,9 @@ void AudioService::onChannelOpenRequest(const aasdk::proto::messages::ChannelOpe
   response.set_status(status);
 
   auto promise = aasdk::channel::SendPromise::defer(strand_);
-  promise->then(std::function<void(void)>([](){}),[this, self = this->shared_from_this()](const aasdk::error::Error &e) -> void { this->onChannelError(e); });
+  promise->then(std::function<void(void)>([]() {}),
+                [this, self =
+                this->shared_from_this()](const aasdk::error::Error &e) -> void { this->onChannelError(e); });
   channel_->sendChannelOpenResponse(response, std::move(promise));
   channel_->receive(this->shared_from_this());
 }
@@ -176,7 +178,9 @@ void AudioService::onAVChannelSetupRequest(const aasdk::proto::messages::AVChann
   response.add_configs(0);
 
   auto promise = aasdk::channel::SendPromise::defer(strand_);
-  promise->then(std::function<void(void)>([](){}), [this, self = this->shared_from_this()](const aasdk::error::Error &e) -> void { this->onChannelError(e); });
+  promise->then(std::function<void(void)>([]() {}),
+                [this, self =
+                this->shared_from_this()](const aasdk::error::Error &e) -> void { this->onChannelError(e); });
   channel_->sendAVChannelSetupResponse(response, std::move(promise));
   channel_->receive(this->shared_from_this());
 }
@@ -188,7 +192,7 @@ void AudioService::onAVChannelStartIndication(const aasdk::proto::messages::AVCh
   if (channel_->getId() != aasdk::messenger::ChannelId::MEDIA_AUDIO)
     audiosignals_->focusRequest(channel_->getId(), aasdk::proto::enums::AudioFocusType_Enum_GAIN);
   auto promise = AudioTimer::Promise::defer(strand_);
-  promise->then(std::function<void(void)>([](){}),
+  promise->then(std::function<void(void)>([]() {}),
                 [this, self = this->shared_from_this()](auto error) {
                   if (error != aasdk::error::ErrorCode::OPERATION_ABORTED &&
                       error != aasdk::error::ErrorCode::OPERATION_IN_PROGRESS) {
@@ -224,7 +228,9 @@ void AudioService::onAVMediaWithTimestampIndication(aasdk::messenger::Timestamp:
   indication.set_value(1);
 
   auto promise = aasdk::channel::SendPromise::defer(strand_);
-  promise->then(std::function<void(void)>([](){}), [this, self = this->shared_from_this()](const aasdk::error::Error &e) -> void { this->onChannelError(e); });
+  promise->then(std::function<void(void)>([]() {}),
+                [this, self =
+                this->shared_from_this()](const aasdk::error::Error &e) -> void { this->onChannelError(e); });
   channel_->sendAVMediaAckIndication(indication, std::move(promise));
   channel_->receive(this->shared_from_this());
 }
@@ -238,7 +244,7 @@ void AudioService::onChannelError(const aasdk::error::Error &e) {
              << ", channel: " << aasdk::messenger::channelIdToString(channel_->getId());
 }
 
-AudioService::~AudioService() noexcept{
+AudioService::~AudioService() noexcept {
   LOG(DEBUG) << "Audio Service Destroyed, Channel " << aasdk::messenger::channelIdToString(channel_->getId());
 }
 

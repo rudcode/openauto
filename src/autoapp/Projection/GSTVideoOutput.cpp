@@ -91,7 +91,7 @@ bool GSTVideoOutput::open() {
   std::ofstream ofs("/proc/sys/vm/drop_caches");
   ofs << "3" << std::endl;
 
-  if(gstpid == -1){
+  if (gstpid == -1) {
     spawn_gst();
 
     sd = new asio::posix::stream_descriptor(ioService_, p_stdout[0]);
@@ -108,13 +108,13 @@ bool GSTVideoOutput::init() {
 
 void GSTVideoOutput::write(__attribute__((unused)) uint64_t timestamp,
                            const aasdk::common::DataConstBuffer &buf) {
-  if(gstpid != -1) {
+  if (gstpid != -1) {
     fwrite(buf.cdata, sizeof(buf.cdata[0]), buf.size, gst_file);
   }
 }
 
 void GSTVideoOutput::stop() {
-  if(gstpid != -1){
+  if (gstpid != -1) {
     kill(gstpid, SIGTERM);
     gstpid = -1;
     fclose(gst_file);

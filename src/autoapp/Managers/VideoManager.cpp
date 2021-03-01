@@ -10,7 +10,7 @@ VideoManager::VideoManager(VideoSignals::Pointer videosignals) :
     // currentDisplayMode != 0 means backup camera wants the screen
     if ((bool) DisplayMode) {
       this->vs->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
-      if(hasFocus)
+      if (hasFocus)
         this->waitsForFocus = true;
     } else {
       this->vs->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
