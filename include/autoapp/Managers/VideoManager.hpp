@@ -7,8 +7,6 @@
 #include <autoapp/Service/VideoService.hpp>
 #include <autoapp/Signals/VideoSignals.hpp>
 
-#include <Mazda/Dbus/com.jci.nativeguictrl.h>
-
 class VideoManager {
  private:
   std::unique_ptr<sdbus::IProxy> bucpsa;
