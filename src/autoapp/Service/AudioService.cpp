@@ -43,7 +43,7 @@ void AudioTimer::onTimerExceeded(const asio::error_code &error) {
 }
 
 void AudioTimer::request(Promise::Pointer promise) {
-  strand_.dispatch([this, self = this->shared_from_this(), promise = std::move(promise)]() mutable {
+  strand_.dispatch([this, promise = std::move(promise)]() mutable {
     cancelled_ = false;
 
     if (promise_ != nullptr) {
@@ -58,14 +58,14 @@ void AudioTimer::request(Promise::Pointer promise) {
 }
 
 void AudioTimer::cancel() {
-  strand_.dispatch([this, self = this->shared_from_this()]() {
+  strand_.dispatch([this]() {
     cancelled_ = true;
     timer_.cancel();
   });
 }
 
 void AudioTimer::extend() {
-  strand_.dispatch([this, self = this->shared_from_this()]() mutable {
+  strand_.dispatch([this]() mutable {
     cancelled_ = false;
     timer_.expires_after(std::chrono::seconds(delay_));
     timer_.async_wait(strand_.wrap([this](const asio::error_code &error) { onTimerExceeded(error); }));
@@ -80,7 +80,7 @@ AudioService::AudioService(asio::io_service &ioService,
       audioOutput_(std::move(audioOutput)),
       session_(-1),
       audiosignals_(std::move(audiosignals)),
-      timer_(std::make_shared<AudioTimer>(ioService)) {
+      timer_(ioService) {
 }
 
 void AudioService::start() {
@@ -197,7 +197,7 @@ void AudioService::onAVChannelStartIndication(const aasdk::proto::messages::AVCh
                     this->audiosignals_->focusRelease(this->channel_->getId());
                   }
                 });
-  timer_->request(std::move(promise));
+  timer_.request(std::move(promise));
   session_ = indication.session();
   audioOutput_->start();
   channel_->receive(this->shared_from_this());
@@ -217,7 +217,7 @@ void AudioService::onAVChannelStopIndication(const aasdk::proto::messages::AVCha
 void AudioService::onAVMediaWithTimestampIndication(aasdk::messenger::Timestamp::ValueType timestamp,
                                                     const aasdk::common::DataConstBuffer &buffer) {
   audioOutput_->write(timestamp, buffer);
-  timer_->extend();
+  timer_.extend();
 
   aasdk::proto::messages::AVMediaAckIndication indication;
   indication.set_session(session_);
