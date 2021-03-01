@@ -26,9 +26,8 @@
 
 namespace autoapp::service {
 
-class AudioTimer : public std::enable_shared_from_this<AudioTimer> {
+class AudioTimer {
  public:
-  typedef std::shared_ptr<AudioTimer> Pointer;
   typedef aasdk::io::Promise<void> Promise;
 
   explicit AudioTimer(asio::io_service &ioService);
@@ -37,7 +36,6 @@ class AudioTimer : public std::enable_shared_from_this<AudioTimer> {
   void extend();
 
  private:
-  using std::enable_shared_from_this<AudioTimer>::shared_from_this;
 
   void onTimerExceeded(const asio::error_code &error);
 
@@ -45,7 +43,7 @@ class AudioTimer : public std::enable_shared_from_this<AudioTimer> {
   asio::basic_waitable_timer<std::chrono::steady_clock> timer_;
   bool cancelled_;
   Promise::Pointer promise_;
-  int delay_ = 1;
+  int delay_ = 2;
 };
 
 class AudioService
@@ -84,7 +82,7 @@ class AudioService
   projection::IAudioOutput::Pointer audioOutput_;
   int32_t session_;
   AudioSignals::Pointer audiosignals_;
-  AudioTimer::Pointer timer_;
+  AudioTimer timer_;
 };
 
 }

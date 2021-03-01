@@ -124,11 +124,13 @@ file(GLOB_RECURSE autoapp_source_files ${autoapp_sources_directory}/*.cpp)
 
 add_executable(autoapp
         ${autoapp_source_files}
-        "Mazda/Dbus/com.jci.nativeguictrl.h"
         "Mazda/Dbus/com.jci.bucpsa.h"
         "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
         "Mazda/Dbus/com.jci.lds.control.h"
-        "Mazda/Dbus/com.jci.lds.data.h")
+        "Mazda/Dbus/com.jci.lds.data.h"
+        "Mazda/Dbus/com.jci.navi2IHU.HUDSettings.h"
+        "Mazda/Dbus/com.jci.vbs.navi.tmc.h"
+        "Mazda/Dbus/com.jci.vbs.navi.h")
 target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/)
 target_include_directories(autoapp PRIVATE ${include_directory})
 

@@ -273,10 +273,11 @@ void AndroidAutoEntity::onShutdownResponse(const aasdk::proto::messages::Shutdow
 }
 
 void AndroidAutoEntity::onNavigationFocusRequest(const aasdk::proto::messages::NavigationFocusRequest &request) {
-  LOG(INFO) << "[AndroidAutoEntity] navigation focus request, type: " << request.type();
+  LOG(INFO) << "[AndroidAutoEntity] navigation focus request, type: "
+            << aasdk::proto::enums::NavigationFocusType::Enum_Name(request.type());
 
   aasdk::proto::messages::NavigationFocusResponse response;
-  response.set_type(2);
+  response.set_type(aasdk::proto::enums::NavigationFocusType::NAVIGATION_FOCUS_PROJECTED);
 
   auto promise = aasdk::channel::SendPromise::defer(strand_);
   promise->then([]() {}, [&](const aasdk::error::Error &e) { onChannelError(e); });

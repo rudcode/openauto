@@ -36,6 +36,7 @@
 #include <autoapp/Managers/GPSManager.hpp>
 #include <autoapp/Managers/HttpManager.hpp>
 #include <autoapp/Managers/BluetoothManager.hpp>
+#include <autoapp/Managers/NavigationManager.hpp>
 #include <autoapp/Configuration/Configuration.hpp>
 
 using ThreadPool = std::vector<std::thread>;
@@ -177,6 +178,7 @@ int main(int argc, char *argv[]) {
   VideoManager videoManager(signals.videoSignals);
   GPSManager gpsManager(signals.gpsSignals);
   HttpManager httpManager(signals.videoSignals, signals.aaSignals);
+  NavigationManager navigationManager(signals.navSignals);
 
   aasdk::tcp::TCPWrapper tcpWrapper;
 

@@ -65,7 +65,7 @@ AlsaAudioInput::~AlsaAudioInput() = default;
 
 void AlsaAudioInput::start(StartPromise::Pointer promise) {
   int err;
-  if(pcm_handle == nullptr) {
+  if (pcm_handle == nullptr) {
     snd_pcm_hw_params_t *hw_params;
 
     err = snd_pcm_open(&pcm_handle, micDevice.c_str(), SND_PCM_STREAM_CAPTURE, 0);
@@ -203,7 +203,7 @@ void AlsaAudioInput::start(StartPromise::Pointer promise) {
 }
 
 void AlsaAudioInput::stop() {
-  if(pcm_handle != nullptr) {
+  if (pcm_handle != nullptr) {
     snd_pcm_drop(pcm_handle);
     sd->cancel();
     snd_pcm_close(pcm_handle);

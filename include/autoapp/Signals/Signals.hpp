@@ -7,6 +7,7 @@
 #include "AudioSignals.hpp"
 #include "GpsSignals.hpp"
 #include "AASignals.hpp"
+#include "NavigationSignals.hpp"
 
 class Signals : public sigc::trackable {
  public:
@@ -16,6 +17,7 @@ class Signals : public sigc::trackable {
   AudioSignals::Pointer audioSignals = std::make_shared<AudioSignals>();
   GpsSignals::Pointer gpsSignals = std::make_shared<GpsSignals>();
   AASignals::Pointer aaSignals = std::make_shared<AASignals>();
+  NavigationSignals::Pointer navSignals = std::make_shared<NavigationSignals>();
 
   Signals() = default;
 };
