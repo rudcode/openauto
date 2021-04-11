@@ -44,9 +44,11 @@ class GSTVideoOutput : public IVideoOutput {
   int p_stdin[2]{}, p_stdout[2]{};
   asio::streambuf buffer;
   asio::posix::stream_descriptor *sd = nullptr;
+  bool running;
 
   void message_handler(asio::error_code ec, size_t bytes_transferred);
 
   void spawn_gst();
+  int CheckReverse();
 };
 }

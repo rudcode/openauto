@@ -91,6 +91,11 @@ bool GSTVideoOutput::open() {
   std::ofstream ofs("/proc/sys/vm/drop_caches");
   ofs << "3" << std::endl;
 
+  if (CheckReverse()) {
+    running = true;
+    return true;
+  }
+
   if (gstpid == -1) {
     spawn_gst();
 
@@ -108,6 +113,14 @@ bool GSTVideoOutput::init() {
 
 void GSTVideoOutput::write(__attribute__((unused)) uint64_t timestamp,
                            const aasdk::common::DataConstBuffer &buf) {
+  if (CheckReverse()) {
+    running = true;
+    stop();
+  } else {
+    if (running && gstpid == -1) {
+      open();
+    }
+  }
   if (gstpid != -1) {
     fwrite(buf.cdata, sizeof(buf.cdata[0]), buf.size, gst_file);
   }
@@ -121,6 +134,20 @@ void GSTVideoOutput::stop() {
     close(p_stdin[1]);
     sd->close();
   }
+}
+
+int GSTVideoOutput::CheckReverse() {
+  bool reverse = false;
+  char gpio_value[3];
+  FILE *fd = fopen("/sys/class/gpio/Reverse/value", "r");
+  if (fd == nullptr) {
+    LOG(ERROR) << "Failed to open Reverse gpio value for reading";
+  } else {
+    fread(gpio_value, 1, 2, fd);
+    reverse = (gpio_value[0] == '0');
+  }
+  fclose(fd);
+  return reverse;
 }
 
 GSTVideoOutput::~GSTVideoOutput() = default;

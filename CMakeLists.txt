@@ -130,7 +130,8 @@ add_executable(autoapp
         "Mazda/Dbus/com.jci.lds.data.h"
         "Mazda/Dbus/com.jci.navi2IHU.HUDSettings.h"
         "Mazda/Dbus/com.jci.vbs.navi.tmc.h"
-        "Mazda/Dbus/com.jci.vbs.navi.h")
+        "Mazda/Dbus/com.jci.vbs.navi.h"
+        "Mazda/Dbus/com.jci.nativeguictrl.h")
 target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/)
 target_include_directories(autoapp PRIVATE ${include_directory})
 
