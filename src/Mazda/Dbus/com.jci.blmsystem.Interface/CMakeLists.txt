@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.blmsystem.Interface LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.blmsystem.Interface STATIC ${source_files})
+target_include_directories(com.jci.blmsystem.Interface PUBLIC ../../../../include/Mazda/Dbus/com.jci.blmsystem.Interface/)

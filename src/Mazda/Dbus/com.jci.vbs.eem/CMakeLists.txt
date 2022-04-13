@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.vbs.eem LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.vbs.eem STATIC ${source_files})
+target_include_directories(com.jci.vbs.eem PUBLIC ../../../../include/Mazda/Dbus/com.jci.vbs.eem/)

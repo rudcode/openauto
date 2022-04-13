@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.cpp.devices.Mouse LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.cpp.devices.Mouse STATIC ${source_files})
+target_include_directories(com.jci.cpp.devices.Mouse PUBLIC ../../../../include/Mazda/Dbus/com.jci.cpp.devices.Mouse/)

@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.UPDATES_Sys_Ipc.Interface LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.UPDATES_Sys_Ipc.Interface STATIC ${source_files})
+target_include_directories(com.jci.UPDATES_Sys_Ipc.Interface PUBLIC ../../../../include/Mazda/Dbus/com.jci.UPDATES_Sys_Ipc.Interface/)

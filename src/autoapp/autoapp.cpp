@@ -18,7 +18,7 @@
 
 #include <thread>
 
-#include <sdbus-c++/sdbus-c++.h>
+#include <dbus-cxx.h>
 
 #include <aasdk/USB/USBHub.hpp>
 #include <aasdk/USB/ConnectedAccessoriesEnumerator.hpp>
@@ -172,13 +172,17 @@ int main(int argc, char *argv[]) {
 
   Signals signals = Signals();
 
-  AudioManagerClient audioManager("com.xsembedded.service.AudioManagement",
-                                  "/com/xse/service/AudioManagement/AudioApplication",
-                                  signals.audioSignals);
-  VideoManager videoManager(signals.videoSignals);
-  GPSManager gpsManager(signals.gpsSignals);
+  DBus::set_logging_function(DBus::log_std_err);
+  DBus::set_log_level(SL_TRACE);
+  std::shared_ptr<DBus::Dispatcher> dispatcher = DBus::StandaloneDispatcher::create();
+  std::shared_ptr<DBus::Connection> session_connection = dispatcher->create_connection(DBus::BusType::SESSION);
+  std::shared_ptr<DBus::Connection> system_connection = dispatcher->create_connection(DBus::BusType::SYSTEM);
+
+  AudioManagerClient audioManager(signals.audioSignals, system_connection);
+  VideoManager videoManager(signals.videoSignals, session_connection);
+  GPSManager gpsManager(signals.gpsSignals, system_connection);
   HttpManager httpManager(signals.videoSignals, signals.aaSignals);
-  NavigationManager navigationManager(signals.navSignals);
+//  NavigationManager navigationManager(signals.navSignals);
 
   aasdk::tcp::TCPWrapper tcpWrapper;
 
@@ -207,7 +211,7 @@ int main(int argc, char *argv[]) {
   app->waitForUSBDevice();
 
   // This needs to happen after the rest of openauto is setup, so it goes here.
-  BluetoothManager bluetoothManager(configuration);
+  BluetoothManager bluetoothManager(configuration, session_connection);
 
   while (running) {
     sleep(1);

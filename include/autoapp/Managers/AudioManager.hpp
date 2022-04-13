@@ -1,9 +1,9 @@
 #include <set>
-#include <sdbus-c++/sdbus-c++.h>
+#include <dbus-cxx.h>
 
 #include <autoapp/Signals/AudioSignals.hpp>
 
-#include <Mazda/Dbus/com.xsembedded.ServiceProvider.h>
+#include <com_xsembedded_ServiceProvider_objectProxy.h>
 
 #include <thread>
 
@@ -16,7 +16,31 @@ struct Stream {
   std::string type;
 };
 
-class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::ServiceProvider_proxy> {
+//class AudioReciever
+//: public DBus::ObjectProxy {
+//public:
+//    AudioProxy(std::shared_ptr<DBus::Connection> conn, std::string dest = "com.xsembedded.ServiceProvider", std::string path = "/com/xse/service/AudioManagement/AudioApplication" ) : DBus::ObjectProxy( conn, dest, path ){
+//m_com_xsembedded_ServiceProviderProxy = com_xsembedded_ServiceProviderProxy::create( "com.xsembedded.ServiceProvider" );
+//this->add_interface( m_com_xsembedded_ServiceProviderProxy );
+//
+//}
+//public:
+//{
+//std::shared_ptr<NONAMEProxy> created = std::shared_ptr<NONAMEProxy>( new NONAMEProxy( conn, dest, path ) );
+//conn->register_object_proxy( created, signalCallingThread );
+//return created;
+//
+//}
+//{
+//return m_com_xsembedded_ServiceProviderProxy;
+//
+//}
+//protected:
+//std::shared_ptr<com_xsembedded_ServiceProviderProxy> m_com_xsembedded_ServiceProviderProxy;
+//};
+
+
+class AudioManagerClient {
  private:
   AudioSignals::Pointer audiosignals_;
   bool inCall = false;
@@ -25,8 +49,17 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
   std::map<std::string, int> ExistingStreams;
   std::map<int, Stream *> streamsByID;
 
-  std::thread dbus_thread;
-  std::unique_ptr<sdbus::IConnection> connection;
+  std::shared_ptr<com_xsembedded_ServiceProvider_objectProxy> AudioInterface;
+  std::shared_ptr<com_xsembedded_ServiceProviderProxy> AudioProxy;
+  std::shared_ptr<DBus::Object> AudioObject;
+
+//  std::thread dbus_thread;
+//  std::shared_ptr<DBus::Connection> connection;
+
+
+  std::shared_ptr<DBus::Connection> connection;
+
+  std::shared_ptr<DBus::ObjectProxy> object;
 
   void RegisterStream(std::string StreamName,
                       aasdk::messenger::ChannelId ChannelId,
@@ -37,11 +70,11 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
 
   void populateStreamTable();
 
-  void notificationHandler(sdbus::MethodCall call);
-  void listen_thread();
+  std::string RequestHandler(std::string methodName, std::string arguments);
+//  void listen_thread();
 
  public:
-  AudioManagerClient(std::string destination, std::string objectPath, AudioSignals::Pointer audiosignals);
+  AudioManagerClient(AudioSignals::Pointer audiosignals, const std::shared_ptr<DBus::Connection> &);
 
   ~AudioManagerClient();
 
@@ -50,6 +83,6 @@ class AudioManagerClient final : public sdbus::ProxyInterfaces<com::xsembedded::
 
   void audioMgrReleaseAudioFocus(aasdk::messenger::ChannelId);
 
-  void onNotify(const std::string &signalName, const std::string &payload) override {};
+  void onNotify(const std::string &signalName, const std::string &payload);
 
 };

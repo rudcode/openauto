@@ -3,52 +3,22 @@
 #include <ctime>
 #include <autoapp/Signals/GpsSignals.hpp>
 
-#include <Mazda/Dbus/com.jci.lds.data.h>
-#include <Mazda/Dbus/com.jci.lds.control.h>
-
-class GPSLDSCLient final : public sdbus::ProxyInterfaces<com::jci::lds::data_proxy> {
- public:
-  GPSLDSCLient(std::string destination, std::string objectPath)
-      : sdbus::ProxyInterfaces<com::jci::lds::data_proxy>(std::move(destination), std::move(objectPath)) {
-  }
-
-  void onGPSDiagnostics(const uint8_t &dTCId, const uint8_t &dTCAction) override {};
-  void onOneTimeDRDiagnostics(const std::string &dRUnitVersion,
-                              const int32_t &antennaStatus,
-                              const bool &gyroSelfTest,
-                              const bool &accelSelfTest,
-                              const bool &resetLearning,
-                              const bool &saveLearning) override {};
-  void onPeriodicDRDiagnostics(const int32_t &dRUnitStatus,
-                               const int32_t &speedPulse,
-                               const bool &reverse,
-                               const int32_t &dRUnitMode,
-                               const int32_t &gyroStatus,
-                               const int32_t &accelStatus) override {};
-
-};
-
-class GPSLDSControl final : public sdbus::ProxyInterfaces<com::jci::lds::control_proxy> {
- public:
-  GPSLDSControl(std::string destination, std::string objectPath)
-      : sdbus::ProxyInterfaces<com::jci::lds::control_proxy>(std::move(destination), std::move(objectPath)) {
-  }
-
-  void onReadStatus(const int32_t &commandReply, const int32_t &status) override {};
-};
+#include <com_jci_lds_data_objectProxy.h>
+#include <com_jci_lds_control_objectProxy.h>
 
 class GPSManager {
 
  public:
-  GPSManager(GpsSignals::Pointer gs);
+  GPSManager(GpsSignals::Pointer gs, const std::shared_ptr<DBus::Connection> &system_connection);
 
   ~GPSManager();
 
   aasdk::proto::data::GPSLocation update_position();
 
  private:
-  GPSLDSCLient *gpsclient;
-  GPSLDSControl *gpscontrol;
+  std::shared_ptr<com_jci_lds_data_objectProxy> gpsclient;
+  std::shared_ptr<com_jci_lds_control_objectProxy> gpscontrol;
+
   GpsSignals::Pointer gs_;
   int errorCount;
   std::time_t lastError;

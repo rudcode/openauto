@@ -1,370 +1,1106 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
- <interface name="com.jci.blm.pandora">
-  <annotation name="com.jci.c_name_prefix" value="BlmPandora"/>
-  <annotation name="com.jci.with_error_string" value="yes"/>
-  <annotation name="com.jci.def_struct_names.PandoraArrayOfIdsFlagsStringsType" value="PandoraArrayOfIdsFlagsStrings"/>
-  <annotation name="com.jci.def_struct_types.PandoraArrayOfIdsFlagsStringsType" value="PandoraIdsFlagsStringsType"/>
-  <annotation name="com.jci.def_struct_names.PandoraIdsFlagsStringsType" value="id, flag, name"/>
-  <annotation name="com.jci.def_struct_types.PandoraIdsFlagsStringsType" value="t, u, s"/>
-  <annotation name="com.jci.def_struct_names.PandoraArrayOfIdsStringsType" value="PandoraArrayOfIdsStrings"/>
-  <annotation name="com.jci.def_struct_types.PandoraArrayOfIdsStringsType" value="PandoraIdsStringsType"/>
-  <annotation name="com.jci.def_struct_names.PandoraIdsStringsType" value="id, name"/>
-  <annotation name="com.jci.def_struct_types.PandoraIdsStringsType" value="t, s"/>
-  <annotation name="com.jci.def_struct_names.PandoraArrayOfStringsType" value="PandoraArrayOfStrings"/>
-  <annotation name="com.jci.def_struct_types.PandoraArrayOfStringsType" value="s"/>
-  <method name="Connect">
-   <annotation name="com.jci.typedef_callback_client" value="PandoraConnect_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="out" name="statusId" type="i"/>
-   <arg direction="out" name="sessionId" type="u"/>
-   <arg direction="out" name="keepConnected" type="b"/>
-  </method>
-  <method name="Disconnect">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraDisconnect_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="Command">
-   <annotation name="com.jci.typeof.Command" value="IRSC_cmd_t"/>
-   <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraCommand_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="command" type="y"/>
-   <arg direction="in" name="groupType" type="y"/>
-   <arg direction="in" name="groupId" type="t"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="Rate">
-   <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
-   <annotation name="com.jci.typeof.Rating" value="IRSC_rating_type_t"/>
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraRate_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="groupType" type="y"/>
-   <arg direction="in" name="groupId" type="t"/>
-   <arg direction="in" name="rating" type="y"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="Bookmark">
-   <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
-   <annotation name="com.jci.typeof.BookmarkType" value="IRSC_bookmark_type_t"/>
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraBookmark_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="groupType" type="y"/>
-   <arg direction="in" name="groupId" type="t"/>
-   <arg direction="in" name="bookmarkType" type="y"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="SetSort">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typeof.SortType" value="IRSC_sort_type_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraSetSort_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="sortType" type="y"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetResource">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetResource_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="resourceId" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-   <arg direction="out" name="filePath" type="s"/>
-  </method>
-  <method name="ReleaseResource">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraReleaseResource_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="resourceId" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetStatus">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typeof.ConnectStatus" value="IRSC_connect_status_t"/>
-   <annotation name="com.jci.typeof.LinkStatus" value="IRSC_link_status_t"/>
-   <annotation name="com.jci.typeof.PlayStatus" value="IRSC_play_status_t"/>
-   <annotation name="com.jci.typeof.TrackId" value="IRSC_track_ID_t"/>
-   <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetStatus_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-   <arg direction="out" name="connectStatus" type="y"/>
-   <arg direction="out" name="linkStatus" type="y"/>
-   <arg direction="out" name="playStatus" type="y"/>
-   <arg direction="out" name="trackId" type="t"/>
-   <arg direction="out" name="stationId" type="t"/>
-   <arg direction="out" name="serviceSessionId" type="u"/>
-   <arg direction="out" name="elapsedTime" type="u"/>
-   <arg direction="out" name="buffering" type="u"/>
-  </method>
-  <method name="GetTrackAllInfo">
-   <annotation name="com.jci.typeof.TrackId" value="IRSC_track_ID_t"/>
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typeof.TrackDuration" value="IRSC_track_duration_t"/>
-   <annotation name="com.jci.typeof.CurrentStationId" value="IRSC_station_ID_t"/>
-   <annotation name="com.jci.typeof.TrackRating" value="IRSC_track_rating_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetTrackAllInfo_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="trackId" type="t"/>
-   <arg direction="out" name="statusId" type="i"/>
-   <arg direction="out" name="trackTitle" type="s"/>
-   <arg direction="out" name="trackArtist" type="s"/>
-   <arg direction="out" name="trackAlbum" type="s"/>
-   <arg direction="out" name="trackGenre" type="s"/>
-   <arg direction="out" name="trackDuration" type="u"/>
-   <arg direction="out" name="artImageSize" type="u"/>
-   <arg direction="out" name="artResourceId" type="u"/>
-   <arg direction="out" name="currentStationId" type="t"/>
-   <arg direction="out" name="trackRating" type="y"/>
-   <arg direction="out" name="trackFlags" type="u"/>
-  </method>
-  <method name="GetStationAllInfo">
-   <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetStationAllInfo_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="stationId" type="t"/>
-   <arg direction="out" name="statusId" type="i"/>
-   <arg direction="out" name="stationName" type="s"/>
-   <arg direction="out" name="stationGenre" type="s"/>
-   <arg direction="out" name="artImageSize" type="u"/>
-   <arg direction="out" name="artResourceId" type="u"/>
-   <arg direction="out" name="stationFlags" type="u"/>
-  </method>
-  <method name="GetStationListAllInfo">
-   <annotation name="com.jci.type_ref.ResStationIdsFlagsAndNames" value="PandoraArrayOfIdsFlagsStringsType"/>
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typeof.SortType" value="IRSC_sort_type_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetStationListAllInfo_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="startPosition" type="u"/>
-   <arg direction="in" name="numberOfStations" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-   <arg direction="out" name="startPos" type="u"/>
-   <arg direction="out" name="currentSize" type="u"/>
-   <arg direction="out" name="total" type="u"/>
-   <arg direction="out" name="sortType" type="y"/>
-   <arg direction="out" name="resStationIdsFlagsAndNames" type="(a(tus))"/>
-  </method>
-  <method name="GetGenreCategoryCount">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreCategoryCount_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="out" name="count" type="y"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetGenreCategoryNames">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreCategoryNames_cb_t"/>
-   <annotation name="com.jci.type_ref.GenreCategoryNames" value="PandoraArrayOfStringsType"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="startPos" type="y"/>
-   <arg direction="in" name="count" type="y"/>
-   <arg direction="out" name="resultStartPos" type="y"/>
-   <arg direction="out" name="genreCategoryNames" type="(as)"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetAllGenreCategoryNames">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetAllGenreCategoryNames_cb_t"/>
-   <annotation name="com.jci.type_ref.GenreCategoryNames" value="PandoraArrayOfStringsType"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="out" name="genreCategoryNames" type="(as)"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetGenreStationCount">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreStationCount_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="categoryIndex" type="y"/>
-   <arg direction="out" name="resultCategoryIndex" type="y"/>
-   <arg direction="out" name="count" type="y"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetGenreStationIdsNames">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreStationNames_cb_t"/>
-   <annotation name="com.jci.type_ref.GenreStationIdsNames" value="PandoraArrayOfIdsStringsType"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="categoryIndex" type="y"/>
-   <arg direction="in" name="startPos" type="y"/>
-   <arg direction="in" name="count" type="y"/>
-   <arg direction="out" name="resultCategoryIndex" type="y"/>
-   <arg direction="out" name="resultStartPos" type="y"/>
-   <arg direction="out" name="genreStationIdsNames" type="(a(ts))"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="SelectGenreStation">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraSelectGenreStation_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="categoryIndex" type="y"/>
-   <arg direction="in" name="stationIndex" type="y"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetListener">
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetListener_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="out" name="listenerId" type="s"/>
-  </method>
-  <method name="CreateStationFromCurrentTrack">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraCreateStationFromCurrentTrack_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="CreateStationFromCurrentArtist">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraCreateStationFromCurrentArtist_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="GetSessionId">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraGetSessionId_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="out" name="sessionId" type="u"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="FavoritesAdd">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraFavoritesAdd_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="stationId" type="t"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="FavoritesRemove">
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraFavoritesRemove_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="stationId" type="t"/>
-   <arg direction="out" name="statusId" type="i"/>
-  </method>
-  <method name="FavoritesGet">
-   <annotation name="com.jci.type_ref.Favorites" value="PandoraArrayOfIdsFlagsStringsType"/>
-   <annotation name="com.jci.typeof.StatusId" value="status_t"/>
-   <annotation name="com.jci.typedef_callback_client" value="PandoraFavoritesGetListAllInfo_cb_t"/>
-   <annotation name="com.jci.async" value="both"/>
-   <arg direction="in" name="sessionId" type="u"/>
-   <arg direction="in" name="startPosition" type="y"/>
-   <arg direction="in" name="numberOfFavorites" type="y"/>
-   <arg direction="out" name="statusId" type="i"/>
-   <arg direction="out" name="startPos" type="y"/>
-   <arg direction="out" name="currentSize" type="y"/>
-   <arg direction="out" name="total" type="y"/>
-   <arg direction="out" name="favorites" type="(a(tus))"/>
-  </method>
-  <signal name="Connected">
-   <annotation name="com.jci.typedef_callback" value="PandoraSignalConnected_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="keepConnected" type="b"/>
-  </signal>
-  <signal name="Disconnected">
-   <annotation name="com.jci.typedef_callback" value="PandoraSignalDisconnected_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="reasonId" type="y"/>
-  </signal>
-  <signal name="UpdateStatus">
-   <annotation name="com.jci.typeof.LinkStatus" value="IRSC_link_status_t"/>
-   <annotation name="com.jci.typeof.PlayStatus" value="IRSC_play_status_t"/>
-   <annotation name="com.jci.typeof.TrackId" value="IRSC_track_ID_t"/>
-   <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
-   <annotation name="com.jci.typedef_callback" value="PandoraSignalUpdateStatus_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="linkStatus" type="y"/>
-   <arg name="playStatus" type="y"/>
-   <arg name="trackId" type="t"/>
-   <arg name="stationId" type="t"/>
-   <arg name="elapsedTime" type="u"/>
-   <arg name="buffering" type="u"/>
-  </signal>
-  <signal name="UpdateInfo">
-   <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
-   <annotation name="com.jci.typedef_callback" value="PandoraSignalUpdateInfo_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="groupType" type="y"/>
-   <arg name="groupId" type="t"/>
-   <arg name="infoUpdated" type="y"/>
-   <arg name="infoData" type="t"/>
-  </signal>
-  <signal name="UpdateSort">
-   <annotation name="com.jci.typeof.SortType" value="IRSC_sort_type_t"/>
-   <annotation name="com.jci.typedef_callback" value="PandoraUpdateSort_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="sortType" type="y"/>
-  </signal>
-  <signal name="UpdateList">
-   <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
-   <annotation name="com.jci.typedef_callback" value="PandoraUpdateList_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="stationId" type="t"/>
-  </signal>
-  <signal name="UpdateStationInfo">
-   <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
-   <annotation name="com.jci.typeof.StationStatus" value="IRSC_station_status_t"/>
-   <annotation name="com.jci.typedef_callback" value="PandoraUpdateStationInfo_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="stationId" type="t"/>
-   <arg name="stationStatus" type="t"/>
-   <arg name="stationListCount" type="u"/>
-  </signal>
-  <signal name="UpdateNoticeText">
-   <annotation name="com.jci.typeof.NoticeType" value="IRSC_notice_type_t"/>
-   <annotation name="com.jci.typedef_callback" value="PandoraUpdateNoticeText_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="noticeType" type="y"/>
-   <arg name="noticeText" type="s"/>
-  </signal>
-  <signal name="StationArtReady">
-   <annotation name="com.jci.typedef_callback" value="PandoraSignalStationArtReady_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="resourceId" type="t"/>
-   <arg name="stationId" type="t"/>
-   <arg name="resourcePath" type="s"/>
-  </signal>
-  <signal name="GenreStationArtReady">
-   <annotation name="com.jci.typedef_callback" value="PandoraSignalGenreArtReady_cb_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionId" type="u"/>
-   <arg name="resourceId" type="t"/>
-   <arg name="categoryIndex" type="y"/>
-   <arg name="stationIndex" type="y"/>
-   <arg name="resourcePath" type="s"/>
-  </signal>
- </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.blm.pandora_object">
+    <interface name="com.jci.blm.pandora">
+
+
+        <annotation name="com.jci.c_name_prefix" value="BlmPandora"/>
+
+
+        <annotation name="com.jci.with_error_string" value="yes"/>
+
+
+        <annotation name="com.jci.def_struct_names.PandoraArrayOfIdsFlagsStringsType"
+                    value="PandoraArrayOfIdsFlagsStrings"/>
+
+
+        <annotation name="com.jci.def_struct_types.PandoraArrayOfIdsFlagsStringsType"
+                    value="PandoraIdsFlagsStringsType"/>
+
+
+        <annotation name="com.jci.def_struct_names.PandoraIdsFlagsStringsType" value="id, flag, name"/>
+
+
+        <annotation name="com.jci.def_struct_types.PandoraIdsFlagsStringsType" value="t, u, s"/>
+
+
+        <annotation name="com.jci.def_struct_names.PandoraArrayOfIdsStringsType" value="PandoraArrayOfIdsStrings"/>
+
+
+        <annotation name="com.jci.def_struct_types.PandoraArrayOfIdsStringsType" value="PandoraIdsStringsType"/>
+
+
+        <annotation name="com.jci.def_struct_names.PandoraIdsStringsType" value="id, name"/>
+
+
+        <annotation name="com.jci.def_struct_types.PandoraIdsStringsType" value="t, s"/>
+
+
+        <annotation name="com.jci.def_struct_names.PandoraArrayOfStringsType" value="PandoraArrayOfStrings"/>
+
+
+        <annotation name="com.jci.def_struct_types.PandoraArrayOfStringsType" value="s"/>
+
+
+        <method name="Connect">
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraConnect_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+            <arg direction="out" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="keepConnected" type="b"/>
+
+
+        </method>
+
+
+        <method name="Disconnect">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraDisconnect_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="Command">
+
+
+            <annotation name="com.jci.typeof.Command" value="IRSC_cmd_t"/>
+
+
+            <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraCommand_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="command" type="y"/>
+
+
+            <arg direction="in" name="groupType" type="y"/>
+
+
+            <arg direction="in" name="groupId" type="t"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="Rate">
+
+
+            <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
+
+
+            <annotation name="com.jci.typeof.Rating" value="IRSC_rating_type_t"/>
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraRate_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="groupType" type="y"/>
+
+
+            <arg direction="in" name="groupId" type="t"/>
+
+
+            <arg direction="in" name="rating" type="y"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="Bookmark">
+
+
+            <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
+
+
+            <annotation name="com.jci.typeof.BookmarkType" value="IRSC_bookmark_type_t"/>
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraBookmark_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="groupType" type="y"/>
+
+
+            <arg direction="in" name="groupId" type="t"/>
+
+
+            <arg direction="in" name="bookmarkType" type="y"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="SetSort">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typeof.SortType" value="IRSC_sort_type_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraSetSort_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="sortType" type="y"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetResource">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetResource_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="resourceId" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+            <arg direction="out" name="filePath" type="s"/>
+
+
+        </method>
+
+
+        <method name="ReleaseResource">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraReleaseResource_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="resourceId" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetStatus">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typeof.ConnectStatus" value="IRSC_connect_status_t"/>
+
+
+            <annotation name="com.jci.typeof.LinkStatus" value="IRSC_link_status_t"/>
+
+
+            <annotation name="com.jci.typeof.PlayStatus" value="IRSC_play_status_t"/>
+
+
+            <annotation name="com.jci.typeof.TrackId" value="IRSC_track_ID_t"/>
+
+
+            <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetStatus_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+            <arg direction="out" name="connectStatus" type="y"/>
+
+
+            <arg direction="out" name="linkStatus" type="y"/>
+
+
+            <arg direction="out" name="playStatus" type="y"/>
+
+
+            <arg direction="out" name="trackId" type="t"/>
+
+
+            <arg direction="out" name="stationId" type="t"/>
+
+
+            <arg direction="out" name="serviceSessionId" type="u"/>
+
+
+            <arg direction="out" name="elapsedTime" type="u"/>
+
+
+            <arg direction="out" name="buffering" type="u"/>
+
+
+        </method>
+
+
+        <method name="GetTrackAllInfo">
+
+
+            <annotation name="com.jci.typeof.TrackId" value="IRSC_track_ID_t"/>
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typeof.TrackDuration" value="IRSC_track_duration_t"/>
+
+
+            <annotation name="com.jci.typeof.CurrentStationId" value="IRSC_station_ID_t"/>
+
+
+            <annotation name="com.jci.typeof.TrackRating" value="IRSC_track_rating_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetTrackAllInfo_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="trackId" type="t"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+            <arg direction="out" name="trackTitle" type="s"/>
+
+
+            <arg direction="out" name="trackArtist" type="s"/>
+
+
+            <arg direction="out" name="trackAlbum" type="s"/>
+
+
+            <arg direction="out" name="trackGenre" type="s"/>
+
+
+            <arg direction="out" name="trackDuration" type="u"/>
+
+
+            <arg direction="out" name="artImageSize" type="u"/>
+
+
+            <arg direction="out" name="artResourceId" type="u"/>
+
+
+            <arg direction="out" name="currentStationId" type="t"/>
+
+
+            <arg direction="out" name="trackRating" type="y"/>
+
+
+            <arg direction="out" name="trackFlags" type="u"/>
+
+
+        </method>
+
+
+        <method name="GetStationAllInfo">
+
+
+            <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetStationAllInfo_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="stationId" type="t"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+            <arg direction="out" name="stationName" type="s"/>
+
+
+            <arg direction="out" name="stationGenre" type="s"/>
+
+
+            <arg direction="out" name="artImageSize" type="u"/>
+
+
+            <arg direction="out" name="artResourceId" type="u"/>
+
+
+            <arg direction="out" name="stationFlags" type="u"/>
+
+
+        </method>
+
+
+        <method name="GetStationListAllInfo">
+
+
+            <annotation name="com.jci.type_ref.ResStationIdsFlagsAndNames" value="PandoraArrayOfIdsFlagsStringsType"/>
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typeof.SortType" value="IRSC_sort_type_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetStationListAllInfo_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="startPosition" type="u"/>
+
+
+            <arg direction="in" name="numberOfStations" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+            <arg direction="out" name="startPos" type="u"/>
+
+
+            <arg direction="out" name="currentSize" type="u"/>
+
+
+            <arg direction="out" name="total" type="u"/>
+
+
+            <arg direction="out" name="sortType" type="y"/>
+
+
+            <arg direction="out" name="resStationIdsFlagsAndNames" type="(a(tus))"/>
+
+
+        </method>
+
+
+        <method name="GetGenreCategoryCount">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreCategoryCount_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="count" type="y"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetGenreCategoryNames">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreCategoryNames_cb_t"/>
+
+
+            <annotation name="com.jci.type_ref.GenreCategoryNames" value="PandoraArrayOfStringsType"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="startPos" type="y"/>
+
+
+            <arg direction="in" name="count" type="y"/>
+
+
+            <arg direction="out" name="resultStartPos" type="y"/>
+
+
+            <arg direction="out" name="genreCategoryNames" type="(as)"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetAllGenreCategoryNames">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetAllGenreCategoryNames_cb_t"/>
+
+
+            <annotation name="com.jci.type_ref.GenreCategoryNames" value="PandoraArrayOfStringsType"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="genreCategoryNames" type="(as)"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetGenreStationCount">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreStationCount_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="categoryIndex" type="y"/>
+
+
+            <arg direction="out" name="resultCategoryIndex" type="y"/>
+
+
+            <arg direction="out" name="count" type="y"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetGenreStationIdsNames">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetGenreStationNames_cb_t"/>
+
+
+            <annotation name="com.jci.type_ref.GenreStationIdsNames" value="PandoraArrayOfIdsStringsType"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="categoryIndex" type="y"/>
+
+
+            <arg direction="in" name="startPos" type="y"/>
+
+
+            <arg direction="in" name="count" type="y"/>
+
+
+            <arg direction="out" name="resultCategoryIndex" type="y"/>
+
+
+            <arg direction="out" name="resultStartPos" type="y"/>
+
+
+            <arg direction="out" name="genreStationIdsNames" type="(a(ts))"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="SelectGenreStation">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraSelectGenreStation_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="categoryIndex" type="y"/>
+
+
+            <arg direction="in" name="stationIndex" type="y"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetListener">
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetListener_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="listenerId" type="s"/>
+
+
+        </method>
+
+
+        <method name="CreateStationFromCurrentTrack">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraCreateStationFromCurrentTrack_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="CreateStationFromCurrentArtist">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraCreateStationFromCurrentArtist_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSessionId">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraGetSessionId_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="out" name="sessionId" type="u"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="FavoritesAdd">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraFavoritesAdd_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="stationId" type="t"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="FavoritesRemove">
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraFavoritesRemove_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="stationId" type="t"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+        </method>
+
+
+        <method name="FavoritesGet">
+
+
+            <annotation name="com.jci.type_ref.Favorites" value="PandoraArrayOfIdsFlagsStringsType"/>
+
+
+            <annotation name="com.jci.typeof.StatusId" value="status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback_client" value="PandoraFavoritesGetListAllInfo_cb_t"/>
+
+
+            <annotation name="com.jci.async" value="both"/>
+
+
+            <arg direction="in" name="sessionId" type="u"/>
+
+
+            <arg direction="in" name="startPosition" type="y"/>
+
+
+            <arg direction="in" name="numberOfFavorites" type="y"/>
+
+
+            <arg direction="out" name="statusId" type="i"/>
+
+
+            <arg direction="out" name="startPos" type="y"/>
+
+
+            <arg direction="out" name="currentSize" type="y"/>
+
+
+            <arg direction="out" name="total" type="y"/>
+
+
+            <arg direction="out" name="favorites" type="(a(tus))"/>
+
+
+        </method>
+
+
+        <signal name="Connected">
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraSignalConnected_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="keepConnected" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="Disconnected">
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraSignalDisconnected_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="reasonId" type="y"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateStatus">
+
+
+            <annotation name="com.jci.typeof.LinkStatus" value="IRSC_link_status_t"/>
+
+
+            <annotation name="com.jci.typeof.PlayStatus" value="IRSC_play_status_t"/>
+
+
+            <annotation name="com.jci.typeof.TrackId" value="IRSC_track_ID_t"/>
+
+
+            <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraSignalUpdateStatus_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="linkStatus" type="y"/>
+
+
+            <arg name="playStatus" type="y"/>
+
+
+            <arg name="trackId" type="t"/>
+
+
+            <arg name="stationId" type="t"/>
+
+
+            <arg name="elapsedTime" type="u"/>
+
+
+            <arg name="buffering" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateInfo">
+
+
+            <annotation name="com.jci.typeof.GroupType" value="IRSC_group_type_t"/>
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraSignalUpdateInfo_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="groupType" type="y"/>
+
+
+            <arg name="groupId" type="t"/>
+
+
+            <arg name="infoUpdated" type="y"/>
+
+
+            <arg name="infoData" type="t"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateSort">
+
+
+            <annotation name="com.jci.typeof.SortType" value="IRSC_sort_type_t"/>
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraUpdateSort_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="sortType" type="y"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateList">
+
+
+            <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraUpdateList_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="stationId" type="t"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateStationInfo">
+
+
+            <annotation name="com.jci.typeof.StationId" value="IRSC_station_ID_t"/>
+
+
+            <annotation name="com.jci.typeof.StationStatus" value="IRSC_station_status_t"/>
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraUpdateStationInfo_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="stationId" type="t"/>
+
+
+            <arg name="stationStatus" type="t"/>
+
+
+            <arg name="stationListCount" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateNoticeText">
+
+
+            <annotation name="com.jci.typeof.NoticeType" value="IRSC_notice_type_t"/>
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraUpdateNoticeText_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="noticeType" type="y"/>
+
+
+            <arg name="noticeText" type="s"/>
+
+
+        </signal>
+
+
+        <signal name="StationArtReady">
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraSignalStationArtReady_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="resourceId" type="t"/>
+
+
+            <arg name="stationId" type="t"/>
+
+
+            <arg name="resourcePath" type="s"/>
+
+
+        </signal>
+
+
+        <signal name="GenreStationArtReady">
+
+
+            <annotation name="com.jci.typedef_callback" value="PandoraSignalGenreArtReady_cb_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionId" type="u"/>
+
+
+            <arg name="resourceId" type="t"/>
+
+
+            <arg name="categoryIndex" type="y"/>
+
+
+            <arg name="stationIndex" type="y"/>
+
+
+            <arg name="resourcePath" type="s"/>
+
+
+        </signal>
+
+
+    </interface>
+
+
 </node>

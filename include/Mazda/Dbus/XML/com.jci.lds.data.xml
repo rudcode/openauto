@@ -1,122 +1,348 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
- <interface name="com.jci.lds.data">
-  <annotation name="com.jci.with_error_string" value="true"/>
-  <method name="GetPosition">
-   <annotation name="async_client" value="true"/>
-   <arg direction="out" name="positionAccuracy" type="i">
-    <doc line=" Accuracy = enum(POSITION_UNKNOWN=0x00, POSITION_GPS_3D=0x01, POSITION_GPS_2D=0x02, POSITION_DR=0x03) "/>
-   </arg>
-   <arg direction="out" name="uTCtime" type="t">
-    <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
-   </arg>
-   <arg direction="out" name="latitude" type="d">
-    <doc line=" Latitude in degrees. "/>
-   </arg>
-   <arg direction="out" name="longitude" type="d">
-    <doc line=" Longitude in degrees. "/>
-   </arg>
-   <arg direction="out" name="altitude" type="i">
-    <doc line=" Altitude in meters (can be negative). "/>
-   </arg>
-   <arg direction="out" name="heading" type="d">
-    <doc line=" Heading value in degrees, clockwise, zero is north. "/>
-   </arg>
-   <arg direction="out" name="velocity" type="d">
-    <doc line=" Speed in km/h. "/>
-   </arg>
-   <arg direction="out" name="horizontalAccuracy" type="d">
-    <doc line=" Horizontal DOP value. "/>
-   </arg>
-   <arg direction="out" name="verticalAccuracy" type="d">
-    <doc line=" Vertical DOP value. "/>
-   </arg>
-   <doc line="GetPosition = This method returns the current position. "/>
-  </method>
-  <method name="GetLastKnownPosition">
-   <annotation name="async_client" value="true"/>
-   <arg direction="out" name="uTCtime" type="t">
-    <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
-   </arg>
-   <arg direction="out" name="latitude" type="d">
-    <doc line="Latitude in degrees. "/>
-   </arg>
-   <arg direction="out" name="longitude" type="d">
-    <doc line="Longitude in degrees. "/>
-   </arg>
-   <doc line=" GetLastKnownPosition = This method returns the last known position. Valid only if UTCtime is non-zero."/>
-  </method>
-  <method name="GetGPSFirmwareVersion">
-   <annotation name="async_client" value="true"/>
-   <arg direction="out" name="firmwareVersion" type="s">
-    <doc line=" Firmware version in format STA8088.XXXx, where Xs are digits and x is a lowercase letter. &quot;Unknown ver.&quot; means version hasn't been obtained from the GPS yet."/>
-   </arg>
-   <doc line=" GetGPSFirmwareVersion = This method returns the firmware version of the used GPS device."/>
-  </method>
-  <method name="GetSatelliteInfo">
-   <annotation name="async_client" value="true"/>
-   <arg direction="out" name="satellitesInUse" type="i">
-    <doc line=" Count of the satellites, which are used for position calculation."/>
-   </arg>
-   <doc line=" GetSatelliteInfo = This method returns the current satellite information."/>
-  </method>
-  <signal name="GPSDiagnostics">
-   <arg name="dTCId" type="y">
-    <doc line=" Id of the DTC = enum(DTC_ANT_SHORT=0x11, DTC_ANT_OPEN=0x13, DTC_ANT_OVERCURR=0x1D, DTC_NMEA_FAILURE=0x92) "/>
-   </arg>
-   <arg name="dTCAction" type="y">
-    <doc line=" Setting or clearing of the DTC = enum(DTC_ACTION_SET=0x00, DTC_ACTION_CLEAR=0x01) "/>
-   </arg>
-   <doc line="GPSDiagnostics = This signal is sent when a DTC is set or cleared. "/>
-  </signal>
-  <signal name="OneTimeDRDiagnostics">
-   <arg name="dRUnitVersion" type="s">
-    <doc line=" DR receiver software version Information"/>
-   </arg>
-   <arg name="antennaStatus" type="i">
-    <doc line=" It indicates the current state of the pins. enum(OK:0x00,  NG(OPEN):0x01, NG(SHORT):0x02, Undefined:0x03)"/>
-   </arg>
-   <arg name="gyroSelfTest" type="b">
-    <doc line=' Checks normal operation of Gyro sensor. CMU to send the command $PERDSYS,DRSELFTEST,GYRO*45 and read the response. Note: DR-Unit should be in "Fix session OFF" Result: Pass / Fail'/>
-   </arg>
-   <arg name="accelSelfTest" type="b">
-    <doc line=' Checks normal operation of Accelerometer. CMU to send the command $PERDSYS,DRSELFTEST, ACCEL*0E and read the response. Note: DR-Unit should be in "Fix session OFF" Result: Pass / Fail'/>
-   </arg>
-   <arg name="resetLearning" type="b">
-    <doc line="CMU to send the commands $PERDAPI,STOP,DRPARK*5D and $PERDAPI,START,SIMCOLD*48 Result: Pass / Fail"/>
-   </arg>
-   <arg name="saveLearning" type="b">
-    <doc line="CMU to send the commands  $PERDAPI,STOP,DRPARK*5D and $PERDAPI,START,HOT*48 Result: Pass / Fail"/>
-   </arg>
-   <doc line=" OneTimeDRDiagnostics = This signal is sent to update Diagnostic Test Screen 73 when test is executed once"/>
-  </signal>
-  <signal name="PeriodicDRDiagnostics">
-   <arg name="dRUnitStatus" type="i">
-    <doc line=" DR-Unit status = enum(OK=0x00, NG=0x01, Not connected=0x02) "/>
-   </arg>
-   <arg name="speedPulse" type="i">
-    <doc line=" CMU to read the 4th field in $PERDCRI,O sentence (0 to 2000 count/s) "/>
-   </arg>
-   <arg name="reverse" type="b">
-    <doc>
-     <line>
-      ON: CMU to read the 5th field in $PERDCRI,O sentence. Value 3
-     </line>
-     <line>
-      OFF: CMU to read the 5th field in $PERDCRI,O sentence. Value 0, 1, 2
-     </line>
-    </doc>
-   </arg>
-   <arg name="dRUnitMode" type="i">
-    <doc line="DR-Unit mode = enum(GNSS only:0x00, DR only:0x01, DR/GNSS mixed:0x02"/>
-   </arg>
-   <arg name="gyroStatus" type="i">
-    <doc line="CMU to read the 8th field in PERDCRD,I sentence (Possible values: 0 to 7)"/>
-   </arg>
-   <arg name="accelStatus" type="i">
-    <doc line="CMU to read the 4th field in PERDCRD,I sentence (Possible values: 0 to 8)"/>
-   </arg>
-   <doc line=" PeriodicDRDiagnostics = This signal is sent to update Diagnostic Test Screen 73 every 1 second "/>
-  </signal>
- </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.lds.data_object">
+    <interface name="com.jci.lds.data">
+
+
+        <annotation name="com.jci.with_error_string" value="true"/>
+
+
+        <method name="GetPosition">
+
+
+            <annotation name="async_client" value="true"/>
+
+
+            <arg direction="out" name="positionAccuracy" type="i">
+
+
+                <doc line=" Accuracy = enum(POSITION_UNKNOWN=0x00, POSITION_GPS_3D=0x01, POSITION_GPS_2D=0x02, POSITION_DR=0x03) "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="uTCtime" type="t">
+
+
+                <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="latitude" type="d">
+
+
+                <doc line=" Latitude in degrees. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="longitude" type="d">
+
+
+                <doc line=" Longitude in degrees. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="altitude" type="i">
+
+
+                <doc line=" Altitude in meters (can be negative). "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="heading" type="d">
+
+
+                <doc line=" Heading value in degrees, clockwise, zero is north. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="velocity" type="d">
+
+
+                <doc line=" Speed in km/h. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="horizontalAccuracy" type="d">
+
+
+                <doc line=" Horizontal DOP value. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="verticalAccuracy" type="d">
+
+
+                <doc line=" Vertical DOP value. "/>
+
+
+            </arg>
+
+
+            <doc line="GetPosition = This method returns the current position. "/>
+
+
+        </method>
+
+
+        <method name="GetLastKnownPosition">
+
+
+            <annotation name="async_client" value="true"/>
+
+
+            <arg direction="out" name="uTCtime" type="t">
+
+
+                <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="latitude" type="d">
+
+
+                <doc line="Latitude in degrees. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="longitude" type="d">
+
+
+                <doc line="Longitude in degrees. "/>
+
+
+            </arg>
+
+
+            <doc line=" GetLastKnownPosition = This method returns the last known position. Valid only if UTCtime is non-zero."/>
+
+
+        </method>
+
+
+        <method name="GetGPSFirmwareVersion">
+
+
+            <annotation name="async_client" value="true"/>
+
+
+            <arg direction="out" name="firmwareVersion" type="s">
+
+
+                <doc line=" Firmware version in format STA8088.XXXx, where Xs are digits and x is a lowercase letter. &quot;Unknown ver.&quot; means version hasn't been obtained from the GPS yet."/>
+
+
+            </arg>
+
+
+            <doc line=" GetGPSFirmwareVersion = This method returns the firmware version of the used GPS device."/>
+
+
+        </method>
+
+
+        <method name="GetSatelliteInfo">
+
+
+            <annotation name="async_client" value="true"/>
+
+
+            <arg direction="out" name="satellitesInUse" type="i">
+
+
+                <doc line=" Count of the satellites, which are used for position calculation."/>
+
+
+            </arg>
+
+
+            <doc line=" GetSatelliteInfo = This method returns the current satellite information."/>
+
+
+        </method>
+
+
+        <signal name="GPSDiagnostics">
+
+
+            <arg name="dTCId" type="y">
+
+
+                <doc line=" Id of the DTC = enum(DTC_ANT_SHORT=0x11, DTC_ANT_OPEN=0x13, DTC_ANT_OVERCURR=0x1D, DTC_NMEA_FAILURE=0x92) "/>
+
+
+            </arg>
+
+
+            <arg name="dTCAction" type="y">
+
+
+                <doc line=" Setting or clearing of the DTC = enum(DTC_ACTION_SET=0x00, DTC_ACTION_CLEAR=0x01) "/>
+
+
+            </arg>
+
+
+            <doc line="GPSDiagnostics = This signal is sent when a DTC is set or cleared. "/>
+
+
+        </signal>
+
+
+        <signal name="OneTimeDRDiagnostics">
+
+
+            <arg name="dRUnitVersion" type="s">
+
+
+                <doc line=" DR receiver software version Information"/>
+
+
+            </arg>
+
+
+            <arg name="antennaStatus" type="i">
+
+
+                <doc line=" It indicates the current state of the pins. enum(OK:0x00,  NG(OPEN):0x01, NG(SHORT):0x02, Undefined:0x03)"/>
+
+
+            </arg>
+
+
+            <arg name="gyroSelfTest" type="b">
+
+
+                <doc line=" Checks normal operation of Gyro sensor. CMU to send the command $PERDSYS,DRSELFTEST,GYRO*45 and read the response. Note: DR-Unit should be in &quot;Fix session OFF&quot; Result: Pass / Fail"/>
+
+
+            </arg>
+
+
+            <arg name="accelSelfTest" type="b">
+
+
+                <doc line=" Checks normal operation of Accelerometer. CMU to send the command $PERDSYS,DRSELFTEST, ACCEL*0E and read the response. Note: DR-Unit should be in &quot;Fix session OFF&quot; Result: Pass / Fail"/>
+
+
+            </arg>
+
+
+            <arg name="resetLearning" type="b">
+
+
+                <doc line="CMU to send the commands $PERDAPI,STOP,DRPARK*5D and $PERDAPI,START,SIMCOLD*48 Result: Pass / Fail"/>
+
+
+            </arg>
+
+
+            <arg name="saveLearning" type="b">
+
+
+                <doc line="CMU to send the commands  $PERDAPI,STOP,DRPARK*5D and $PERDAPI,START,HOT*48 Result: Pass / Fail"/>
+
+
+            </arg>
+
+
+            <doc line=" OneTimeDRDiagnostics = This signal is sent to update Diagnostic Test Screen 73 when test is executed once"/>
+
+
+        </signal>
+
+
+        <signal name="PeriodicDRDiagnostics">
+
+
+            <arg name="dRUnitStatus" type="i">
+
+
+                <doc line=" DR-Unit status = enum(OK=0x00, NG=0x01, Not connected=0x02) "/>
+
+
+            </arg>
+
+
+            <arg name="speedPulse" type="i">
+
+
+                <doc line=" CMU to read the 4th field in $PERDCRI,O sentence (0 to 2000 count/s) "/>
+
+
+            </arg>
+
+
+            <arg name="reverse" type="b">
+
+
+                <doc>
+
+
+                    <line>ON: CMU to read the 5th field in $PERDCRI,O sentence. Value 3</line>
+
+
+                    <line>OFF: CMU to read the 5th field in $PERDCRI,O sentence. Value 0, 1, 2</line>
+
+
+                </doc>
+
+
+            </arg>
+
+
+            <arg name="dRUnitMode" type="i">
+
+
+                <doc line="DR-Unit mode = enum(GNSS only:0x00, DR only:0x01, DR/GNSS mixed:0x02"/>
+
+
+            </arg>
+
+
+            <arg name="gyroStatus" type="i">
+
+
+                <doc line="CMU to read the 8th field in PERDCRD,I sentence (Possible values: 0 to 7)"/>
+
+
+            </arg>
+
+
+            <arg name="accelStatus" type="i">
+
+
+                <doc line="CMU to read the 4th field in PERDCRD,I sentence (Possible values: 0 to 8)"/>
+
+
+            </arg>
+
+
+            <doc line=" PeriodicDRDiagnostics = This signal is sent to update Diagnostic Test Screen 73 every 1 second "/>
+
+
+        </signal>
+
+
+    </interface>
+
+
 </node>

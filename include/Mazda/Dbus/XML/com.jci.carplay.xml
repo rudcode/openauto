@@ -1,414 +1,1226 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
- <interface name="com.jci.carplay">
-  <annotation name="com.jci.force_interface_visibility" value="client"/>
-  <annotation name="header_include" value="carplay_types.h"/>
-  <annotation name="com.jci.def_struct_names.carplayDisableBluetooth_t" value="macAddress"/>
-  <annotation name="com.jci.def_struct_types.carplayDisableBluetooth_t" value="s"/>
-  <annotation name="com.jci.def_struct_names.carplaySessionActive_t" value="clientId, clientType"/>
-  <annotation name="com.jci.def_struct_types.carplaySessionActive_t" value="t,        u"/>
-  <annotation name="com.jci.def_struct_names.carplayDeviceError_t" value="clientId, errorType"/>
-  <annotation name="com.jci.def_struct_types.carplayDeviceError_t" value="t,        u"/>
-  <annotation name="com.jci.def_struct_names.carplaySessionDeactive_t" value="clientId"/>
-  <annotation name="com.jci.def_struct_types.carplaySessionDeactive_t" value="t"/>
-  <annotation name="com.jci.def_struct_names.carplayPressKey_t" value="keyType, inPressed"/>
-  <annotation name="com.jci.def_struct_types.carplayPressKey_t" value="u,       b"/>
-  <annotation name="com.jci.def_struct_names.carplayPressKeyReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayPressKeyReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayRotateKnob_t" value="rotateType"/>
-  <annotation name="com.jci.def_struct_types.carplayRotateKnob_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayRotateKnobReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayRotateKnobReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayPanKnob_t" value="panType"/>
-  <annotation name="com.jci.def_struct_types.carplayPanKnob_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayPanKnobReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayPanKnobReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySiriLaunch_t" value="siriActionType"/>
-  <annotation name="com.jci.def_struct_types.carplaySiriLaunch_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySiriLaunchReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplaySiriLaunchReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayTouchScreen_t" value="inX, inY, inTouch"/>
-  <annotation name="com.jci.def_struct_types.carplayTouchScreen_t" value="q,   q,   b"/>
-  <annotation name="com.jci.def_struct_names.carplayTouchScreenReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayTouchScreenReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySelectDevice_t" value="appType"/>
-  <annotation name="com.jci.def_struct_types.carplaySelectDevice_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySelectDeviceReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplaySelectDeviceReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayDisableTouchScreenCoordinate_t" value="x, y, height, width"/>
-  <annotation name="com.jci.def_struct_types.carplayDisableTouchScreenCoordinate_t" value="u, u, u,      u"/>
-  <annotation name="com.jci.def_struct_names.carplayDisableTouchScreenCoordinate_reply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayDisableTouchScreenCoordinate_reply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayNativeUILaunch_t" value="nativeUILaunchType"/>
-  <annotation name="com.jci.def_struct_types.carplayNativeUILaunch_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayTimeoutInfo_t" value="type"/>
-  <annotation name="com.jci.def_struct_types.carplayTimeoutInfo_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayScreenResourceAvailable_t"
-              value="requestResult, nativeScreenGroup"/>
-  <annotation name="com.jci.def_struct_types.carplayScreenResourceAvailable_t" value="u,             u"/>
-  <annotation name="com.jci.def_struct_names.carplayScreenResourceAvailableReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayScreenResourceAvailableReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayScreenAcquireResource_t" value="nativeScreenGroup"/>
-  <annotation name="com.jci.def_struct_types.carplayScreenAcquireResource_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayScreenAcquireResourceReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayScreenAcquireResourceReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySetCurrentNativeScreen_t" value="nativeScreenGroup"/>
-  <annotation name="com.jci.def_struct_types.carplaySetCurrentNativeScreen_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySetCurrentNativeScreenReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplaySetCurrentNativeScreenReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayTurnByTurnEntity_t" value="entityType"/>
-  <annotation name="com.jci.def_struct_types.carplayTurnByTurnEntity_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySetTurnByTurnStatus_t" value="isActive"/>
-  <annotation name="com.jci.def_struct_types.carplaySetTurnByTurnStatus_t" value="b"/>
-  <annotation name="com.jci.def_struct_names.carplaySetTurnByTurnStatusReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplaySetTurnByTurnStatusReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySetPhoneCallStatus_t" value="isActive"/>
-  <annotation name="com.jci.def_struct_types.carplaySetPhoneCallStatus_t" value="b"/>
-  <annotation name="com.jci.def_struct_names.carplaySetPhoneCallStatusReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplaySetPhoneCallStatusReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayUpdateCallStatusInfo_t"
-              value="remoteId, displayName, status, direction, callUUID, label, deviceName"/>
-  <annotation name="com.jci.def_struct_types.carplayUpdateCallStatusInfo_t"
-              value="s,        s,           u,      u,         s,        s,     s"/>
-  <annotation name="com.jci.def_struct_names.carplaySpeechEntity_t" value="entityType"/>
-  <annotation name="com.jci.def_struct_types.carplaySpeechEntity_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayNowPlayingInfo_t"
-              value="audioSource, folderInfo, songName, artistName, albumName"/>
-  <annotation name="com.jci.def_struct_types.carplayNowPlayingInfo_t"
-              value="s,           s,          s,        s,          s"/>
-  <annotation name="com.jci.def_struct_names.carplayUpdateNowPlayingInfo_t" value="nowPlayingInfo"/>
-  <annotation name="com.jci.def_struct_types.carplayUpdateNowPlayingInfo_t" value="carplayNowPlayingInfo_t"/>
-  <annotation name="com.jci.def_struct_names.carplayGetNowPlayingInfoReply_t" value="nowPlayingInfo,          result"/>
-  <annotation name="com.jci.def_struct_types.carplayGetNowPlayingInfoReply_t" value="carplayNowPlayingInfo_t, u"/>
-  <annotation name="com.jci.def_struct_names.carplayGetConnectDeviceInfoReply_t"
-              value="disableBluetooth         , updateCallStatusInfo         , isActiveCPSession "/>
-  <annotation name="com.jci.def_struct_types.carplayGetConnectDeviceInfoReply_t"
-              value="carplayDisableBluetooth_t, carplayUpdateCallStatusInfo_t, b"/>
-  <annotation name="com.jci.def_struct_names.carplaySetVehicleBtMacAddress_t" value="address, length"/>
-  <annotation name="com.jci.def_struct_types.carplaySetVehicleBtMacAddress_t" value="s,       u"/>
-  <annotation name="com.jci.def_struct_names.carplaySetVehicleBtMacAddressReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplaySetVehicleBtMacAddressReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayFeatureAvailableInfo_t" value="value"/>
-  <annotation name="com.jci.def_struct_types.carplayFeatureAvailableInfo_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayEnableCarPlayConnectionInfo_t" value="serialId, strSize, isEnable"/>
-  <annotation name="com.jci.def_struct_types.carplayEnableCarPlayConnectionInfo_t" value="s,        u,       b"/>
-  <annotation name="com.jci.def_struct_names.carplayEnableCarPlayConnectionReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayEnableCarPlayConnectionReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayClearLastFocusInfo_t" value="isLastVideo, isLastAudio"/>
-  <annotation name="com.jci.def_struct_types.carplayClearLastFocusInfo_t" value="b,           b"/>
-  <annotation name="com.jci.def_struct_names.carplayClearLastFocusInfoReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayClearLastFocusInfoReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayDisplayDialogSignalInfo_t"
-              value="dialogType, friendlyName, serialId, strSize"/>
-  <annotation name="com.jci.def_struct_types.carplayDisplayDialogSignalInfo_t"
-              value="u,          s,            s,        u"/>
-  <annotation name="com.jci.def_struct_names.carplayDisplayDialogResponseInfo_t" value="response"/>
-  <annotation name="com.jci.def_struct_types.carplayDisplayDialogResponseInfo_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayDisplayDialogResponseReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayDisplayDialogResponseReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayUpdateAudioStatus_t" value="status"/>
-  <annotation name="com.jci.def_struct_types.carplayUpdateAudioStatus_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayUsbPortStatusInfo_t" value="port, status"/>
-  <annotation name="com.jci.def_struct_types.carplayUsbPortStatusInfo_t" value="u,    u"/>
-  <annotation name="com.jci.def_struct_names.carplayClientConnected_t"
-              value="clientId, lastVideo, isMusicSwitchBTtoCP"/>
-  <annotation name="com.jci.def_struct_types.carplayClientConnected_t" value="t,        b,         b"/>
-  <annotation name="com.jci.def_struct_names.carplayClientDisconnected_t" value="clientId"/>
-  <annotation name="com.jci.def_struct_types.carplayClientDisconnected_t" value="t"/>
-  <annotation name="com.jci.def_struct_names.carplayScreenResourceReady_t" value="clientId, isRequestSelectDevice"/>
-  <annotation name="com.jci.def_struct_types.carplayScreenResourceReady_t" value="t,        b"/>
-  <annotation name="com.jci.def_struct_names.carplayUpdateBTAudioStatusInfo_t" value="status"/>
-  <annotation name="com.jci.def_struct_types.carplayUpdateBTAudioStatusInfo_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayUpdateBTAudioStatusReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayUpdateBTAudioStatusReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayMethodCallClientDial_t" value="callNumber, length, isEmergency"/>
-  <annotation name="com.jci.def_struct_types.carplayMethodCallClientDial_t" value="s,          u,      u"/>
-  <annotation name="com.jci.def_struct_names.carplayMethodCallClientDialReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayMethodCallClientDialReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayMethodCancelClientDial_t" value="reserve"/>
-  <annotation name="com.jci.def_struct_types.carplayMethodCancelClientDial_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayMethodCancelClientDialReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplayMethodCancelClientDialReply_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplayUsbErrorStatusInfo_t" value="errorStatus"/>
-  <annotation name="com.jci.def_struct_types.carplayUsbErrorStatusInfo_t" value="u"/>
-  <annotation name="com.jci.def_struct_names.carplaySetNotifyAudioStreamState_t" value="isActive"/>
-  <annotation name="com.jci.def_struct_types.carplaySetNotifyAudioStreamState_t" value="b"/>
-  <annotation name="com.jci.def_struct_names.carplaySetNotifyAudioStreamStateReply_t" value="result"/>
-  <annotation name="com.jci.def_struct_types.carplaySetNotifyAudioStreamStateReply_t" value="u"/>
-  <method name="PressKey">
-   <annotation name="com.jci.type_ref.PressKey" value="carplayPressKey_t"/>
-   <annotation name="com.jci.type_ref.PressKey_reply" value="carplayPressKeyReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="pressKey" type="(ub)"/>
-   <arg direction="out" name="pressKey_reply" type="(u)"/>
-  </method>
-  <method name="RotateKnob">
-   <annotation name="com.jci.type_ref.RotateKnob" value="carplayRotateKnob_t"/>
-   <annotation name="com.jci.type_ref.RotateKnob_reply" value="carplayRotateKnobReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="rotateKnob" type="(u)"/>
-   <arg direction="out" name="rotateKnob_reply" type="(u)"/>
-  </method>
-  <method name="PanKnob">
-   <annotation name="com.jci.type_ref.PanKnob" value="carplayPanKnob_t"/>
-   <annotation name="com.jci.type_ref.PanKnob_reply" value="carplayPanKnobReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="panKnob" type="(u)"/>
-   <arg direction="out" name="panKnob_reply" type="(u)"/>
-  </method>
-  <method name="SiriLaunch">
-   <annotation name="com.jci.type_ref.SiriLaunch" value="carplaySiriLaunch_t"/>
-   <annotation name="com.jci.type_ref.SiriLaunch_reply" value="carplaySiriLaunchReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="siriLaunch" type="(u)"/>
-   <arg direction="out" name="siriLaunch_reply" type="(u)"/>
-  </method>
-  <method name="TouchScreen">
-   <annotation name="com.jci.type_ref.TouchScreen" value="carplayTouchScreen_t"/>
-   <annotation name="com.jci.type_ref.TouchScreen_reply" value="carplayTouchScreenReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="touchScreen" type="(qqb)"/>
-   <arg direction="out" name="touchScreen_reply" type="(u)"/>
-  </method>
-  <method name="DisableTouchScreenCoordinate">
-   <annotation name="com.jci.type_ref.DisableTouchScreenCoordinate" value="carplayDisableTouchScreenCoordinate_t"/>
-   <annotation name="com.jci.type_ref.DisableTouchScreenCoordinate_reply"
-               value="carplayDisableTouchScreenCoordinate_reply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="disableTouchScreenCoordinate" type="(uuuu)"/>
-   <arg direction="out" name="disableTouchScreenCoordinate_reply" type="(u)"/>
-  </method>
-  <method name="SelectDevice">
-   <annotation name="com.jci.type_ref.SelectDevice" value="carplaySelectDevice_t"/>
-   <annotation name="com.jci.type_ref.SelectDevice_reply" value="carplaySelectDeviceReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="selectDevice" type="(u)"/>
-   <arg direction="out" name="selectDevice_reply" type="(u)"/>
-  </method>
-  <method name="ScreenResourceAvailable">
-   <annotation name="com.jci.type_ref.ScreenResourceAvailable" value="carplayScreenResourceAvailable_t"/>
-   <annotation name="com.jci.type_ref.ScreenResourceAvailable_reply" value="carplayScreenResourceAvailableReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="screenResourceAvailable" type="(uu)"/>
-   <arg direction="out" name="screenResourceAvailable_reply" type="(u)"/>
-  </method>
-  <method name="ScreenAcquireResource">
-   <annotation name="com.jci.type_ref.ScreenAcquireResource" value="carplayScreenAcquireResource_t"/>
-   <annotation name="com.jci.type_ref.ScreenAcquireResource_reply" value="carplayScreenAcquireResourceReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="screenAcquireResource" type="(u)"/>
-   <arg direction="out" name="screenAcquireResource_reply" type="(u)"/>
-  </method>
-  <method name="SetCurrentNativeScreen">
-   <annotation name="com.jci.type_ref.SetCurrentNativeScreen" value="carplaySetCurrentNativeScreen_t"/>
-   <annotation name="com.jci.type_ref.SetCurrentNativeScreen_reply" value="carplaySetCurrentNativeScreenReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="setCurrentNativeScreen" type="(u)"/>
-   <arg direction="out" name="setCurrentNativeScreen_reply" type="(u)"/>
-  </method>
-  <method name="SetTurnByTurnStatus">
-   <annotation name="com.jci.type_ref.SetTurnByTurnStatus" value="carplaySetTurnByTurnStatus_t"/>
-   <annotation name="com.jci.type_ref.SetTurnByTurnStatus_reply" value="carplaySetTurnByTurnStatusReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="setTurnByTurnStatus" type="(b)"/>
-   <arg direction="out" name="setTurnByTurnStatus_reply" type="(u)"/>
-  </method>
-  <method name="SetPhoneCallStatus">
-   <annotation name="com.jci.type_ref.SetPhoneCallStatus" value="carplaySetPhoneCallStatus_t"/>
-   <annotation name="com.jci.type_ref.SetPhoneCallStatus_reply" value="carplaySetPhoneCallStatusReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="setPhoneCallStatus" type="(b)"/>
-   <arg direction="out" name="setPhoneCallStatus_reply" type="(u)"/>
-  </method>
-  <method name="SetNotifyAudioStreamState">
-   <annotation name="com.jci.type_ref.SetNotifyAudioStreamState" value="carplaySetNotifyAudioStreamState_t"/>
-   <annotation name="com.jci.type_ref.SetNotifyAudioStreamState_reply" value="carplaySetNotifyAudioStreamStateReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="setNotifyAudioStreamState" type="(b)"/>
-   <arg direction="out" name="setNotifyAudioStreamState_reply" type="(u)"/>
-  </method>
-  <method name="AcceptCallRequest">
-   <annotation name="async" value="both"/>
-  </method>
-  <method name="GetNowPlayingInfo">
-   <annotation name="com.jci.type_ref.GetNowPlayingInfo_reply" value="carplayGetNowPlayingInfoReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="out" name="getNowPlayingInfo_reply" type="((sssss)u)"/>
-  </method>
-  <method name="GetConnectDeviceInfo">
-   <annotation name="com.jci.type_ref.GetConnectDeviceInfo_reply" value="carplayGetConnectDeviceInfoReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="out" name="getConnectDeviceInfo_reply" type="((s)(ssuusss)b)"/>
-  </method>
-  <method name="SetVehicleBtMacAddress">
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="vehicleBtMacAddress" type="s"/>
-   <arg direction="in" name="vehicleBtMacAddressLength" type="u"/>
-   <arg direction="out" name="vehicleBtMacAddressReply" type="u"/>
-  </method>
-  <method name="ClearLastFocus">
-   <annotation name="com.jci.type_ref.ClearLastFocus" value="carplayClearLastFocusInfo_t"/>
-   <annotation name="com.jci.type_ref.ClearLastFocus_reply" value="carplayClearLastFocusInfoReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="clearLastFocus" type="(bb)"/>
-   <arg direction="out" name="clearLastFocus_reply" type="(u)"/>
-  </method>
-  <method name="EnableCarPlayConnection">
-   <annotation name="com.jci.type_ref.EnableCarPlayConnection" value="carplayEnableCarPlayConnectionInfo_t"/>
-   <annotation name="com.jci.type_ref.EnableCarPlayConnection_reply" value="carplayEnableCarPlayConnectionReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="enableCarPlayConnection" type="(sub)"/>
-   <arg direction="out" name="enableCarPlayConnection_reply" type="(u)"/>
-  </method>
-  <method name="DisplayDialogResponse">
-   <annotation name="com.jci.type_ref.DisplayDialogResponse" value="carplayDisplayDialogResponseInfo_t"/>
-   <annotation name="com.jci.type_ref.DisplayDialogResponse_reply" value="carplayDisplayDialogResponseReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="displayDialogResponse" type="(u)"/>
-   <arg direction="out" name="displayDialogResponse_reply" type="(u)"/>
-  </method>
-  <method name="UpdateBTAudioStatus">
-   <annotation name="com.jci.type_ref.updateBTAudioStatusInfo" value="carplayUpdateBTAudioStatusInfo_t"/>
-   <annotation name="com.jci.type_ref.updateBTAudioStatus_reply" value="carplayUpdateBTAudioStatusReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="updateBTAudioStatusInfo" type="(u)"/>
-   <arg direction="out" name="updateBTAudioStatus_reply" type="(u)"/>
-  </method>
-  <method name="MethodCallClientDial">
-   <annotation name="com.jci.type_ref.MethodCallClientDial" value="carplayMethodCallClientDial_t"/>
-   <annotation name="com.jci.type_ref.MethodCallClientDial_reply" value="carplayMethodCallClientDialReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="methodCallClientDial" type="(suu)"/>
-   <arg direction="out" name="methodCallClientDial_reply" type="(u)"/>
-  </method>
-  <method name="MethodCancelClientDial">
-   <annotation name="com.jci.type_ref.MethodCancelClientDial" value="carplayMethodCancelClientDial_t"/>
-   <annotation name="com.jci.type_ref.MethodCancelClientDial_reply" value="carplayMethodCancelClientDialReply_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="methodCancelClientDial" type="(u)"/>
-   <arg direction="out" name="methodCancelClientDial_reply" type="(u)"/>
-  </method>
-  <method name="SetMP911EmergencyCallStatus">
-   <annotation name="typeof.status" value="carplayMp911CallStatus_t"/>
-   <annotation name="async" value="both"/>
-   <arg direction="in" name="status" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <signal name="DisableBluetoothSignal">
-   <annotation name="com.jci.type_ref.disableBluetoothInfo" value="carplayDisableBluetooth_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="disableBluetoothInfo" type="(s)"/>
-  </signal>
-  <signal name="SessionActiveSignal">
-   <annotation name="com.jci.type_ref.sessionActiveInfo" value="carplaySessionActive_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionActiveInfo" type="(tu)"/>
-  </signal>
-  <signal name="GetCurrentNativeScreenRequestSignal">
-   <annotation name="com.jci.always_broadcast" value="true"/>
-  </signal>
-  <signal name="DeviceErrorSignal">
-   <annotation name="com.jci.type_ref.deviceErrorInfo" value="carplayDeviceError_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="deviceErrorInfo" type="(tu)"/>
-  </signal>
-  <signal name="SessionDeactiveSignal">
-   <annotation name="com.jci.type_ref.sessionDeactiveInfo" value="carplaySessionDeactive_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="sessionDeactiveInfo" type="(t)"/>
-  </signal>
-  <signal name="NativeUILaunchSignal">
-   <annotation name="com.jci.type_ref.nativeUILaunchInfo" value="carplayNativeUILaunch_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="nativeUILaunchInfo" type="(u)"/>
-  </signal>
-  <signal name="ScreenResourceRequestSignal">
-   <annotation name="com.jci.always_broadcast" value="true"/>
-  </signal>
-  <signal name="ScreenResourceRequestTimeoutSignal">
-   <annotation name="com.jci.type_ref.timeoutInfo" value="carplayTimeoutInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="timeoutInfo" type="(u)"/>
-  </signal>
-  <signal name="NativeScreenDisplayRequestSignal">
-   <annotation name="com.jci.always_broadcast" value="true"/>
-  </signal>
-  <signal name="GetTurnByTurnStatusRequestSignal">
-   <annotation name="com.jci.always_broadcast" value="true"/>
-  </signal>
-  <signal name="TurnByTurnEntitySignal">
-   <annotation name="com.jci.type_ref.entityInfo" value="carplayTurnByTurnEntity_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="entityInfo" type="(u)"/>
-  </signal>
-  <signal name="GetPhoneCallStatusRequestSignal">
-   <annotation name="com.jci.always_broadcast" value="true"/>
-  </signal>
-  <signal name="UpdateCallStatusInfoSignal">
-   <annotation name="com.jci.type_ref.callStatusInfo" value="carplayUpdateCallStatusInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="callStatusInfo" type="(ssuusss)"/>
-  </signal>
-  <signal name="SpeechEntitySignal">
-   <annotation name="com.jci.type_ref.entityInfo" value="carplaySpeechEntity_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="entityInfo" type="(u)"/>
-  </signal>
-  <signal name="UpdateNowPlayingInfoSignal">
-   <annotation name="com.jci.type_ref.nowPlayingInfo" value="carplayUpdateNowPlayingInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="nowPlayingInfo" type="((sssss))"/>
-  </signal>
-  <signal name="GetVehicleBtMacAddress">
-   <annotation name="com.jci.always_broadcast" value="true"/>
-  </signal>
-  <signal name="FeatureAvailableSignal">
-   <annotation name="com.jci.type_ref.availableInfo" value="carplayFeatureAvailableInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="availableInfo" type="(u)"/>
-  </signal>
-  <signal name="DisplayDialogSignal">
-   <annotation name="com.jci.type_ref.dialogInfo" value="carplayDisplayDialogSignalInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="dialogInfo" type="(ussu)"/>
-  </signal>
-  <signal name="UpdateAudioStatusSignal">
-   <annotation name="com.jci.type_ref.audioStatus" value="carplayUpdateAudioStatus_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="audioStatus" type="(u)"/>
-  </signal>
-  <signal name="DisconnectedDeviceSignal">
-   <annotation name="com.jci.always_broadcast" value="true"/>
-  </signal>
-  <signal name="UsbPortStatusSignal">
-   <annotation name="com.jci.type_ref.usbPortStatusInfo" value="carplayUsbPortStatusInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="usbPortStatusInfo" type="(uu)"/>
-  </signal>
-  <signal name="ClientConnectedSignal">
-   <annotation name="com.jci.type_ref.clientConnectedInfo" value="carplayClientConnected_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="clientConnectedInfo" type="(tbb)"/>
-  </signal>
-  <signal name="ClientDisconnectedSignal">
-   <annotation name="com.jci.type_ref.clientDisconnectedInfo" value="carplayClientDisconnected_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="clientDisconnectedInfo" type="(t)"/>
-  </signal>
-  <signal name="ScreenResourceReadySignal">
-   <annotation name="com.jci.type_ref.screenResourceReady" value="carplayScreenResourceReady_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="screenResourceReady" type="(tb)"/>
-  </signal>
-  <signal name="DisplayDialogResponseSignal">
-   <annotation name="com.jci.type_ref.displayDialogResponseInfo" value="carplayDisplayDialogResponseInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="displayDialogResponseInfo" type="(u)"/>
-  </signal>
-  <signal name="UsbErrorStatusSignal">
-   <annotation name="com.jci.type_ref.usbErrorStatusInfo" value="carplayUsbErrorStatusInfo_t"/>
-   <annotation name="com.jci.always_broadcast" value="true"/>
-   <arg name="usbErrorStatusInfo" type="(u)"/>
-  </signal>
- </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.carplay_object">
+    <interface name="com.jci.carplay">
+
+
+        <annotation name="com.jci.force_interface_visibility" value="client"/>
+
+
+        <annotation name="header_include" value="carplay_types.h"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayDisableBluetooth_t" value="macAddress"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayDisableBluetooth_t" value="s"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySessionActive_t" value="clientId, clientType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySessionActive_t" value="t,        u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayDeviceError_t" value="clientId, errorType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayDeviceError_t" value="t,        u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySessionDeactive_t" value="clientId"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySessionDeactive_t" value="t"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayPressKey_t" value="keyType, inPressed"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayPressKey_t" value="u,       b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayPressKeyReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayPressKeyReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayRotateKnob_t" value="rotateType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayRotateKnob_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayRotateKnobReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayRotateKnobReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayPanKnob_t" value="panType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayPanKnob_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayPanKnobReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayPanKnobReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySiriLaunch_t" value="siriActionType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySiriLaunch_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySiriLaunchReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySiriLaunchReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayTouchScreen_t" value="inX, inY, inTouch"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayTouchScreen_t" value="q,   q,   b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayTouchScreenReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayTouchScreenReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySelectDevice_t" value="appType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySelectDevice_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySelectDeviceReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySelectDeviceReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayDisableTouchScreenCoordinate_t" value="x, y, height, width"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayDisableTouchScreenCoordinate_t" value="u, u, u,      u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayDisableTouchScreenCoordinate_reply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayDisableTouchScreenCoordinate_reply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayNativeUILaunch_t" value="nativeUILaunchType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayNativeUILaunch_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayTimeoutInfo_t" value="type"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayTimeoutInfo_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayScreenResourceAvailable_t"
+                    value="requestResult, nativeScreenGroup"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayScreenResourceAvailable_t" value="u,             u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayScreenResourceAvailableReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayScreenResourceAvailableReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayScreenAcquireResource_t" value="nativeScreenGroup"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayScreenAcquireResource_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayScreenAcquireResourceReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayScreenAcquireResourceReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetCurrentNativeScreen_t" value="nativeScreenGroup"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetCurrentNativeScreen_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetCurrentNativeScreenReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetCurrentNativeScreenReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayTurnByTurnEntity_t" value="entityType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayTurnByTurnEntity_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetTurnByTurnStatus_t" value="isActive"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetTurnByTurnStatus_t" value="b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetTurnByTurnStatusReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetTurnByTurnStatusReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetPhoneCallStatus_t" value="isActive"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetPhoneCallStatus_t" value="b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetPhoneCallStatusReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetPhoneCallStatusReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayUpdateCallStatusInfo_t"
+                    value="remoteId, displayName, status, direction, callUUID, label, deviceName"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayUpdateCallStatusInfo_t"
+                    value="s,        s,           u,      u,         s,        s,     s"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySpeechEntity_t" value="entityType"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySpeechEntity_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayNowPlayingInfo_t"
+                    value="audioSource, folderInfo, songName, artistName, albumName"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayNowPlayingInfo_t"
+                    value="s,           s,          s,        s,          s"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayUpdateNowPlayingInfo_t" value="nowPlayingInfo"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayUpdateNowPlayingInfo_t" value="carplayNowPlayingInfo_t"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayGetNowPlayingInfoReply_t"
+                    value="nowPlayingInfo,          result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayGetNowPlayingInfoReply_t" value="carplayNowPlayingInfo_t, u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayGetConnectDeviceInfoReply_t"
+                    value="disableBluetooth         , updateCallStatusInfo         , isActiveCPSession "/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayGetConnectDeviceInfoReply_t"
+                    value="carplayDisableBluetooth_t, carplayUpdateCallStatusInfo_t, b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetVehicleBtMacAddress_t" value="address, length"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetVehicleBtMacAddress_t" value="s,       u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetVehicleBtMacAddressReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetVehicleBtMacAddressReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayFeatureAvailableInfo_t" value="value"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayFeatureAvailableInfo_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayEnableCarPlayConnectionInfo_t"
+                    value="serialId, strSize, isEnable"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayEnableCarPlayConnectionInfo_t" value="s,        u,       b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayEnableCarPlayConnectionReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayEnableCarPlayConnectionReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayClearLastFocusInfo_t" value="isLastVideo, isLastAudio"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayClearLastFocusInfo_t" value="b,           b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayClearLastFocusInfoReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayClearLastFocusInfoReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayDisplayDialogSignalInfo_t"
+                    value="dialogType, friendlyName, serialId, strSize"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayDisplayDialogSignalInfo_t"
+                    value="u,          s,            s,        u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayDisplayDialogResponseInfo_t" value="response"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayDisplayDialogResponseInfo_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayDisplayDialogResponseReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayDisplayDialogResponseReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayUpdateAudioStatus_t" value="status"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayUpdateAudioStatus_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayUsbPortStatusInfo_t" value="port, status"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayUsbPortStatusInfo_t" value="u,    u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayClientConnected_t"
+                    value="clientId, lastVideo, isMusicSwitchBTtoCP"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayClientConnected_t" value="t,        b,         b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayClientDisconnected_t" value="clientId"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayClientDisconnected_t" value="t"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayScreenResourceReady_t"
+                    value="clientId, isRequestSelectDevice"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayScreenResourceReady_t" value="t,        b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayUpdateBTAudioStatusInfo_t" value="status"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayUpdateBTAudioStatusInfo_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayUpdateBTAudioStatusReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayUpdateBTAudioStatusReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayMethodCallClientDial_t"
+                    value="callNumber, length, isEmergency"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayMethodCallClientDial_t" value="s,          u,      u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayMethodCallClientDialReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayMethodCallClientDialReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayMethodCancelClientDial_t" value="reserve"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayMethodCancelClientDial_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayMethodCancelClientDialReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayMethodCancelClientDialReply_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplayUsbErrorStatusInfo_t" value="errorStatus"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplayUsbErrorStatusInfo_t" value="u"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetNotifyAudioStreamState_t" value="isActive"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetNotifyAudioStreamState_t" value="b"/>
+
+
+        <annotation name="com.jci.def_struct_names.carplaySetNotifyAudioStreamStateReply_t" value="result"/>
+
+
+        <annotation name="com.jci.def_struct_types.carplaySetNotifyAudioStreamStateReply_t" value="u"/>
+
+
+        <method name="PressKey">
+
+
+            <annotation name="com.jci.type_ref.PressKey" value="carplayPressKey_t"/>
+
+
+            <annotation name="com.jci.type_ref.PressKey_reply" value="carplayPressKeyReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="pressKey" type="(ub)"/>
+
+
+            <arg direction="out" name="pressKey_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="RotateKnob">
+
+
+            <annotation name="com.jci.type_ref.RotateKnob" value="carplayRotateKnob_t"/>
+
+
+            <annotation name="com.jci.type_ref.RotateKnob_reply" value="carplayRotateKnobReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="rotateKnob" type="(u)"/>
+
+
+            <arg direction="out" name="rotateKnob_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="PanKnob">
+
+
+            <annotation name="com.jci.type_ref.PanKnob" value="carplayPanKnob_t"/>
+
+
+            <annotation name="com.jci.type_ref.PanKnob_reply" value="carplayPanKnobReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="panKnob" type="(u)"/>
+
+
+            <arg direction="out" name="panKnob_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="SiriLaunch">
+
+
+            <annotation name="com.jci.type_ref.SiriLaunch" value="carplaySiriLaunch_t"/>
+
+
+            <annotation name="com.jci.type_ref.SiriLaunch_reply" value="carplaySiriLaunchReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="siriLaunch" type="(u)"/>
+
+
+            <arg direction="out" name="siriLaunch_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="TouchScreen">
+
+
+            <annotation name="com.jci.type_ref.TouchScreen" value="carplayTouchScreen_t"/>
+
+
+            <annotation name="com.jci.type_ref.TouchScreen_reply" value="carplayTouchScreenReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="touchScreen" type="(qqb)"/>
+
+
+            <arg direction="out" name="touchScreen_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="DisableTouchScreenCoordinate">
+
+
+            <annotation name="com.jci.type_ref.DisableTouchScreenCoordinate"
+                        value="carplayDisableTouchScreenCoordinate_t"/>
+
+
+            <annotation name="com.jci.type_ref.DisableTouchScreenCoordinate_reply"
+                        value="carplayDisableTouchScreenCoordinate_reply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="disableTouchScreenCoordinate" type="(uuuu)"/>
+
+
+            <arg direction="out" name="disableTouchScreenCoordinate_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="SelectDevice">
+
+
+            <annotation name="com.jci.type_ref.SelectDevice" value="carplaySelectDevice_t"/>
+
+
+            <annotation name="com.jci.type_ref.SelectDevice_reply" value="carplaySelectDeviceReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="selectDevice" type="(u)"/>
+
+
+            <arg direction="out" name="selectDevice_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="ScreenResourceAvailable">
+
+
+            <annotation name="com.jci.type_ref.ScreenResourceAvailable" value="carplayScreenResourceAvailable_t"/>
+
+
+            <annotation name="com.jci.type_ref.ScreenResourceAvailable_reply"
+                        value="carplayScreenResourceAvailableReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="screenResourceAvailable" type="(uu)"/>
+
+
+            <arg direction="out" name="screenResourceAvailable_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="ScreenAcquireResource">
+
+
+            <annotation name="com.jci.type_ref.ScreenAcquireResource" value="carplayScreenAcquireResource_t"/>
+
+
+            <annotation name="com.jci.type_ref.ScreenAcquireResource_reply"
+                        value="carplayScreenAcquireResourceReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="screenAcquireResource" type="(u)"/>
+
+
+            <arg direction="out" name="screenAcquireResource_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="SetCurrentNativeScreen">
+
+
+            <annotation name="com.jci.type_ref.SetCurrentNativeScreen" value="carplaySetCurrentNativeScreen_t"/>
+
+
+            <annotation name="com.jci.type_ref.SetCurrentNativeScreen_reply"
+                        value="carplaySetCurrentNativeScreenReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="setCurrentNativeScreen" type="(u)"/>
+
+
+            <arg direction="out" name="setCurrentNativeScreen_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="SetTurnByTurnStatus">
+
+
+            <annotation name="com.jci.type_ref.SetTurnByTurnStatus" value="carplaySetTurnByTurnStatus_t"/>
+
+
+            <annotation name="com.jci.type_ref.SetTurnByTurnStatus_reply" value="carplaySetTurnByTurnStatusReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="setTurnByTurnStatus" type="(b)"/>
+
+
+            <arg direction="out" name="setTurnByTurnStatus_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="SetPhoneCallStatus">
+
+
+            <annotation name="com.jci.type_ref.SetPhoneCallStatus" value="carplaySetPhoneCallStatus_t"/>
+
+
+            <annotation name="com.jci.type_ref.SetPhoneCallStatus_reply" value="carplaySetPhoneCallStatusReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="setPhoneCallStatus" type="(b)"/>
+
+
+            <arg direction="out" name="setPhoneCallStatus_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="SetNotifyAudioStreamState">
+
+
+            <annotation name="com.jci.type_ref.SetNotifyAudioStreamState" value="carplaySetNotifyAudioStreamState_t"/>
+
+
+            <annotation name="com.jci.type_ref.SetNotifyAudioStreamState_reply"
+                        value="carplaySetNotifyAudioStreamStateReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="setNotifyAudioStreamState" type="(b)"/>
+
+
+            <arg direction="out" name="setNotifyAudioStreamState_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="AcceptCallRequest">
+
+
+            <annotation name="async" value="both"/>
+
+
+        </method>
+
+
+        <method name="GetNowPlayingInfo">
+
+
+            <annotation name="com.jci.type_ref.GetNowPlayingInfo_reply" value="carplayGetNowPlayingInfoReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="out" name="getNowPlayingInfo_reply" type="((sssss)u)"/>
+
+
+        </method>
+
+
+        <method name="GetConnectDeviceInfo">
+
+
+            <annotation name="com.jci.type_ref.GetConnectDeviceInfo_reply" value="carplayGetConnectDeviceInfoReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="out" name="getConnectDeviceInfo_reply" type="((s)(ssuusss)b)"/>
+
+
+        </method>
+
+
+        <method name="SetVehicleBtMacAddress">
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="vehicleBtMacAddress" type="s"/>
+
+
+            <arg direction="in" name="vehicleBtMacAddressLength" type="u"/>
+
+
+            <arg direction="out" name="vehicleBtMacAddressReply" type="u"/>
+
+
+        </method>
+
+
+        <method name="ClearLastFocus">
+
+
+            <annotation name="com.jci.type_ref.ClearLastFocus" value="carplayClearLastFocusInfo_t"/>
+
+
+            <annotation name="com.jci.type_ref.ClearLastFocus_reply" value="carplayClearLastFocusInfoReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="clearLastFocus" type="(bb)"/>
+
+
+            <arg direction="out" name="clearLastFocus_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="EnableCarPlayConnection">
+
+
+            <annotation name="com.jci.type_ref.EnableCarPlayConnection" value="carplayEnableCarPlayConnectionInfo_t"/>
+
+
+            <annotation name="com.jci.type_ref.EnableCarPlayConnection_reply"
+                        value="carplayEnableCarPlayConnectionReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="enableCarPlayConnection" type="(sub)"/>
+
+
+            <arg direction="out" name="enableCarPlayConnection_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="DisplayDialogResponse">
+
+
+            <annotation name="com.jci.type_ref.DisplayDialogResponse" value="carplayDisplayDialogResponseInfo_t"/>
+
+
+            <annotation name="com.jci.type_ref.DisplayDialogResponse_reply"
+                        value="carplayDisplayDialogResponseReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="displayDialogResponse" type="(u)"/>
+
+
+            <arg direction="out" name="displayDialogResponse_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="UpdateBTAudioStatus">
+
+
+            <annotation name="com.jci.type_ref.updateBTAudioStatusInfo" value="carplayUpdateBTAudioStatusInfo_t"/>
+
+
+            <annotation name="com.jci.type_ref.updateBTAudioStatus_reply" value="carplayUpdateBTAudioStatusReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="updateBTAudioStatusInfo" type="(u)"/>
+
+
+            <arg direction="out" name="updateBTAudioStatus_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="MethodCallClientDial">
+
+
+            <annotation name="com.jci.type_ref.MethodCallClientDial" value="carplayMethodCallClientDial_t"/>
+
+
+            <annotation name="com.jci.type_ref.MethodCallClientDial_reply" value="carplayMethodCallClientDialReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="methodCallClientDial" type="(suu)"/>
+
+
+            <arg direction="out" name="methodCallClientDial_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="MethodCancelClientDial">
+
+
+            <annotation name="com.jci.type_ref.MethodCancelClientDial" value="carplayMethodCancelClientDial_t"/>
+
+
+            <annotation name="com.jci.type_ref.MethodCancelClientDial_reply"
+                        value="carplayMethodCancelClientDialReply_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="methodCancelClientDial" type="(u)"/>
+
+
+            <arg direction="out" name="methodCancelClientDial_reply" type="(u)"/>
+
+
+        </method>
+
+
+        <method name="SetMP911EmergencyCallStatus">
+
+
+            <annotation name="typeof.status" value="carplayMp911CallStatus_t"/>
+
+
+            <annotation name="async" value="both"/>
+
+
+            <arg direction="in" name="status" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <signal name="DisableBluetoothSignal">
+
+
+            <annotation name="com.jci.type_ref.disableBluetoothInfo" value="carplayDisableBluetooth_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="disableBluetoothInfo" type="(s)"/>
+
+
+        </signal>
+
+
+        <signal name="SessionActiveSignal">
+
+
+            <annotation name="com.jci.type_ref.sessionActiveInfo" value="carplaySessionActive_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionActiveInfo" type="(tu)"/>
+
+
+        </signal>
+
+
+        <signal name="GetCurrentNativeScreenRequestSignal">
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+        </signal>
+
+
+        <signal name="DeviceErrorSignal">
+
+
+            <annotation name="com.jci.type_ref.deviceErrorInfo" value="carplayDeviceError_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="deviceErrorInfo" type="(tu)"/>
+
+
+        </signal>
+
+
+        <signal name="SessionDeactiveSignal">
+
+
+            <annotation name="com.jci.type_ref.sessionDeactiveInfo" value="carplaySessionDeactive_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="sessionDeactiveInfo" type="(t)"/>
+
+
+        </signal>
+
+
+        <signal name="NativeUILaunchSignal">
+
+
+            <annotation name="com.jci.type_ref.nativeUILaunchInfo" value="carplayNativeUILaunch_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="nativeUILaunchInfo" type="(u)"/>
+
+
+        </signal>
+
+
+        <signal name="ScreenResourceRequestSignal">
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+        </signal>
+
+
+        <signal name="ScreenResourceRequestTimeoutSignal">
+
+
+            <annotation name="com.jci.type_ref.timeoutInfo" value="carplayTimeoutInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="timeoutInfo" type="(u)"/>
+
+
+        </signal>
+
+
+        <signal name="NativeScreenDisplayRequestSignal">
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+        </signal>
+
+
+        <signal name="GetTurnByTurnStatusRequestSignal">
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+        </signal>
+
+
+        <signal name="TurnByTurnEntitySignal">
+
+
+            <annotation name="com.jci.type_ref.entityInfo" value="carplayTurnByTurnEntity_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="entityInfo" type="(u)"/>
+
+
+        </signal>
+
+
+        <signal name="GetPhoneCallStatusRequestSignal">
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateCallStatusInfoSignal">
+
+
+            <annotation name="com.jci.type_ref.callStatusInfo" value="carplayUpdateCallStatusInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="callStatusInfo" type="(ssuusss)"/>
+
+
+        </signal>
+
+
+        <signal name="SpeechEntitySignal">
+
+
+            <annotation name="com.jci.type_ref.entityInfo" value="carplaySpeechEntity_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="entityInfo" type="(u)"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateNowPlayingInfoSignal">
+
+
+            <annotation name="com.jci.type_ref.nowPlayingInfo" value="carplayUpdateNowPlayingInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="nowPlayingInfo" type="((sssss))"/>
+
+
+        </signal>
+
+
+        <signal name="GetVehicleBtMacAddress">
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+        </signal>
+
+
+        <signal name="FeatureAvailableSignal">
+
+
+            <annotation name="com.jci.type_ref.availableInfo" value="carplayFeatureAvailableInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="availableInfo" type="(u)"/>
+
+
+        </signal>
+
+
+        <signal name="DisplayDialogSignal">
+
+
+            <annotation name="com.jci.type_ref.dialogInfo" value="carplayDisplayDialogSignalInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="dialogInfo" type="(ussu)"/>
+
+
+        </signal>
+
+
+        <signal name="UpdateAudioStatusSignal">
+
+
+            <annotation name="com.jci.type_ref.audioStatus" value="carplayUpdateAudioStatus_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="audioStatus" type="(u)"/>
+
+
+        </signal>
+
+
+        <signal name="DisconnectedDeviceSignal">
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+        </signal>
+
+
+        <signal name="UsbPortStatusSignal">
+
+
+            <annotation name="com.jci.type_ref.usbPortStatusInfo" value="carplayUsbPortStatusInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="usbPortStatusInfo" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="ClientConnectedSignal">
+
+
+            <annotation name="com.jci.type_ref.clientConnectedInfo" value="carplayClientConnected_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="clientConnectedInfo" type="(tbb)"/>
+
+
+        </signal>
+
+
+        <signal name="ClientDisconnectedSignal">
+
+
+            <annotation name="com.jci.type_ref.clientDisconnectedInfo" value="carplayClientDisconnected_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="clientDisconnectedInfo" type="(t)"/>
+
+
+        </signal>
+
+
+        <signal name="ScreenResourceReadySignal">
+
+
+            <annotation name="com.jci.type_ref.screenResourceReady" value="carplayScreenResourceReady_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="screenResourceReady" type="(tb)"/>
+
+
+        </signal>
+
+
+        <signal name="DisplayDialogResponseSignal">
+
+
+            <annotation name="com.jci.type_ref.displayDialogResponseInfo" value="carplayDisplayDialogResponseInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="displayDialogResponseInfo" type="(u)"/>
+
+
+        </signal>
+
+
+        <signal name="UsbErrorStatusSignal">
+
+
+            <annotation name="com.jci.type_ref.usbErrorStatusInfo" value="carplayUsbErrorStatusInfo_t"/>
+
+
+            <annotation name="com.jci.always_broadcast" value="true"/>
+
+
+            <arg name="usbErrorStatusInfo" type="(u)"/>
+
+
+        </signal>
+
+
+    </interface>
+
+
 </node>

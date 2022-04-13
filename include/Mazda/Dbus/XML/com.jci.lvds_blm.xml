@@ -1,11 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
- <interface name="com.jci.lvds_blm">
-  <method name="KillWaylandclient">
-   <arg direction="out" name="return_value" type="u"/>
-  </method>
-  <signal name="DiagScreenKilledResp">
-   <arg direction="in" name="diagScreenKilled" type="n"/>
-  </signal>
- </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.lvds_blm_object">
+    <interface name="com.jci.lvds_blm">
+
+
+        <method name="KillWaylandclient">
+
+
+            <arg direction="out" name="return_value" type="u"/>
+
+
+        </method>
+
+
+        <signal name="DiagScreenKilledResp">
+
+
+            <arg direction="in" name="diagScreenKilled" type="n"/>
+
+
+        </signal>
+
+
+    </interface>
+
+
 </node>

@@ -1,30 +1,32 @@
 #include "autoapp/Managers/VideoManager.hpp"
 #include <easylogging++.h>
 
-VideoManager::VideoManager(VideoSignals::Pointer videosignals) :
+VideoManager::VideoManager(VideoSignals::Pointer videosignals,
+                           const std::shared_ptr<DBus::Connection> &session_connection) :
     vs(std::move(videosignals)) {
-  auto guiConnection = sdbus::createSessionBusConnection();
-  gui = new NativeGUICtrlClient(guiConnection, "com.jci.nativeguictrl", "/com/jci/nativeguictrl");
-  auto bucpsaConnection = sdbus::createSessionBusConnection();
-  bucpsa = sdbus::createProxy(std::move(bucpsaConnection), "com.jci.bucpsa", "/com/jci/bucpsa");
-  bucpsa->uponSignal("DisplayMode").onInterface("com.jci.bucpsa").call([this](const uint32_t &DisplayMode) {
-    this->currentDisplayMode = (bool) DisplayMode;
-    // currentDisplayMode != 0 means backup camera wants the screen
-    if ((bool) DisplayMode) {
-      this->vs->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
-      if (hasFocus)
-        this->waitsForFocus = true;
-    } else {
-      this->vs->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
-    }
-  });
-  bucpsa->finishRegistration();
-  std::tuple<uint32_t, int32_t> result;
-  bucpsa->callMethod("GetDisplayMode").onInterface("com.jci.bucpsa").storeResultsTo(result);
-  currentDisplayMode = (bool) std::get<0>(result);
+  gui =
+      com_jci_nativeguictrl_objectProxy::create(session_connection, "com.jci.nativeguictrl", "/com/jci/nativeguictrl");
+  bucpsa = com_jci_bucpsa_objectProxy::create(session_connection, "com.jci.bucpsa", "/com/jci/bucpsa");
+  bucpsa->getcom_jci_bucpsaInterface()->signal_DisplayMode()->connect(sigc::mem_fun(*this, &VideoManager::DisplayMode));
+
+  std::tuple<unsigned int, int> display_mode = bucpsa->getcom_jci_bucpsaInterface()->GetDisplayMode();
+
+  currentDisplayMode = (bool) std::get<0>(display_mode);
 
   releaseFocusConnection = vs->focusRelease.connect(sigc::mem_fun(*this, &VideoManager::releaseFocus));
   requestFocusConnection = vs->focusRequest.connect(sigc::mem_fun(*this, &VideoManager::requestFocus));
+}
+
+void VideoManager::DisplayMode(uint32_t DisplayMode) {
+  this->currentDisplayMode = (bool) DisplayMode;
+  // currentDisplayMode != 0 means backup camera wants the screen
+  if ((bool) DisplayMode) {
+    this->vs->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
+    if (hasFocus)
+      this->waitsForFocus = true;
+  } else {
+    this->vs->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
+  }
 }
 
 void VideoManager::requestFocus(VIDEO_FOCUS_REQUESTOR requestor) {
@@ -42,7 +44,7 @@ void VideoManager::requestFocus(VIDEO_FOCUS_REQUESTOR requestor) {
   LOG(DEBUG) << "Setting focus, requested by "
              << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
   hasFocus = true;
-  gui->SetRequiredSurfacesByEnum(NativeGUICtrlClient::TV_TOUCH_SURFACE, true);
+  gui->getcom_jci_nativeguictrlInterface()->SetRequiredSurfaces(std::to_string(SURFACES::TV_TOUCH_SURFACE), 1);
   vs->focusChanged.emit(true);
 }
 
@@ -50,7 +52,7 @@ void VideoManager::releaseFocus(VIDEO_FOCUS_REQUESTOR requestor) {
   LOG(DEBUG) << "Releasing focus, requested by "
              << static_cast<std::underlying_type<VIDEO_FOCUS_REQUESTOR>::type>(requestor);
   hasFocus = false;
-  gui->SetRequiredSurfacesByEnum(NativeGUICtrlClient::JCI_OPERA_PRIMARY, true);
+  gui->getcom_jci_nativeguictrlInterface()->SetRequiredSurfaces(std::to_string(SURFACES::JCI_OPERA_PRIMARY), 1);
   vs->focusChanged.emit(false);
 }
 

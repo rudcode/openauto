@@ -1,130 +1,384 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
-   <interface name="com.jci.vbs.am">
-      <annotation name="com.jci.def_struct_names.VBS_AM_SourceChange_Resp_s_t" value="SourceOn,SourceOff"/>
-      <annotation name="com.jci.def_struct_types.VBS_AM_SourceChange_Resp_s_t" value="       y,        y"/>
-      <method name="SetMute">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="muteType" type="y"/>
-         <arg direction="in" name="rampTime" type="y"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="SetUnMute">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="muteType" type="y"/>
-         <arg direction="in" name="rampTime" type="y"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="SourceSelect">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="source1" type="s"/>
-         <arg direction="in" name="source2" type="s"/>
-         <arg direction="in" name="source3" type="s"/>
-         <arg direction="in" name="sourceOff" type="s"/>
-         <arg direction="in" name="cMU_Audio_Left" type="s"/>
-         <arg direction="in" name="cMU_Audio_Right" type="s"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="SetVolume">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="volumeType" type="y"/>
-         <arg direction="in" name="controlValue" type="u"/>
-         <arg direction="in" name="volumeValue" type="i"/>
-         <arg direction="in" name="volSrcGrp" type="s"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="SetAudioProfile">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="controlValue" type="y"/>
-         <arg direction="in" name="audioProfileType" type="y"/>
-         <arg direction="in" name="audioProfileValue" type="i"/>
-         <arg direction="in" name="lastProfile" type="i"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="GetVolumeStatus">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="volSrcGrp" type="s"/>
-         <arg direction="out" name="retVolSrcGrp" type="s"/>
-         <arg direction="out" name="volumeValue" type="i"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="GetEntertainmentMuteStatus">
-         <annotation name="async" value="client"/>
-         <arg direction="out" name="entertainmentMuteStatus" type="y"/>
-      </method>
-      <method name="GetLastMode">
-         <annotation name="async" value="client"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="SetLastMode">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="activeSource" type="s"/>
-         <arg direction="in" name="prevSource" type="s"/>
-         <arg direction="in" name="broadcastSource" type="s"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="GetAudioProfileStatus">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="profileType" type="y"/>
-         <arg direction="out" name="profileValue" type="i"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="GetMuteStatus">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="muteType" type="y"/>
-         <arg direction="out" name="muteValue" type="y"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="SetVolumeVolMgr">
-         <annotation name="async" value="client"/>
-         <arg direction="in" name="bthfVol" type="y"/>
-         <arg direction="in" name="ringToneVol" type="y"/>
-         <arg direction="in" name="naviVol" type="y"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <method name="GetActiveSource">
-         <annotation name="async" value="client"/>
-         <arg direction="out" name="ret_ActiveSrc" type="s"/>
-         <arg direction="out" name="ret_InterruptSrc" type="s"/>
-         <arg direction="out" name="return_value" type="y"/>
-      </method>
-      <signal name="AudioProfileStatus">
-         <arg direction="in" name="audioProfileType" type="y"/>
-         <arg direction="in" name="audioProfileValue" type="i"/>
-      </signal>
-      <signal name="MuteStatus">
-         <arg direction="in" name="muteType" type="y"/>
-      </signal>
-      <signal name="UnMuteStatus">
-         <arg direction="in" name="muteType" type="y"/>
-      </signal>
-      <signal name="SourceSelectResponse">
-         <arg direction="in" name="source1" type="s"/>
-         <arg direction="in" name="source2" type="s"/>
-         <arg direction="in" name="source3" type="s"/>
-         <arg direction="in" name="sourceOff" type="s"/>
-      </signal>
-      <signal name="VolumeStatus">
-         <arg direction="in" name="volumeType" type="y"/>
-         <arg direction="in" name="volSrcGrp" type="s"/>
-         <arg direction="in" name="volumeValue" type="i"/>
-      </signal>
-      <signal name="TAUSourceChangeResponse">
-         <annotation name="com.jci.type_ref.srcChangeResp" value="VBS_AM_SourceChange_Resp_s_t"/>
-         <arg direction="in" name="srcChangeResp" type="(yy)"/>
-      </signal>
-      <signal name="EntertainmentMuteStatus">
-         <arg direction="in" name="entertainmentMuteStat" type="y"/>
-      </signal>
-      <signal name="LastModeStatus">
-         <arg direction="in" name="entertainmentMuteStatus" type="y"/>
-         <arg direction="in" name="lastActiveSource" type="s"/>
-         <arg direction="in" name="lastPrevSource" type="s"/>
-         <arg direction="in" name="lastBroadcastSource" type="s"/>
-         <arg direction="in" name="currentSource" type="s"/>
-         <arg direction="in" name="cdStatus" type="y"/>
-         <arg direction="in" name="cdDiskType" type="y"/>
-         <arg direction="in" name="auxStatus" type="y"/>
-      </signal>
-   </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.vbs.am_object">
+    <interface name="com.jci.vbs.am">
+
+
+        <annotation name="com.jci.def_struct_names.VBS_AM_SourceChange_Resp_s_t" value="SourceOn,SourceOff"/>
+
+
+        <annotation name="com.jci.def_struct_types.VBS_AM_SourceChange_Resp_s_t" value="       y,        y"/>
+
+
+        <method name="SetMute">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="muteType" type="y"/>
+
+
+            <arg direction="in" name="rampTime" type="y"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="SetUnMute">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="muteType" type="y"/>
+
+
+            <arg direction="in" name="rampTime" type="y"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="SourceSelect">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="source1" type="s"/>
+
+
+            <arg direction="in" name="source2" type="s"/>
+
+
+            <arg direction="in" name="source3" type="s"/>
+
+
+            <arg direction="in" name="sourceOff" type="s"/>
+
+
+            <arg direction="in" name="cMU_Audio_Left" type="s"/>
+
+
+            <arg direction="in" name="cMU_Audio_Right" type="s"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="SetVolume">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="volumeType" type="y"/>
+
+
+            <arg direction="in" name="controlValue" type="u"/>
+
+
+            <arg direction="in" name="volumeValue" type="i"/>
+
+
+            <arg direction="in" name="volSrcGrp" type="s"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="SetAudioProfile">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="controlValue" type="y"/>
+
+
+            <arg direction="in" name="audioProfileType" type="y"/>
+
+
+            <arg direction="in" name="audioProfileValue" type="i"/>
+
+
+            <arg direction="in" name="lastProfile" type="i"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="GetVolumeStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="volSrcGrp" type="s"/>
+
+
+            <arg direction="out" name="retVolSrcGrp" type="s"/>
+
+
+            <arg direction="out" name="volumeValue" type="i"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="GetEntertainmentMuteStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="entertainmentMuteStatus" type="y"/>
+
+
+        </method>
+
+
+        <method name="GetLastMode">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="SetLastMode">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="activeSource" type="s"/>
+
+
+            <arg direction="in" name="prevSource" type="s"/>
+
+
+            <arg direction="in" name="broadcastSource" type="s"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="GetAudioProfileStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="profileType" type="y"/>
+
+
+            <arg direction="out" name="profileValue" type="i"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="GetMuteStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="muteType" type="y"/>
+
+
+            <arg direction="out" name="muteValue" type="y"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="SetVolumeVolMgr">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="bthfVol" type="y"/>
+
+
+            <arg direction="in" name="ringToneVol" type="y"/>
+
+
+            <arg direction="in" name="naviVol" type="y"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <method name="GetActiveSource">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="ret_ActiveSrc" type="s"/>
+
+
+            <arg direction="out" name="ret_InterruptSrc" type="s"/>
+
+
+            <arg direction="out" name="return_value" type="y"/>
+
+
+        </method>
+
+
+        <signal name="AudioProfileStatus">
+
+
+            <arg direction="in" name="audioProfileType" type="y"/>
+
+
+            <arg direction="in" name="audioProfileValue" type="i"/>
+
+
+        </signal>
+
+
+        <signal name="MuteStatus">
+
+
+            <arg direction="in" name="muteType" type="y"/>
+
+
+        </signal>
+
+
+        <signal name="UnMuteStatus">
+
+
+            <arg direction="in" name="muteType" type="y"/>
+
+
+        </signal>
+
+
+        <signal name="SourceSelectResponse">
+
+
+            <arg direction="in" name="source1" type="s"/>
+
+
+            <arg direction="in" name="source2" type="s"/>
+
+
+            <arg direction="in" name="source3" type="s"/>
+
+
+            <arg direction="in" name="sourceOff" type="s"/>
+
+
+        </signal>
+
+
+        <signal name="VolumeStatus">
+
+
+            <arg direction="in" name="volumeType" type="y"/>
+
+
+            <arg direction="in" name="volSrcGrp" type="s"/>
+
+
+            <arg direction="in" name="volumeValue" type="i"/>
+
+
+        </signal>
+
+
+        <signal name="TAUSourceChangeResponse">
+
+
+            <annotation name="com.jci.type_ref.srcChangeResp" value="VBS_AM_SourceChange_Resp_s_t"/>
+
+
+            <arg direction="in" name="srcChangeResp" type="(yy)"/>
+
+
+        </signal>
+
+
+        <signal name="EntertainmentMuteStatus">
+
+
+            <arg direction="in" name="entertainmentMuteStat" type="y"/>
+
+
+        </signal>
+
+
+        <signal name="LastModeStatus">
+
+
+            <arg direction="in" name="entertainmentMuteStatus" type="y"/>
+
+
+            <arg direction="in" name="lastActiveSource" type="s"/>
+
+
+            <arg direction="in" name="lastPrevSource" type="s"/>
+
+
+            <arg direction="in" name="lastBroadcastSource" type="s"/>
+
+
+            <arg direction="in" name="currentSource" type="s"/>
+
+
+            <arg direction="in" name="cdStatus" type="y"/>
+
+
+            <arg direction="in" name="cdDiskType" type="y"/>
+
+
+            <arg direction="in" name="auxStatus" type="y"/>
+
+
+        </signal>
+
+
+    </interface>
+
+
 </node>

@@ -1,11 +1,19 @@
 #include "autoapp/Managers/NavigationManager.hpp"
 #include <easylogging++.h>
 
-NavigationManager::NavigationManager(NavigationSignals::Pointer navSignals) : navSignals_(std::move(navSignals)) {
-  auto hudSettingsConnection = sdbus::createSessionBusConnection();
+NavigationManager::NavigationManager(NavigationSignals::Pointer navSignals,
+                                     const std::shared_ptr<DBus::Connection> &systemconnection) : navSignals_(std::move(
+    navSignals)) {
+//  auto hudSettingsConnection = sdbus::createSessionBusConnection();
 //  hudSettings_ = new HUDSettingsCLient(hudSettingsConnection, "com.jci.navi2IHU", "/com/jci/navi2IHU"); // on hmi bus
-  tmcClient_ = new TMCCLient("com.jci.vbs.navi", "/com/jci/vbs/navi");
-  naviClient_ = new NaviCLient("com.jci.vbs.navi", "/com/jci/vbs/navi");
+
+  std::shared_ptr<com_jci_vbs_navi_tmc_objectProxy>
+      tmcProxy = com_jci_vbs_navi_tmc_objectProxy::create(systemconnection, "com.jci.vbs.navi", "/com/jci/vbs/navi");
+  std::shared_ptr<com_jci_vbs_navi_objectProxy>
+      naviProxy = com_jci_vbs_navi_objectProxy::create(systemconnection, "com.jci.vbs.navi", "/com/jci/vbs/navi");
+
+  tmcClient_ = tmcProxy->getcom_jci_vbs_navi_tmcInterface();
+  naviClient_ = naviProxy->getcom_jci_vbs_naviInterface();
   navi_data = new NaviData;
 
   AA2MAZ.insert(std::pair(aasdk::proto::enums::NavigationTurnEvent::DEPART,
@@ -65,12 +73,6 @@ uint32_t NavigationManager::roundabout(int degrees, aasdk::proto::enums::Navigat
 
 }
 
-NavigationManager::~NavigationManager() {
-//  delete hudSettings_;
-  delete tmcClient_;
-  delete naviClient_;
-}
-
 void NavigationManager::onNavigationTurn(int turn_number,
                                          std::string turn_name,
                                          aasdk::proto::enums::NavigationTurnSide_Enum turn_side,
@@ -90,8 +92,7 @@ void NavigationManager::onNavigationTurn(int turn_number,
 
   LOG(DEBUG) << "msg" << navi_data->msg << " " << turn_name;
 
-  tmcClient_->SetHUD_Display_Msg2(guidancePointData(turn_name,
-                                                    navi_data->msg));
+  tmcClient_->SetHUD_Display_Msg2(guidancePointData(turn_name, navi_data->msg));
 
 }
 
@@ -157,3 +158,5 @@ void NavigationManager::onNavigationStop() {
   LOG(DEBUG) << "Navigation Stopped";
   system("smctl -l -n jcinavi &");
 }
+
+NavigationManager::~NavigationManager() = default;

@@ -1,11 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
- <interface name="com.jci.cpp.vbi.Bcm">
-  <method name="getSpeed">
-   <arg direction="out" name="units" type="u"/>
-  </method>
-  <method name="getBoogie">
-   <arg direction="out" name="woogie" type="u"/>
-  </method>
- </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.cpp.vbi.Bcm_object">
+    <interface name="com.jci.cpp.vbi.Bcm">
+
+
+        <method name="getSpeed">
+
+
+            <arg direction="out" name="units" type="u"/>
+
+
+        </method>
+
+
+        <method name="getBoogie">
+
+
+            <arg direction="out" name="woogie" type="u"/>
+
+
+        </method>
+
+
+    </interface>
+
+
 </node>

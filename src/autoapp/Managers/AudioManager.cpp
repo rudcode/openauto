@@ -6,28 +6,24 @@
 using json = nlohmann::json;
 using AudioFocusState = aasdk::proto::enums::AudioFocusState;
 
-void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
-  std::string func;
-  std::string args;
-  call >> func;
-  call >> args;
-  VLOG(9) << func << " " << args;
-  auto result = json::parse(args);
+std::string AudioManagerClient::RequestHandler(std::string methodName, std::string arguments) {
+  VLOG(9) << methodName << " " << arguments;
+  auto result = json::parse(arguments);
   if (streamsByID.count(result["sessionId"].get<int>())) {
     auto stream = streamsByID[result["sessionId"].get<int>()];
-    if (func == "onRequestAudioFocusResult") {
+    if (methodName == "onRequestAudioFocusResult") {
       if (result["newFocus"].get<std::string>() == "granted") {
         json activeargs = {
             {"sessionId", stream->id},
             {"playing", true}
         };
-        Request("audioActive", activeargs.dump());
+        AudioProxy->Request("audioActive", activeargs.dump());
         LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Granted";
       } else {
 //        stream->focus = false;
 //        audiosignals_->focusChanged.emit(stream->channelId, AudioFocusState::NONE);
       }
-    } else if (func == "onAudioFocusChange") {
+    } else if (methodName == "onAudioFocusChange") {
       auto focus = result["newFocus"].get<std::string>();
       if (focus == "lost") {
         stream->focus = false;
@@ -35,7 +31,7 @@ void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
             {"sessionId", stream->id},
             {"playing", false}
         };
-        Request("audioActive", activeargs.dump());
+        AudioProxy->Request("audioActive", activeargs.dump());
         if (stream->channelId == aasdk::messenger::ChannelId::MEDIA_AUDIO)
           audiosignals_->focusChanged.emit(stream->channelId, AudioFocusState::LOSS);
         LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Lost";
@@ -45,7 +41,7 @@ void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
             {"sessionId", stream->id},
             {"playing", false}
         };
-        Request("audioActive", activeargs.dump());
+        AudioProxy->Request("audioActive", activeargs.dump());
         if (stream->channelId == aasdk::messenger::ChannelId::MEDIA_AUDIO)
           audiosignals_->focusChanged.emit(stream->channelId, AudioFocusState::LOSS_TRANSIENT);
         LOG(DEBUG) << "Stream " << stream->id << ": " << stream->name << " Focus Temporarily Lost";
@@ -69,25 +65,7 @@ void AudioManagerClient::notificationHandler(sdbus::MethodCall call) {
       }
     }
   }
-}
-
-void AudioManagerClient::listen_thread() {
-  // Create D-Bus connection to the system bus and requests name on it.
-  const char *serviceName = "com.androidauto.audio";
-  connection = sdbus::createSystemBusConnection(serviceName);
-
-  // Create concatenator D-Bus object.
-  const char *objectPath = "/com/androidauto/audio";
-  auto audio_callback = sdbus::createObject(*connection, objectPath);
-
-  // Register D-Bus methods and signals on the concatenator object, and exports the object.
-  const char *interfaceName = "com.xsembedded.ServiceProvider";
-  audio_callback->registerMethod(interfaceName, "Request", "ss", "",
-                                 [&](sdbus::MethodCall call) { notificationHandler(std::move(call)); });
-  audio_callback->finishRegistration();
-
-  // Run the I/O event loop on the bus connection.
-  connection->enterEventLoop();
+  return "";
 }
 
 void AudioManagerClient::RegisterStream(std::string StreamName,
@@ -102,12 +80,12 @@ void AudioManagerClient::RegisterStream(std::string StreamName,
   }
   // First open a new Stream
   json sessArgs = {
-      {"busName", "com.androidauto.audio"},
+      {"busName", "com.androidauto"},
       {"objectPath", "/com/androidauto/audio"},
       {"destination", "Cabin"}
   };
   try {
-    std::string sessString = Request("openSession", sessArgs.dump());
+    std::string sessString = AudioProxy->Request("openSession", sessArgs.dump());
     VLOG(9) << "openSession(" << sessArgs.dump().c_str() << ")\n" << sessString.c_str() << "\n";
     int SessionID = json::parse(sessString)["sessionId"];
 
@@ -119,7 +97,7 @@ void AudioManagerClient::RegisterStream(std::string StreamName,
         {"focusType", StreamMode},
         {"streamType", StreamType}
     };
-    std::string regString = Request("registerAudioStream", regArgs.dump());
+    std::string regString = AudioProxy->Request("registerAudioStream", regArgs.dump());
     VLOG(9) << "registerAudioStream(" << regArgs.dump().c_str() << ")\n" << regString.c_str() << "\n";
     // Stream is registered add it to the array
     auto stream = new Stream;
@@ -145,8 +123,8 @@ void AudioManagerClient::populateData() {
       {"svc", "DEST"},
       {"pretty", false}
   };
-  std::string resultString = Request("dumpState", requestArgs.dump());
-  VLOG(9) << "dumpState(" << requestArgs.dump().c_str() << ")\n" << resultString.c_str() << "\n";
+  std::string resultString = AudioProxy->Request("dumpState", requestArgs.dump());
+  LOG(DEBUG) << "dumpState(" << requestArgs.dump().c_str() << ")\n" << resultString.c_str() << "\n";
   try {
     auto result = json::parse(resultString);
     for (json::iterator it = result["Cabin"]["reqMatrixIdx"].begin(); it != result["Cabin"]["reqMatrixIdx"].end();
@@ -171,7 +149,11 @@ void AudioManagerClient::populateStreamTable() {
       {"svc", "SRCS"},
       {"pretty", false}
   };
-  std::string resultString = Request("dumpState", requestArgs.dump());
+  // dbus-send --print-reply --type=method_call --address=unix:path=/tmp/dbus_service_socket --dest=com.xsembedded.service.AudioManagement /com/xse/service/AudioManagement/AudioApplication com.xsembedded.ServiceProvider.Request string:"dumpState" string:'{"svc":"SRCS", "pretty":false}'
+//  method return sender=:1.40 -> dest=:1.173 reply_serial=2
+//  string "{"HMI":["1..\/com\/jci\/audio\/am_hmi_client"],"APP":["29.CPAltAudio.CPALTAUDIO..NotPlaying","1.Media.AUX..NotPlaying","3.Media.DAB..NotPlaying","2.Media.CD..NotPlaying","5.Media.FM.gained.playing","4.Media.AM..NotPlaying","7.Media.HAR..NotPlaying","6.LowAlert.TA..NotPlaying","9.Media.XM..NotPlaying","8.Media.LM..NotPlaying","27.CPAlerts.CPALERTS..NotPlaying","17.Media.TV..NotPlaying","13.Media.BTMUSIC..NotPlaying","21.Media.USB..NotPlaying","11.InfoMix.NAVIVOL..NotPlaying","23.CPMedia.CPDEFAULTIN..NotPlaying","34.InfoUser.SMS..NotPlaying","28.CPSiri.CPSIRI..NotPlaying","33.InfoUser.PHONEBOOK..NotPlaying","32.HighAlert.BTECAALERT..NotPlaying","31.MP911.BTECA..NotPlaying","30.VR.SYSVR..NotPlaying","15.IncomingRg.BTHFALERT..NotPlaying","18.Media.Stitcher..NotPlaying","19.Media.AHA..NotPlaying","25.CPInCall.CPINCALL..NotPlaying","14.Telephony.BTHF..NotPlaying","24.CPMedia.CPMEDIA..NotPlaying","16.Media.DVD..NotPlaying","26.CPTel.CPTELEPHONY..NotPlaying","20.Media.Pandora..NotPlaying","12.InfoUser.RINGTONEVOL..NotPlaying","22.CPMedia.CPDEFAULT..NotPlaying","10.InfoUser.BTHFVOL..NotPlaying"]}"
+
+  std::string resultString = AudioProxy->Request("dumpState", requestArgs.dump());
   VLOG(9) << "dumpState(" << requestArgs.dump().c_str() << ")\n" << resultString.c_str() << "\n";
   /*
        * An example resonse:
@@ -192,7 +174,7 @@ void AudioManagerClient::populateStreamTable() {
     auto result = json::parse(resultString);
     for (auto &sessionRecord : result["APP"].get_ref<json::array_t &>()) {
       auto sessionStr = sessionRecord.get<std::string>();
-      //Stream names have no spaces so it's safe to do this
+      //Stream names have no spaces, so it's safe to do this
       std::replace(sessionStr.begin(), sessionStr.end(), '.', ' ');
       std::istringstream sessionIStr(sessionStr);
 
@@ -218,12 +200,22 @@ void AudioManagerClient::populateStreamTable() {
   }
 }
 
-AudioManagerClient::AudioManagerClient(std::string destination,
-                                       std::string objectPath,
-                                       AudioSignals::Pointer audiosignals)
-    : sdbus::ProxyInterfaces<com::xsembedded::ServiceProvider_proxy>(std::move(destination), std::move(objectPath)),
-      audiosignals_(std::move(audiosignals)) {
-  registerProxy();
+AudioManagerClient::AudioManagerClient(AudioSignals::Pointer audiosignals,
+                                       const std::shared_ptr<DBus::Connection> &session_connection)
+    : audiosignals_(std::move(audiosignals)) {
+  session_connection->request_name("com.androidauto", DBUSCXX_NAME_FLAG_REPLACE_EXISTING);
+  AudioObject = session_connection->create_object("/com/androidauto/audio", DBus::ThreadForCalling::DispatcherThread);
+  std::shared_ptr<DBus::Interface>
+      AudioRequestInterface = AudioObject->create_interface("com.xsembedded.ServiceProvider");
+  AudioRequestInterface->create_method<std::string(std::string, std::string)>("Request",
+                                                                              sigc::mem_fun(*this,
+                                                                                            &AudioManagerClient::RequestHandler));
+
+  AudioInterface = com_xsembedded_ServiceProvider_objectProxy::create(session_connection,
+                                                                      "com.xsembedded.service.AudioManagement",
+                                                                      "/com/xse/service/AudioManagement/AudioApplication");
+  AudioProxy = AudioInterface->getcom_xsembedded_ServiceProviderInterface();
+
   populateData();
   populateStreamTable();
   RegisterStream("MLENT", aasdk::messenger::ChannelId::MEDIA_AUDIO, "permanent", "Media");
@@ -233,9 +225,12 @@ AudioManagerClient::AudioManagerClient(std::string destination,
     LOG(DEBUG) << aasdk::messenger::channelIdToString(stream.first) << " " << stream.second->id << ": "
                << stream.second->name;
 
+  AudioProxy->signal_Notify()->connect(sigc::mem_fun(*this, &AudioManagerClient::onNotify));
+
   audiosignals_->focusRelease.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrReleaseAudioFocus));
   audiosignals_->focusRequest.connect(sigc::mem_fun(*this, &AudioManagerClient::audioMgrRequestAudioFocus));
-  dbus_thread = std::thread(&AudioManagerClient::listen_thread, this);
+
+//  dbus_thread = std::thread(&AudioManagerClient::listen_thread, this);
 
 }
 
@@ -245,23 +240,20 @@ AudioManagerClient::~AudioManagerClient() {
     if (stream.second->id >= 0) {
       audioMgrReleaseAudioFocus(stream.first);
       json args = {{"sessionId", stream.second->id}};
-      std::string result = Request("closeSession", args.dump());
+      std::string result = AudioProxy->Request("closeSession", args.dump());
       LOG(DEBUG) << "closeSession(" << args.dump().c_str() << ")\n" << result.c_str() << "\n";
     }
     stream.second->id = -1;
   }
-  connection->leaveEventLoop();
-  dbus_thread.join();
-  unregisterProxy();
 }
 
 void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::messenger::ChannelId channel_id,
                                                    aasdk::proto::enums::AudioFocusType_Enum aa_type) {
-//  for (auto stream: streams) {
+////  for (auto stream: streams) {
 //    if (stream.second->focus && stream.second->channelId != channel_id) {
 //      audioMgrReleaseAudioFocus(stream.second->channelId);
 //    }
-//  }
+////  }
   if (streams.count(channel_id)) {
     if (!streams[channel_id]->focus) {
       json args = {
@@ -270,10 +262,10 @@ void AudioManagerClient::audioMgrRequestAudioFocus(aasdk::messenger::ChannelId c
       };
       LOG(DEBUG) << args;
       try {
-        std::string result = Request("requestAudioFocus", args.dump());
+        std::string result = AudioProxy->Request("requestAudioFocus", args.dump());
         LOG(DEBUG) << "requestAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str();
       }
-      catch (sdbus::Error &e) {
+      catch (DBus::Error &e) {
         LOG(ERROR) << e.what();
       }
     } else {
@@ -302,12 +294,16 @@ void AudioManagerClient::audioMgrReleaseAudioFocus(aasdk::messenger::ChannelId c
       json args = {{"sessionId", streams[channel_id]->id}};
       LOG(DEBUG) << args;
       try {
-        std::string result = Request("abandonAudioFocus", args.dump());
+        std::string result = AudioProxy->Request("abandonAudioFocus", args.dump());
         LOG(DEBUG) << "abandonAudioFocus(" << args.dump().c_str() << ")\n" << result.c_str();
       }
-      catch (sdbus::Error &e) {
+      catch (DBus::Error &e) {
         LOG(ERROR) << e.what();
       }
     }
   }
+}
+
+void AudioManagerClient::onNotify(const std::string &signalName, const std::string &payload) {
+  LOG(DEBUG) << "onNotify " << signalName << " " << payload;
 }

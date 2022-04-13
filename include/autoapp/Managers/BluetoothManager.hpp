@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sdbus-c++/sdbus-c++.h>
+#include <dbus-cxx.h>
 #include <atomic>
 #include <set>
 
@@ -15,16 +15,19 @@
 
 #include <autoapp/Configuration/IConfiguration.hpp>
 
+#include <com_jci_bca_objectProxy.h>
+
 class BluetoothManager {
  public:
-  explicit BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration);
+  explicit BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration,
+                            const std::shared_ptr<DBus::Connection> &session_connection);
   ~BluetoothManager();
  private:
   autoapp::configuration::IConfiguration::Pointer configuration_;
   bool bdsconfigured = false;
   uint32_t serviceId = 0;
-  std::unique_ptr<sdbus::IProxy> bcaClient;
-
+  std::shared_ptr<com_jci_bca_objectProxy> bcaClient;
+  void ConnectionStatusResp(uint32_t, uint32_t, uint32_t, uint32_t, std::tuple<std::vector<uint8_t>>);
 };
 
 struct connectionInfo {

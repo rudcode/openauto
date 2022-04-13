@@ -1,756 +1,2220 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
- <interface name="com.jci.xmad">
-  <annotation name="com.jci.def_struct_names.XMAD_scan_req_info_s_t" value=" scan_req_type , scan_operation"/>
-  <annotation name="com.jci.def_struct_types.XMAD_scan_req_info_s_t" value="     u  ,     u     "/>
-  <annotation name="com.jci.def_struct_names.XMAD_session_lock_info_s_t" value=" request ,current_channel_lock_status"/>
-  <annotation name="com.jci.def_struct_types.XMAD_session_lock_info_s_t" value="     u  ,     b       "/>
-  <annotation name="com.jci.def_struct_names.XMAD_channel_lock_info_s_t" value=" request ,channel_id"/>
-  <annotation name="com.jci.def_struct_types.XMAD_channel_lock_info_s_t" value="     u  ,     u       "/>
-  <annotation name="def_struct_names.XMAD_pin_val_s_t" value="pin_1, pin_2, pin_3,pin_4"/>
-  <annotation name="def_struct_types.XMAD_pin_val_s_t" value="y,   y,   y,     y"/>
-  <annotation name="def_struct_names.XMAD_pin_info_s_t" value="pin_type, pin_val"/>
-  <annotation name="def_struct_types.XMAD_pin_info_s_t" value="u,   XMAD_pin_val_s_t"/>
-  <annotation name="com.jci.def_struct_names.XMAD_CreateTunemix_details_s_t" value="channel_id,channel_name,playable"/>
-  <annotation name="com.jci.def_struct_types.XMAD_CreateTunemix_details_s_t" value="    u   ,     s ,     b "/>
-  <annotation name="com.jci.def_struct_names.XMAD_CreateTuneMix_s_t" value=" create_list_data "/>
-  <annotation name="com.jci.def_struct_types.XMAD_CreateTuneMix_s_t" value="  XMAD_CreateTunemix_details_s_t "/>
-  <annotation name="com.jci.def_struct_names.XMAD_EditTuneMix_details_s_t" value="channel_id,channel_name,playable"/>
-  <annotation name="com.jci.def_struct_types.XMAD_EditTuneMix_details_s_t" value="    u   ,     s   ,     b "/>
-  <annotation name="com.jci.def_struct_names.XMAD_tunemix_info_s_t" value=" tunemix_id , edit_list_data"/>
-  <annotation name="com.jci.def_struct_types.XMAD_tunemix_info_s_t" value="     u ,     XMAD_EditTuneMix_details_s_t "/>
-  <annotation name="com.jci.def_struct_names.XMAD_rename_tunemix_info_s_t" value=" tunemix_id , tunemix_name"/>
-  <annotation name="com.jci.def_struct_types.XMAD_rename_tunemix_info_s_t" value="     u     ,     s       "/>
-  <annotation name="com.jci.def_struct_names.XMAD_tune_featured_fav_req_info_s_t" value=" bank_idx , preset_idx "/>
-  <annotation name="com.jci.def_struct_types.XMAD_tune_featured_fav_req_info_s_t" value="     u  ,     u       "/>
-  <annotation name="com.jci.def_struct_names.XMAD_tune_state_info_s_t" value="tuneState, channelId"/>
-  <annotation name="com.jci.def_struct_types.XMAD_tune_state_info_s_t" value="    u  ,     u   "/>
-  <annotation name="com.jci.def_struct_names.XMAD_current_channel_info_s_t"
-              value="channel_id, service_id, channel_name ,current_channel_status"/>
-  <annotation name="com.jci.def_struct_types.XMAD_current_channel_info_s_t"
-              value="    u  ,    u     ,     ay   ,       u              "/>
-  <annotation name="com.jci.def_struct_names.XMAD_channel_state_info_s_t"
-              value="channel_id, current_channel, category_id, req_data_mask, SubscriptionStatus"/>
-  <annotation name="com.jci.def_struct_types.XMAD_channel_state_info_s_t"
-              value="    u  ,     b  ,     u     ,   u    ,    u "/>
-  <annotation name="com.jci.def_struct_names.XMAD_active_category_info_s_t"
-              value="listType, category, listID, startIdx, listSize"/>
-  <annotation name="com.jci.def_struct_types.XMAD_active_category_info_s_t"
-              value="    u ,   u   ,   u   ,   u     ,     u "/>
-  <annotation name="com.jci.def_struct_names.XMAD_scan_state_info_s_t" value="scan_type ,scan_status"/>
-  <annotation name="com.jci.def_struct_types.XMAD_scan_state_info_s_t" value="      u  , u "/>
-  <annotation name="def_struct_names.XMAD_DirectTuneState_info_s_t" value="channel_id, channel_status"/>
-  <annotation name="def_struct_types.XMAD_DirectTuneState_info_s_t" value="  u,    u"/>
-  <annotation name="def_struct_names.XMAD_listNotifications_s_t"
-              value="channelAdded, channelRemoved, channelName, metadata"/>
-  <annotation name="def_struct_types.XMAD_listNotifications_s_t" value="  b,    b,     b,    b"/>
-  <annotation name="def_struct_names.XMAD_categoryUpdate_s_t" value="name, added, removed"/>
-  <annotation name="def_struct_types.XMAD_categoryUpdate_s_t" value="b,   b,   b"/>
-  <annotation name="def_struct_names.XMAD_SeekState_info_s_t" value="channel_id, channel_status"/>
-  <annotation name="def_struct_types.XMAD_SeekState_info_s_t" value="  u,    u"/>
-  <annotation name="com.jci.def_struct_names.XMAD_subscription_state_info_s_t"
-              value="subscription_status,reason_code,suspended_date,reason_txt,phone_num"/>
-  <annotation name="com.jci.def_struct_types.XMAD_subscription_state_info_s_t"
-              value="    u  ,           y  ,      u  ,  ay ,       ay "/>
-  <annotation name="com.jci.def_struct_names.XMAD_IR_buffer_state_info_s_t" value="buffer_capacity ,     status"/>
-  <annotation name="com.jci.def_struct_types.XMAD_IR_buffer_state_info_s_t" value="    u       ,     u "/>
-  <annotation name="com.jci.def_struct_names.XMAD_playback_state_info_s_t" value="play_state , play_back_error"/>
-  <annotation name="com.jci.def_struct_types.XMAD_playback_state_info_s_t" value="    u   ,     u"/>
-  <annotation name="com.jci.def_struct_names.XMAD_playback_time_state_info_s_t"
-              value="duration , elapsed_time , remaining_time"/>
-  <annotation name="com.jci.def_struct_types.XMAD_playback_time_state_info_s_t" value="    u   ,     u      ,   u"/>
-  <annotation name="com.jci.def_struct_names.XMAD_trackBeforeAfter_info_s_t" value="tracks_before , tracks_after "/>
-  <annotation name="com.jci.def_struct_types.XMAD_trackBeforeAfter_info_s_t" value="    u   ,     u "/>
-  <annotation name="com.jci.def_struct_names.XMAD_tunemix_state_info_s_t"
-              value="tunemix_status , tunemix_id , tunemix_name "/>
-  <annotation name="com.jci.def_struct_types.XMAD_tunemix_state_info_s_t" value="    b   ,     u        ,   ay    "/>
-  <annotation name="com.jci.def_struct_names.XMAD_playback_track_time_info_s_t"
-              value="track_duration , time_from_track_start "/>
-  <annotation name="com.jci.def_struct_types.XMAD_playback_track_time_info_s_t" value="    u   ,     u           "/>
-  <annotation name="com.jci.def_struct_names.XMAD_createTunemix_status_info_s_t"
-              value="tunemix_name,tunemix_id,tunemix_count,tunemix_status "/>
-  <annotation name="com.jci.def_struct_types.XMAD_createTunemix_status_info_s_t"
-              value="    ay   ,     u   ,    u       ,u        "/>
-  <annotation name="com.jci.def_struct_names.XMAD_editTunemix_status_info_s_t"
-              value="tunemix_name,tunemix_id,channel_count,tunemix_status "/>
-  <annotation name="com.jci.def_struct_types.XMAD_editTunemix_status_info_s_t"
-              value="    ay   ,     u   ,    u       ,u        "/>
-  <annotation name="com.jci.def_struct_names.XMAD_renameTunemix_status_info_s_t" value="retName , status   "/>
-  <annotation name="com.jci.def_struct_types.XMAD_renameTunemix_status_info_s_t" value="    s   ,     u           "/>
-  <annotation name="com.jci.def_struct_names.XMAD_removeTunemix_status_info_s_t" value="retTuneMixCount , status "/>
-  <annotation name="com.jci.def_struct_types.XMAD_removeTunemix_status_info_s_t" value="    u   ,     u           "/>
-  <annotation name="com.jci.def_struct_names.XMAD_tunemix_details_s_t" value="channel_id,channel_name,playable"/>
-  <annotation name="com.jci.def_struct_types.XMAD_tunemix_details_s_t" value="    u   ,     s   ,     b   "/>
-  <annotation name="com.jci.def_struct_names.XMAD_tunemix_details_info_s_t" value=" channel_cnt, name_id_list_data "/>
-  <annotation name="com.jci.def_struct_types.XMAD_tunemix_details_info_s_t"
-              value="    u   ,     XMAD_tunemix_details_s_t  "/>
-  <annotation name="com.jci.def_struct_names.XMAD_tunefeatuedfav_status_info_s_t"
-              value="retBandIdx , retPresetIdx, status, channelID "/>
-  <annotation name="com.jci.def_struct_types.XMAD_tunefeatuedfav_status_info_s_t"
-              value="    u   ,     u    ,    u     ,  u    "/>
-  <annotation name="com.jci.def_struct_names.XMAD_featuredfavUpdateType_s_t"
-              value="bank_added, bank_removed ,bank_modified "/>
-  <annotation name="com.jci.def_struct_types.XMAD_featuredfavUpdateType_s_t" value="    b   ,     b       ,b  "/>
-  <annotation name="com.jci.def_struct_names.XMAD_featuredfavListUpdated_info_s_t"
-              value="bankIdx, feature_fav_name, update_type"/>
-  <annotation name="com.jci.def_struct_types.XMAD_featuredfavListUpdated_info_s_t"
-              value=" u  ,ay  , XMAD_featuredfavUpdateType_s_t  "/>
-  <annotation name="com.jci.def_struct_names.XMAD_sportsflash_active_status_info_s_t" value="active_status ,  status "/>
-  <annotation name="com.jci.def_struct_types.XMAD_sportsflash_active_status_info_s_t" value="    b   ,  u         "/>
-  <annotation name="com.jci.def_struct_names.XMAD_SportsFlashAlertStatusInfo_s_t"
-              value="channelID ,  flashEventID ,  flashEventStatus , leagueabbr ,  homeTeamFullName , awayTeamFullName ,  flashAlertType"/>
-  <annotation name="com.jci.def_struct_types.XMAD_SportsFlashAlertStatusInfo_s_t"
-              value="    u   ,  u       ,      u        ,     ay    ,    ay    ,   ay    ,  u"/>
-  <annotation name="com.jci.def_struct_names.XMAD_sportsFlashCancelStatusInfo_s_t"
-              value="channelID ,  flashID   ,  flashAlertType"/>
-  <annotation name="com.jci.def_struct_types.XMAD_sportsFlashCancelStatusInfo_s_t" value="    u   ,  u     ,   u  "/>
-  <annotation name="com.jci.def_struct_names.XMAD_PlayFlashAlertStatusInfo_s_t" value="status ,  flashAlertType "/>
-  <annotation name="com.jci.def_struct_types.XMAD_PlayFlashAlertStatusInfo_s_t" value="    u   ,  u    "/>
-  <annotation name="com.jci.def_struct_names.XMAD_AbortFlashAlertStatusInfo_s_t"
-              value="xmactivestatus ,  status  ,  flashAlertType"/>
-  <annotation name="com.jci.def_struct_types.XMAD_AbortFlashAlertStatusInfo_s_t" value="    b   ,  u     ,  u    "/>
-  <annotation name="com.jci.def_struct_names.XMAD_TurnOffFlashAlertStatusInfo_s_t" value="  status  ,  flashAlertType"/>
-  <annotation name="com.jci.def_struct_types.XMAD_TurnOffFlashAlertStatusInfo_s_t" value="    u     ,  u    "/>
-  <annotation name="com.jci.def_struct_names.XMAD_ReplayFlashAlertStatusInfo_s_t" value="  status  ,  flashAlertType"/>
-  <annotation name="com.jci.def_struct_types.XMAD_ReplayFlashAlertStatusInfo_s_t" value="    u     ,  u    "/>
-  <annotation name="com.jci.def_struct_names.XMAD_CityNameCityID_info_s_t"
-              value="CityName ,  nearestflag,  CityIndx,  status "/>
-  <annotation name="com.jci.def_struct_types.XMAD_CityNameCityID_info_s_t" value="    ay   ,  b     , u  ,   u  "/>
-  <annotation name="com.jci.def_struct_names.XMAD_TWFlashAlertStatusInfo_s_t"
-              value="  bulletinID ,  bulletinStatus , CityName  ,  flashAlertType"/>
-  <annotation name="com.jci.def_struct_types.XMAD_TWFlashAlertStatusInfo_s_t"
-              value="   u       ,      u        ,     ay   , u   "/>
-  <annotation name="com.jci.def_struct_names.XMAD_FavChannelSubcribeStatus_info_s_t"
-              value="  channelID ,  SubscriptionStatus , channeName  "/>
-  <annotation name="com.jci.def_struct_types.XMAD_FavChannelSubcribeStatus_info_s_t"
-              value="   u       ,      b        ,     ay   "/>
-  <annotation name="com.jci.def_struct_names.XMAD_ChannelValidityStatus_info_s_t" value="  channelID ,  status  "/>
-  <annotation name="com.jci.def_struct_types.XMAD_ChannelValidityStatus_info_s_t" value="   u       ,      u    "/>
-  <annotation name="com.jci.def_struct_names.XMAD_FlashAvailableStatus_s_t"
-              value="channelID , flashEventID , flashEventStatus , flashAlertType , name , homeTeamName , awayTeamName"/>
-  <annotation name="com.jci.def_struct_types.XMAD_FlashAvailableStatus_s_t"
-              value="u         , u            , u                , u              , ay   , ay           , ay"/>
-  <method name="GetScanSetting">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetInstallStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetSignalQuality">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetAntennaState">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetFirstXMFavAddition">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTuneStartSettingStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetFavListID">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetActiveCategory">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetSessionLockStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetParentalLockInitSetupStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetIsTuneScanSettingUsedBefore">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTuneScanContentAvailabilityInfo">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetBTConnectionStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetIRBufferCapacity">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetESN">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetSmartFavChannelsCount">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTuneMixActiveStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTuneMixCount">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTuneStartFirstTimeUsage">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTuneMixDetails">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="tunemix_Id" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetSportFlashActiveStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetSportFlashFreq">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetSportFlashFirstTimeUsage">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTWReportActiveStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTWReportFreq">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetTWReportFirstTimeUsage">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetNearestCityName">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetSubscriptionUpdateStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SourceChangeToXM">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="Seek">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="seek_type" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="DirectTune">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="id" type="u"/>
-   <arg direction="in" name="tuneToServiceID" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="ChangeCategory">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="ch_list_type" type="u"/>
-   <arg direction="in" name="category_id" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="ScanSetting">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="scan_type" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="ScanReq">
-   <annotation name="type_ref.scan_req" value="XMAD_scan_req_info_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="scan_req" type="(uu)"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="TuneStartSetting">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="tune_start_enable" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="EditSmartFavList">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="chanID" type="u"/>
-   <arg direction="in" name="isSFChannel" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SessionLock">
-   <annotation name="type_ref.session_lock_req" value="XMAD_session_lock_info_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="session_lock_req" type="(ub)"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="ChannelLock">
-   <annotation name="type_ref.channel_lock_req" value="XMAD_channel_lock_info_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="channel_lock_req" type="(uu)"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="RequestPinResponse">
-   <annotation name="type_ref.pin_info" value="XMAD_pin_info_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="pin_info" type="(u(yyyy))"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="ChangePinReq">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="pin_type" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="PlayControl">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="playControl" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SeekTime">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="durationInSec" type="i"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SeekTrack">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="direction" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="CreateTuneMix">
-   <annotation name="type_ref.create_tunemix_req" value="XMAD_CreateTuneMix_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="create_tunemix_req" type="(a(usb))"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="EditTuneMix">
-   <annotation name="type_ref.edit_tunemix_req" value="XMAD_tunemix_info_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="edit_tunemix_req" type="(ua(usb))"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="RenameTuneMix">
-   <annotation name="type_ref.rename_tunemix_req" value="XMAD_rename_tunemix_info_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="rename_tunemix_req" type="(us)"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="RemoveTuneMix">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="tunemix_id" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="TuneStartUsed">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="FirstFavoriteAdded">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="TuneScanUsed">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="ExitTuneMix">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="TuneFeaturedFav">
-   <annotation name="type_ref.tune_featured_fav" value="XMAD_tune_featured_fav_req_info_s_t"/>
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="tune_featured_fav" type="(uu)"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SportFlashFirstTimeUsed">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SetSportsFlashFrequency">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="flashFreq" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="EnableSportFlashAlert">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="enableAlert" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SelectSportsFlashTeam">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="leagueId" type="u"/>
-   <arg direction="in" name="teamId" type="u"/>
-   <arg direction="in" name="favorite" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="MoveSportsFlashTeam">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="refLeagueID " type="u"/>
-   <arg direction="in" name="leagueID" type="u"/>
-   <arg direction="in" name="refTeamId " type="u"/>
-   <arg direction="in" name="teamId" type="u"/>
-   <arg direction="in" name="moveType" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="DismissFlashAlert">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="channelID" type="u"/>
-   <arg direction="in" name="flashEventID" type="u"/>
-   <arg direction="in" name="flashAlertType" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="PlayFlashAlert">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="flashEventID" type="u"/>
-   <arg direction="in" name="flashAlertType" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="TurnOffAlert">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="flashAlertType" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="AbortFlashAlert">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="flashEventID" type="u"/>
-   <arg direction="in" name="flashAlertType" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="ReplayFlashAlert">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="flashEventID" type="u"/>
-   <arg direction="in" name="flashAlertType" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="TWReportFirstTimeUsed">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SetTWReportFrequency">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="twReportFreq" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="EnableTWReportAlert">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="enableTWReportAlert" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SelectTWCity">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="selectTWCity" type="s"/>
-   <arg direction="in" name="isNearestCity" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SuspendAlertContextStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="suspendAlertContextRemoved" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="isValidChannelID">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="channelID" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="PlayFirstTuneMix">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="GetFlashAvailableStatus">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="flashAlertType" type="u"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SubscriptionUserAccept">
-   <annotation name="async" value="client"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="PlayTuneGame">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="id_h" type="u"/>
-   <arg direction="in" name="id_m" type="u"/>
-   <arg direction="in" name="id_l" type="u"/>
-   <arg direction="in" name="tuneToServiceID" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <method name="SubscriptionUpdateConf">
-   <annotation name="async" value="client"/>
-   <arg direction="in" name="status" type="b"/>
-   <arg direction="out" name="return_value" type="i"/>
-  </method>
-  <signal name="SourceChangeStatus">
-   <arg direction="in" name="source_change_status" type="u"/>
-  </signal>
-  <signal name="TuneStatus">
-   <annotation name="com.jci.type_ref.tune_state" value="XMAD_tune_state_info_s_t"/>
-   <arg direction="in" name="tune_state" type="(uu)"/>
-  </signal>
-  <signal name="installStatus">
-   <arg direction="in" name="install_status" type="u"/>
-  </signal>
-  <signal name="SignalQuality">
-   <arg direction="in" name="signal_quality_state" type="u"/>
-  </signal>
-  <signal name="AntennaState">
-   <arg direction="in" name="antenna_state" type="u"/>
-  </signal>
-  <signal name="ChannelDescriptionServiceStatus">
-   <arg direction="in" name="channel_description_status" type="b"/>
-  </signal>
-  <signal name="TuneStartSettingStatus">
-   <arg direction="in" name="tune_start_status" type="b"/>
-  </signal>
-  <signal name="LockPinStatus">
-   <arg direction="in" name="lock_pin_status" type="u"/>
-  </signal>
-  <signal name="CurrentTunedChannel">
-   <annotation name="com.jci.type_ref.current_channel_info" value="XMAD_current_channel_info_s_t"/>
-   <arg direction="in" name="current_channel_info" type="(uuayu)"/>
-  </signal>
-  <signal name="ChannelStatus">
-   <annotation name="com.jci.type_ref.channel_state" value="XMAD_channel_state_info_s_t"/>
-   <arg direction="in" name="channel_state" type="(ubuuu)"/>
-  </signal>
-  <signal name="ActiveCategory">
-   <annotation name="com.jci.type_ref.active_category_info" value="XMAD_active_category_info_s_t"/>
-   <arg direction="in" name="active_category_info" type="(uuuuu)"/>
-  </signal>
-  <signal name="ScanStatus">
-   <annotation name="com.jci.type_ref.scan_status" value="XMAD_scan_state_info_s_t"/>
-   <arg direction="in" name="scan_status" type="(uu)"/>
-  </signal>
-  <signal name="ScanReqStatus">
-   <arg direction="in" name="error_status" type="u"/>
-  </signal>
-  <signal name="ScanSettingStatus">
-   <arg direction="in" name="scan_type" type="u"/>
-  </signal>
-  <signal name="DirectTuneStatus">
-   <annotation name="com.jci.type_ref.direct_tune_status" value="XMAD_DirectTuneState_info_s_t"/>
-   <arg direction="in" name="direct_tune_status" type="(uu)"/>
-  </signal>
-  <signal name="ChannelListUpdateStatus">
-   <annotation name="type_ref.updateType" value="XMAD_listNotifications_s_t"/>
-   <arg direction="in" name="listID" type="u"/>
-   <arg direction="in" name="channelListSize" type="u"/>
-   <arg direction="in" name="index" type="u"/>
-   <arg direction="in" name="channelListInitialize" type="b"/>
-   <arg direction="in" name="updateType" type="(bbbb)"/>
-  </signal>
-  <signal name="CategoryUpdate">
-   <annotation name="type_ref.updateType" value="XMAD_categoryUpdate_s_t"/>
-   <arg name="catID" type="u"/>
-   <arg name="name" type="s"/>
-   <arg name="updateType" type="(bbb)"/>
-  </signal>
-  <signal name="RequestPin">
-   <arg direction="in" name="pin_type" type="u"/>
-  </signal>
-  <signal name="RequestPinStatus">
-   <arg direction="in" name="pin_status" type="u"/>
-  </signal>
-  <signal name="ChannelLockStatus">
-   <arg direction="in" name="channel_lock_status" type="u"/>
-  </signal>
-  <signal name="SessionLockStatus">
-   <arg direction="in" name="session_lock_status" type="u"/>
-  </signal>
-  <signal name="ParentalLockInitSetupStatus">
-   <arg direction="in" name="init_setup_status" type="b"/>
-  </signal>
-  <signal name="SeekStatus">
-   <annotation name="com.jci.type_ref.seek_status" value="XMAD_SeekState_info_s_t"/>
-   <arg direction="in" name="seek_status" type="(uu)"/>
-  </signal>
-  <signal name="EditSmartFavListStatus">
-   <arg direction="in" name="retChID" type="u"/>
-   <arg direction="in" name="retIsSFChannel" type="b"/>
-   <arg direction="in" name="raturn_Status" type="u"/>
-  </signal>
-  <signal name="NotifyFirstXMFavAddition">
-   <arg direction="in" name="first_fav_addition_status" type="b"/>
-  </signal>
-  <signal name="NotifyFavListID">
-   <arg direction="in" name="fav_list_id" type="u"/>
-  </signal>
-  <signal name="TuneScanSettingFirstTimeUsage">
-   <arg direction="in" name="first_time_usage " type="b"/>
-  </signal>
-  <signal name="TuneScanContentAvailabilityStatus">
-   <arg direction="in" name="tune_scan_availability  " type="b"/>
-  </signal>
-  <signal name="BTConnectionStatus">
-   <arg direction="in" name="bTConnected  " type="b"/>
-  </signal>
-  <signal name="SubscriptionStatus">
-   <annotation name="com.jci.type_ref.subscription_state" value="XMAD_subscription_state_info_s_t"/>
-   <arg direction="in" name="subscription_state" type="(uyuayay)"/>
-  </signal>
-  <signal name="IRBufferCapacityStatus">
-   <annotation name="com.jci.type_ref.ir_buffer_state" value="XMAD_IR_buffer_state_info_s_t"/>
-   <arg direction="in" name="ir_buffer_state" type="(uu)"/>
-  </signal>
-  <signal name="PlayControlStatus">
-   <arg direction="in" name="status " type="u"/>
-  </signal>
-  <signal name="PlayBackStatus">
-   <annotation name="com.jci.type_ref.play_back_status" value="XMAD_playback_state_info_s_t"/>
-   <arg direction="in" name="play_back_status" type="(uu)"/>
-  </signal>
-  <signal name="PlaybackTimeStatus">
-   <annotation name="com.jci.type_ref.playback_time" value="XMAD_playback_time_state_info_s_t"/>
-   <arg direction="in" name="playback_time" type="(uuu)"/>
-  </signal>
-  <signal name="SeekTimeStatus">
-   <arg direction="in" name="status " type="u"/>
-  </signal>
-  <signal name="PlaybackOffsetIndication">
-   <arg direction="in" name="playBackOffset " type="u"/>
-  </signal>
-  <signal name="ESNInfo">
-   <arg direction="in" name="esn_val " type="s"/>
-  </signal>
-  <signal name="TracksBeforeAfter">
-   <annotation name="com.jci.type_ref.tracks_info" value="XMAD_trackBeforeAfter_info_s_t"/>
-   <arg direction="in" name="tracks_info" type="(uu)"/>
-  </signal>
-  <signal name="TuneMixActive">
-   <annotation name="com.jci.type_ref.tunemix_state_info" value="XMAD_tunemix_state_info_s_t"/>
-   <arg direction="in" name="tunemix_state_info" type="(buay)"/>
-  </signal>
-  <signal name="PlaybackTrackTimeStatus">
-   <annotation name="com.jci.type_ref.Playback_track_time" value="XMAD_playback_track_time_info_s_t"/>
-   <arg direction="in" name="playback_track_time" type="(uu)"/>
-  </signal>
-  <signal name="CreateTuneMixStatus">
-   <annotation name="com.jci.type_ref.create_tunemix_status" value="XMAD_createTunemix_status_info_s_t"/>
-   <arg direction="in" name="create_tunemix_status" type="(ayuuu)"/>
-  </signal>
-  <signal name="EditTuneMixStatus">
-   <annotation name="com.jci.type_ref.edit_tunemix_status" value="XMAD_editTunemix_status_info_s_t"/>
-   <arg direction="in" name="edit_tunemix_status" type="(ayuuu)"/>
-  </signal>
-  <signal name="RenameTunemixStatus">
-   <annotation name="com.jci.type_ref.rename_tunemix_status" value="XMAD_renameTunemix_status_info_s_t"/>
-   <arg direction="in" name="rename_tunemix_status" type="(su)"/>
-  </signal>
-  <signal name="RemoveTuneMixStatus">
-   <annotation name="com.jci.type_ref.remove_tunemix_status" value="XMAD_removeTunemix_status_info_s_t"/>
-   <arg direction="in" name="remove_tunemix_status" type="(uu)"/>
-  </signal>
-  <signal name="TuneStartFirstTimeUsageStatus">
-   <arg direction="in" name="first_time_usage " type="b"/>
-  </signal>
-  <signal name="SmartFavChannelsCount">
-   <arg direction="in" name="channel_count " type="u"/>
-  </signal>
-  <signal name="TuneMixCount">
-   <arg direction="in" name="tunemix_count " type="u"/>
-  </signal>
-  <signal name="TuneMixDetails">
-   <annotation name="com.jci.type_ref.tunemix_details" value="XMAD_tunemix_details_info_s_t"/>
-   <arg direction="in" name="tunemix_details" type="(ua(usb))"/>
-  </signal>
-  <signal name="TuneMixListUpdated">
-   <arg direction="in" name="tunemix_count " type="u"/>
-  </signal>
-  <signal name="TuneFeaturedFavStatus">
-   <annotation name="com.jci.type_ref.tune_featuedfav_status" value="XMAD_tunefeatuedfav_status_info_s_t"/>
-   <arg direction="in" name="tune_featuedfav_status" type="(uuuu)"/>
-  </signal>
-  <signal name="FeaturedFavListUpdated">
-   <annotation name="com.jci.type_ref.list_updated" value="XMAD_featuredfavListUpdated_info_s_t"/>
-   <arg direction="in" name="list_updated" type="(uay(bbb))"/>
-  </signal>
-  <signal name="SportFlashActiveStatus">
-   <annotation name="com.jci.type_ref.SportsFlash_active_status" value="XMAD_sportsflash_active_status_info_s_t"/>
-   <arg direction="in" name="sportsFlash_active_status" type="(bu)"/>
-  </signal>
-  <signal name="SportFlashFrequencyStatus">
-   <arg direction="in" name="sportsFlash_frequency_status" type="u"/>
-  </signal>
-  <signal name="SportFlashFirstTimeUsageStatus">
-   <arg direction="in" name="firstTimeUsage" type="b"/>
-  </signal>
-  <signal name="EnableSportFlashAlertStatus">
-   <arg direction="in" name="status" type="u"/>
-  </signal>
-  <signal name="SelectSportsFlashTeamStatus">
-   <arg direction="in" name="status" type="u"/>
-  </signal>
-  <signal name="MoveSportsFlashTeamStatus">
-   <arg direction="in" name="status" type="u"/>
-  </signal>
-  <signal name="SportFlashAlert">
-   <annotation name="com.jci.type_ref.SportsFlash_Alert" value="XMAD_SportsFlashAlertStatusInfo_s_t"/>
-   <arg direction="in" name="sportsFlash_Alert" type="(uuuayayayu)"/>
-  </signal>
-  <signal name="CancelAlert">
-   <annotation name="com.jci.type_ref.SportsFlash_cancel_status" value="XMAD_sportsFlashCancelStatusInfo_s_t"/>
-   <arg direction="in" name="sportsFlash_cancel_status" type="(uuu)"/>
-  </signal>
-  <signal name="PlayFlashAlertStatus">
-   <annotation name="com.jci.type_ref.PlayFlash_Alert_Status" value="XMAD_PlayFlashAlertStatusInfo_s_t"/>
-   <arg direction="in" name="playFlash_Alert_Status" type="(uu)"/>
-  </signal>
-  <signal name="AbortFlashAlertStatus">
-   <annotation name="com.jci.type_ref.AbortFlash_Alert_status" value="XMAD_AbortFlashAlertStatusInfo_s_t"/>
-   <arg direction="in" name="abortFlash_Alert_status" type="(buu)"/>
-  </signal>
-  <signal name="TurnOffAlertStatus">
-   <annotation name="com.jci.type_ref.TurnOff_Alert_status" value="XMAD_TurnOffFlashAlertStatusInfo_s_t"/>
-   <arg direction="in" name="turnOff_Alert_status" type="(uu)"/>
-  </signal>
-  <signal name="ReplayFlashAlertStatus">
-   <annotation name="com.jci.type_ref.Replay_Alert_status" value="XMAD_ReplayFlashAlertStatusInfo_s_t"/>
-   <arg direction="in" name="replay_Alert_status" type="(uu)"/>
-  </signal>
-  <signal name="TWFlashActiveStatus">
-   <arg direction="in" name="tWFlash_active_status" type="b"/>
-  </signal>
-  <signal name="TWFlashFrequencyStatus">
-   <arg direction="in" name="tWFlash_frequency_status" type="u"/>
-  </signal>
-  <signal name="TWFirstTimeUsageStatus">
-   <arg direction="in" name="firstTimeUsage" type="b"/>
-  </signal>
-  <signal name="EnableTWReportAlertStatus">
-   <arg direction="in" name="status" type="u"/>
-  </signal>
-  <signal name="SelectTWCityStatus">
-   <arg direction="in" name="status" type="u"/>
-  </signal>
-  <signal name="TWCityNameCityID">
-   <annotation name="com.jci.type_ref.TW_CityNameCityID" value="XMAD_CityNameCityID_info_s_t"/>
-   <arg direction="in" name="tW_CityNameCityID" type="(aybuu)"/>
-  </signal>
-  <signal name="TWFlashAlert">
-   <annotation name="com.jci.type_ref.TWFlash_Alert" value="XMAD_TWFlashAlertStatusInfo_s_t"/>
-   <arg direction="in" name="tWFlash_Alert" type="(uuayu)"/>
-  </signal>
-  <signal name="FAVChannelsubscribed">
-   <annotation name="com.jci.type_ref.FAVChannel_subscribed" value="XMAD_FavChannelSubcribeStatus_info_s_t"/>
-   <arg direction="in" name="fAVChannel_subscribed" type="(ubay)"/>
-  </signal>
-  <signal name="FavSportTeamCount">
-   <arg direction="in" name="favSportTeamCount" type="y"/>
-  </signal>
-  <signal name="ChannelValidityStatus">
-   <annotation name="com.jci.type_ref.validityStatus" value="XMAD_ChannelValidityStatus_info_s_t"/>
-   <arg direction="in" name="validityStatus" type="(uu)"/>
-  </signal>
-  <signal name="UnlockSession"/>
-  <signal name="SubscriptionUpdated"/>
-  <signal name="FlashAvailableStatus">
-   <annotation name="com.jci.type_ref.FlashAvailable_Status" value="XMAD_FlashAvailableStatus_s_t"/>
-   <arg direction="in" name="flashAvailable_Status" type="(uuuuayayay)"/>
-  </signal>
- </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.xmad_object">
+    <interface name="com.jci.xmad">
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_scan_req_info_s_t" value=" scan_req_type , scan_operation"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_scan_req_info_s_t" value="     u  ,     u     "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_session_lock_info_s_t"
+                    value=" request ,current_channel_lock_status"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_session_lock_info_s_t" value="     u  ,     b       "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_channel_lock_info_s_t" value=" request ,channel_id"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_channel_lock_info_s_t" value="     u  ,     u       "/>
+
+
+        <annotation name="def_struct_names.XMAD_pin_val_s_t" value="pin_1, pin_2, pin_3,pin_4"/>
+
+
+        <annotation name="def_struct_types.XMAD_pin_val_s_t" value="y,   y,   y,     y"/>
+
+
+        <annotation name="def_struct_names.XMAD_pin_info_s_t" value="pin_type, pin_val"/>
+
+
+        <annotation name="def_struct_types.XMAD_pin_info_s_t" value="u,   XMAD_pin_val_s_t"/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_CreateTunemix_details_s_t"
+                    value="channel_id,channel_name,playable"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_CreateTunemix_details_s_t" value="    u   ,     s ,     b "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_CreateTuneMix_s_t" value=" create_list_data "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_CreateTuneMix_s_t" value="  XMAD_CreateTunemix_details_s_t "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_EditTuneMix_details_s_t"
+                    value="channel_id,channel_name,playable"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_EditTuneMix_details_s_t" value="    u   ,     s   ,     b "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_tunemix_info_s_t" value=" tunemix_id , edit_list_data"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_tunemix_info_s_t"
+                    value="     u ,     XMAD_EditTuneMix_details_s_t "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_rename_tunemix_info_s_t" value=" tunemix_id , tunemix_name"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_rename_tunemix_info_s_t" value="     u     ,     s       "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_tune_featured_fav_req_info_s_t"
+                    value=" bank_idx , preset_idx "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_tune_featured_fav_req_info_s_t" value="     u  ,     u       "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_tune_state_info_s_t" value="tuneState, channelId"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_tune_state_info_s_t" value="    u  ,     u   "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_current_channel_info_s_t"
+                    value="channel_id, service_id, channel_name ,current_channel_status"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_current_channel_info_s_t"
+                    value="    u  ,    u     ,     ay   ,       u              "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_channel_state_info_s_t"
+                    value="channel_id, current_channel, category_id, req_data_mask, SubscriptionStatus"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_channel_state_info_s_t"
+                    value="    u  ,     b  ,     u     ,   u    ,    u "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_active_category_info_s_t"
+                    value="listType, category, listID, startIdx, listSize"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_active_category_info_s_t"
+                    value="    u ,   u   ,   u   ,   u     ,     u "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_scan_state_info_s_t" value="scan_type ,scan_status"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_scan_state_info_s_t" value="      u  , u "/>
+
+
+        <annotation name="def_struct_names.XMAD_DirectTuneState_info_s_t" value="channel_id, channel_status"/>
+
+
+        <annotation name="def_struct_types.XMAD_DirectTuneState_info_s_t" value="  u,    u"/>
+
+
+        <annotation name="def_struct_names.XMAD_listNotifications_s_t"
+                    value="channelAdded, channelRemoved, channelName, metadata"/>
+
+
+        <annotation name="def_struct_types.XMAD_listNotifications_s_t" value="  b,    b,     b,    b"/>
+
+
+        <annotation name="def_struct_names.XMAD_categoryUpdate_s_t" value="name, added, removed"/>
+
+
+        <annotation name="def_struct_types.XMAD_categoryUpdate_s_t" value="b,   b,   b"/>
+
+
+        <annotation name="def_struct_names.XMAD_SeekState_info_s_t" value="channel_id, channel_status"/>
+
+
+        <annotation name="def_struct_types.XMAD_SeekState_info_s_t" value="  u,    u"/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_subscription_state_info_s_t"
+                    value="subscription_status,reason_code,suspended_date,reason_txt,phone_num"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_subscription_state_info_s_t"
+                    value="    u  ,           y  ,      u  ,  ay ,       ay "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_IR_buffer_state_info_s_t" value="buffer_capacity ,     status"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_IR_buffer_state_info_s_t" value="    u       ,     u "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_playback_state_info_s_t" value="play_state , play_back_error"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_playback_state_info_s_t" value="    u   ,     u"/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_playback_time_state_info_s_t"
+                    value="duration , elapsed_time , remaining_time"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_playback_time_state_info_s_t"
+                    value="    u   ,     u      ,   u"/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_trackBeforeAfter_info_s_t"
+                    value="tracks_before , tracks_after "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_trackBeforeAfter_info_s_t" value="    u   ,     u "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_tunemix_state_info_s_t"
+                    value="tunemix_status , tunemix_id , tunemix_name "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_tunemix_state_info_s_t"
+                    value="    b   ,     u        ,   ay    "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_playback_track_time_info_s_t"
+                    value="track_duration , time_from_track_start "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_playback_track_time_info_s_t"
+                    value="    u   ,     u           "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_createTunemix_status_info_s_t"
+                    value="tunemix_name,tunemix_id,tunemix_count,tunemix_status "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_createTunemix_status_info_s_t"
+                    value="    ay   ,     u   ,    u       ,u        "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_editTunemix_status_info_s_t"
+                    value="tunemix_name,tunemix_id,channel_count,tunemix_status "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_editTunemix_status_info_s_t"
+                    value="    ay   ,     u   ,    u       ,u        "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_renameTunemix_status_info_s_t" value="retName , status   "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_renameTunemix_status_info_s_t"
+                    value="    s   ,     u           "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_removeTunemix_status_info_s_t"
+                    value="retTuneMixCount , status "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_removeTunemix_status_info_s_t"
+                    value="    u   ,     u           "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_tunemix_details_s_t" value="channel_id,channel_name,playable"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_tunemix_details_s_t" value="    u   ,     s   ,     b   "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_tunemix_details_info_s_t"
+                    value=" channel_cnt, name_id_list_data "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_tunemix_details_info_s_t"
+                    value="    u   ,     XMAD_tunemix_details_s_t  "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_tunefeatuedfav_status_info_s_t"
+                    value="retBandIdx , retPresetIdx, status, channelID "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_tunefeatuedfav_status_info_s_t"
+                    value="    u   ,     u    ,    u     ,  u    "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_featuredfavUpdateType_s_t"
+                    value="bank_added, bank_removed ,bank_modified "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_featuredfavUpdateType_s_t" value="    b   ,     b       ,b  "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_featuredfavListUpdated_info_s_t"
+                    value="bankIdx, feature_fav_name, update_type"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_featuredfavListUpdated_info_s_t"
+                    value=" u  ,ay  , XMAD_featuredfavUpdateType_s_t  "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_sportsflash_active_status_info_s_t"
+                    value="active_status ,  status "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_sportsflash_active_status_info_s_t"
+                    value="    b   ,  u         "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_SportsFlashAlertStatusInfo_s_t"
+                    value="channelID ,  flashEventID ,  flashEventStatus , leagueabbr ,  homeTeamFullName , awayTeamFullName ,  flashAlertType"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_SportsFlashAlertStatusInfo_s_t"
+                    value="    u   ,  u       ,      u        ,     ay    ,    ay    ,   ay    ,  u"/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_sportsFlashCancelStatusInfo_s_t"
+                    value="channelID ,  flashID   ,  flashAlertType"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_sportsFlashCancelStatusInfo_s_t"
+                    value="    u   ,  u     ,   u  "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_PlayFlashAlertStatusInfo_s_t"
+                    value="status ,  flashAlertType "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_PlayFlashAlertStatusInfo_s_t" value="    u   ,  u    "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_AbortFlashAlertStatusInfo_s_t"
+                    value="xmactivestatus ,  status  ,  flashAlertType"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_AbortFlashAlertStatusInfo_s_t"
+                    value="    b   ,  u     ,  u    "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_TurnOffFlashAlertStatusInfo_s_t"
+                    value="  status  ,  flashAlertType"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_TurnOffFlashAlertStatusInfo_s_t" value="    u     ,  u    "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_ReplayFlashAlertStatusInfo_s_t"
+                    value="  status  ,  flashAlertType"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_ReplayFlashAlertStatusInfo_s_t" value="    u     ,  u    "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_CityNameCityID_info_s_t"
+                    value="CityName ,  nearestflag,  CityIndx,  status "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_CityNameCityID_info_s_t"
+                    value="    ay   ,  b     , u  ,   u  "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_TWFlashAlertStatusInfo_s_t"
+                    value="  bulletinID ,  bulletinStatus , CityName  ,  flashAlertType"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_TWFlashAlertStatusInfo_s_t"
+                    value="   u       ,      u        ,     ay   , u   "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_FavChannelSubcribeStatus_info_s_t"
+                    value="  channelID ,  SubscriptionStatus , channeName  "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_FavChannelSubcribeStatus_info_s_t"
+                    value="   u       ,      b        ,     ay   "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_ChannelValidityStatus_info_s_t"
+                    value="  channelID ,  status  "/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_ChannelValidityStatus_info_s_t"
+                    value="   u       ,      u    "/>
+
+
+        <annotation name="com.jci.def_struct_names.XMAD_FlashAvailableStatus_s_t"
+                    value="channelID , flashEventID , flashEventStatus , flashAlertType , name , homeTeamName , awayTeamName"/>
+
+
+        <annotation name="com.jci.def_struct_types.XMAD_FlashAvailableStatus_s_t"
+                    value="u         , u            , u                , u              , ay   , ay           , ay"/>
+
+
+        <method name="GetScanSetting">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetInstallStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSignalQuality">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetAntennaState">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetFirstXMFavAddition">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTuneStartSettingStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetFavListID">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetActiveCategory">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSessionLockStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetParentalLockInitSetupStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetIsTuneScanSettingUsedBefore">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTuneScanContentAvailabilityInfo">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetBTConnectionStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetIRBufferCapacity">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetESN">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSmartFavChannelsCount">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTuneMixActiveStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTuneMixCount">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTuneStartFirstTimeUsage">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTuneMixDetails">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="tunemix_Id" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSportFlashActiveStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSportFlashFreq">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSportFlashFirstTimeUsage">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTWReportActiveStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTWReportFreq">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetTWReportFirstTimeUsage">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetNearestCityName">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetSubscriptionUpdateStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SourceChangeToXM">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="Seek">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="seek_type" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="DirectTune">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="id" type="u"/>
+
+
+            <arg direction="in" name="tuneToServiceID" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="ChangeCategory">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="ch_list_type" type="u"/>
+
+
+            <arg direction="in" name="category_id" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="ScanSetting">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="scan_type" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="ScanReq">
+
+
+            <annotation name="type_ref.scan_req" value="XMAD_scan_req_info_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="scan_req" type="(uu)"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="TuneStartSetting">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="tune_start_enable" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="EditSmartFavList">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="chanID" type="u"/>
+
+
+            <arg direction="in" name="isSFChannel" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SessionLock">
+
+
+            <annotation name="type_ref.session_lock_req" value="XMAD_session_lock_info_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="session_lock_req" type="(ub)"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="ChannelLock">
+
+
+            <annotation name="type_ref.channel_lock_req" value="XMAD_channel_lock_info_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="channel_lock_req" type="(uu)"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="RequestPinResponse">
+
+
+            <annotation name="type_ref.pin_info" value="XMAD_pin_info_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="pin_info" type="(u(yyyy))"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="ChangePinReq">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="pin_type" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="PlayControl">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="playControl" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SeekTime">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="durationInSec" type="i"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SeekTrack">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="direction" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="CreateTuneMix">
+
+
+            <annotation name="type_ref.create_tunemix_req" value="XMAD_CreateTuneMix_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="create_tunemix_req" type="(a(usb))"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="EditTuneMix">
+
+
+            <annotation name="type_ref.edit_tunemix_req" value="XMAD_tunemix_info_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="edit_tunemix_req" type="(ua(usb))"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="RenameTuneMix">
+
+
+            <annotation name="type_ref.rename_tunemix_req" value="XMAD_rename_tunemix_info_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="rename_tunemix_req" type="(us)"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="RemoveTuneMix">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="tunemix_id" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="TuneStartUsed">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="FirstFavoriteAdded">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="TuneScanUsed">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="ExitTuneMix">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="TuneFeaturedFav">
+
+
+            <annotation name="type_ref.tune_featured_fav" value="XMAD_tune_featured_fav_req_info_s_t"/>
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="tune_featured_fav" type="(uu)"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SportFlashFirstTimeUsed">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SetSportsFlashFrequency">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="flashFreq" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="EnableSportFlashAlert">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="enableAlert" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SelectSportsFlashTeam">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="leagueId" type="u"/>
+
+
+            <arg direction="in" name="teamId" type="u"/>
+
+
+            <arg direction="in" name="favorite" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="MoveSportsFlashTeam">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="refLeagueID " type="u"/>
+
+
+            <arg direction="in" name="leagueID" type="u"/>
+
+
+            <arg direction="in" name="refTeamId " type="u"/>
+
+
+            <arg direction="in" name="teamId" type="u"/>
+
+
+            <arg direction="in" name="moveType" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="DismissFlashAlert">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="channelID" type="u"/>
+
+
+            <arg direction="in" name="flashEventID" type="u"/>
+
+
+            <arg direction="in" name="flashAlertType" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="PlayFlashAlert">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="flashEventID" type="u"/>
+
+
+            <arg direction="in" name="flashAlertType" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="TurnOffAlert">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="flashAlertType" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="AbortFlashAlert">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="flashEventID" type="u"/>
+
+
+            <arg direction="in" name="flashAlertType" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="ReplayFlashAlert">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="flashEventID" type="u"/>
+
+
+            <arg direction="in" name="flashAlertType" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="TWReportFirstTimeUsed">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SetTWReportFrequency">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="twReportFreq" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="EnableTWReportAlert">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="enableTWReportAlert" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SelectTWCity">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="selectTWCity" type="s"/>
+
+
+            <arg direction="in" name="isNearestCity" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SuspendAlertContextStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="suspendAlertContextRemoved" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="isValidChannelID">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="channelID" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="PlayFirstTuneMix">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="GetFlashAvailableStatus">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="flashAlertType" type="u"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SubscriptionUserAccept">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="PlayTuneGame">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="id_h" type="u"/>
+
+
+            <arg direction="in" name="id_m" type="u"/>
+
+
+            <arg direction="in" name="id_l" type="u"/>
+
+
+            <arg direction="in" name="tuneToServiceID" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <method name="SubscriptionUpdateConf">
+
+
+            <annotation name="async" value="client"/>
+
+
+            <arg direction="in" name="status" type="b"/>
+
+
+            <arg direction="out" name="return_value" type="i"/>
+
+
+        </method>
+
+
+        <signal name="SourceChangeStatus">
+
+
+            <arg direction="in" name="source_change_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="TuneStatus">
+
+
+            <annotation name="com.jci.type_ref.tune_state" value="XMAD_tune_state_info_s_t"/>
+
+
+            <arg direction="in" name="tune_state" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="installStatus">
+
+
+            <arg direction="in" name="install_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="SignalQuality">
+
+
+            <arg direction="in" name="signal_quality_state" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="AntennaState">
+
+
+            <arg direction="in" name="antenna_state" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="ChannelDescriptionServiceStatus">
+
+
+            <arg direction="in" name="channel_description_status" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="TuneStartSettingStatus">
+
+
+            <arg direction="in" name="tune_start_status" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="LockPinStatus">
+
+
+            <arg direction="in" name="lock_pin_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="CurrentTunedChannel">
+
+
+            <annotation name="com.jci.type_ref.current_channel_info" value="XMAD_current_channel_info_s_t"/>
+
+
+            <arg direction="in" name="current_channel_info" type="(uuayu)"/>
+
+
+        </signal>
+
+
+        <signal name="ChannelStatus">
+
+
+            <annotation name="com.jci.type_ref.channel_state" value="XMAD_channel_state_info_s_t"/>
+
+
+            <arg direction="in" name="channel_state" type="(ubuuu)"/>
+
+
+        </signal>
+
+
+        <signal name="ActiveCategory">
+
+
+            <annotation name="com.jci.type_ref.active_category_info" value="XMAD_active_category_info_s_t"/>
+
+
+            <arg direction="in" name="active_category_info" type="(uuuuu)"/>
+
+
+        </signal>
+
+
+        <signal name="ScanStatus">
+
+
+            <annotation name="com.jci.type_ref.scan_status" value="XMAD_scan_state_info_s_t"/>
+
+
+            <arg direction="in" name="scan_status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="ScanReqStatus">
+
+
+            <arg direction="in" name="error_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="ScanSettingStatus">
+
+
+            <arg direction="in" name="scan_type" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="DirectTuneStatus">
+
+
+            <annotation name="com.jci.type_ref.direct_tune_status" value="XMAD_DirectTuneState_info_s_t"/>
+
+
+            <arg direction="in" name="direct_tune_status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="ChannelListUpdateStatus">
+
+
+            <annotation name="type_ref.updateType" value="XMAD_listNotifications_s_t"/>
+
+
+            <arg direction="in" name="listID" type="u"/>
+
+
+            <arg direction="in" name="channelListSize" type="u"/>
+
+
+            <arg direction="in" name="index" type="u"/>
+
+
+            <arg direction="in" name="channelListInitialize" type="b"/>
+
+
+            <arg direction="in" name="updateType" type="(bbbb)"/>
+
+
+        </signal>
+
+
+        <signal name="CategoryUpdate">
+
+
+            <annotation name="type_ref.updateType" value="XMAD_categoryUpdate_s_t"/>
+
+
+            <arg name="catID" type="u"/>
+
+
+            <arg name="name" type="s"/>
+
+
+            <arg name="updateType" type="(bbb)"/>
+
+
+        </signal>
+
+
+        <signal name="RequestPin">
+
+
+            <arg direction="in" name="pin_type" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="RequestPinStatus">
+
+
+            <arg direction="in" name="pin_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="ChannelLockStatus">
+
+
+            <arg direction="in" name="channel_lock_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="SessionLockStatus">
+
+
+            <arg direction="in" name="session_lock_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="ParentalLockInitSetupStatus">
+
+
+            <arg direction="in" name="init_setup_status" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="SeekStatus">
+
+
+            <annotation name="com.jci.type_ref.seek_status" value="XMAD_SeekState_info_s_t"/>
+
+
+            <arg direction="in" name="seek_status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="EditSmartFavListStatus">
+
+
+            <arg direction="in" name="retChID" type="u"/>
+
+
+            <arg direction="in" name="retIsSFChannel" type="b"/>
+
+
+            <arg direction="in" name="raturn_Status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="NotifyFirstXMFavAddition">
+
+
+            <arg direction="in" name="first_fav_addition_status" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="NotifyFavListID">
+
+
+            <arg direction="in" name="fav_list_id" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="TuneScanSettingFirstTimeUsage">
+
+
+            <arg direction="in" name="first_time_usage " type="b"/>
+
+
+        </signal>
+
+
+        <signal name="TuneScanContentAvailabilityStatus">
+
+
+            <arg direction="in" name="tune_scan_availability  " type="b"/>
+
+
+        </signal>
+
+
+        <signal name="BTConnectionStatus">
+
+
+            <arg direction="in" name="bTConnected  " type="b"/>
+
+
+        </signal>
+
+
+        <signal name="SubscriptionStatus">
+
+
+            <annotation name="com.jci.type_ref.subscription_state" value="XMAD_subscription_state_info_s_t"/>
+
+
+            <arg direction="in" name="subscription_state" type="(uyuayay)"/>
+
+
+        </signal>
+
+
+        <signal name="IRBufferCapacityStatus">
+
+
+            <annotation name="com.jci.type_ref.ir_buffer_state" value="XMAD_IR_buffer_state_info_s_t"/>
+
+
+            <arg direction="in" name="ir_buffer_state" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="PlayControlStatus">
+
+
+            <arg direction="in" name="status " type="u"/>
+
+
+        </signal>
+
+
+        <signal name="PlayBackStatus">
+
+
+            <annotation name="com.jci.type_ref.play_back_status" value="XMAD_playback_state_info_s_t"/>
+
+
+            <arg direction="in" name="play_back_status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="PlaybackTimeStatus">
+
+
+            <annotation name="com.jci.type_ref.playback_time" value="XMAD_playback_time_state_info_s_t"/>
+
+
+            <arg direction="in" name="playback_time" type="(uuu)"/>
+
+
+        </signal>
+
+
+        <signal name="SeekTimeStatus">
+
+
+            <arg direction="in" name="status " type="u"/>
+
+
+        </signal>
+
+
+        <signal name="PlaybackOffsetIndication">
+
+
+            <arg direction="in" name="playBackOffset " type="u"/>
+
+
+        </signal>
+
+
+        <signal name="ESNInfo">
+
+
+            <arg direction="in" name="esn_val " type="s"/>
+
+
+        </signal>
+
+
+        <signal name="TracksBeforeAfter">
+
+
+            <annotation name="com.jci.type_ref.tracks_info" value="XMAD_trackBeforeAfter_info_s_t"/>
+
+
+            <arg direction="in" name="tracks_info" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="TuneMixActive">
+
+
+            <annotation name="com.jci.type_ref.tunemix_state_info" value="XMAD_tunemix_state_info_s_t"/>
+
+
+            <arg direction="in" name="tunemix_state_info" type="(buay)"/>
+
+
+        </signal>
+
+
+        <signal name="PlaybackTrackTimeStatus">
+
+
+            <annotation name="com.jci.type_ref.Playback_track_time" value="XMAD_playback_track_time_info_s_t"/>
+
+
+            <arg direction="in" name="playback_track_time" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="CreateTuneMixStatus">
+
+
+            <annotation name="com.jci.type_ref.create_tunemix_status" value="XMAD_createTunemix_status_info_s_t"/>
+
+
+            <arg direction="in" name="create_tunemix_status" type="(ayuuu)"/>
+
+
+        </signal>
+
+
+        <signal name="EditTuneMixStatus">
+
+
+            <annotation name="com.jci.type_ref.edit_tunemix_status" value="XMAD_editTunemix_status_info_s_t"/>
+
+
+            <arg direction="in" name="edit_tunemix_status" type="(ayuuu)"/>
+
+
+        </signal>
+
+
+        <signal name="RenameTunemixStatus">
+
+
+            <annotation name="com.jci.type_ref.rename_tunemix_status" value="XMAD_renameTunemix_status_info_s_t"/>
+
+
+            <arg direction="in" name="rename_tunemix_status" type="(su)"/>
+
+
+        </signal>
+
+
+        <signal name="RemoveTuneMixStatus">
+
+
+            <annotation name="com.jci.type_ref.remove_tunemix_status" value="XMAD_removeTunemix_status_info_s_t"/>
+
+
+            <arg direction="in" name="remove_tunemix_status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="TuneStartFirstTimeUsageStatus">
+
+
+            <arg direction="in" name="first_time_usage " type="b"/>
+
+
+        </signal>
+
+
+        <signal name="SmartFavChannelsCount">
+
+
+            <arg direction="in" name="channel_count " type="u"/>
+
+
+        </signal>
+
+
+        <signal name="TuneMixCount">
+
+
+            <arg direction="in" name="tunemix_count " type="u"/>
+
+
+        </signal>
+
+
+        <signal name="TuneMixDetails">
+
+
+            <annotation name="com.jci.type_ref.tunemix_details" value="XMAD_tunemix_details_info_s_t"/>
+
+
+            <arg direction="in" name="tunemix_details" type="(ua(usb))"/>
+
+
+        </signal>
+
+
+        <signal name="TuneMixListUpdated">
+
+
+            <arg direction="in" name="tunemix_count " type="u"/>
+
+
+        </signal>
+
+
+        <signal name="TuneFeaturedFavStatus">
+
+
+            <annotation name="com.jci.type_ref.tune_featuedfav_status" value="XMAD_tunefeatuedfav_status_info_s_t"/>
+
+
+            <arg direction="in" name="tune_featuedfav_status" type="(uuuu)"/>
+
+
+        </signal>
+
+
+        <signal name="FeaturedFavListUpdated">
+
+
+            <annotation name="com.jci.type_ref.list_updated" value="XMAD_featuredfavListUpdated_info_s_t"/>
+
+
+            <arg direction="in" name="list_updated" type="(uay(bbb))"/>
+
+
+        </signal>
+
+
+        <signal name="SportFlashActiveStatus">
+
+
+            <annotation name="com.jci.type_ref.SportsFlash_active_status"
+                        value="XMAD_sportsflash_active_status_info_s_t"/>
+
+
+            <arg direction="in" name="sportsFlash_active_status" type="(bu)"/>
+
+
+        </signal>
+
+
+        <signal name="SportFlashFrequencyStatus">
+
+
+            <arg direction="in" name="sportsFlash_frequency_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="SportFlashFirstTimeUsageStatus">
+
+
+            <arg direction="in" name="firstTimeUsage" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="EnableSportFlashAlertStatus">
+
+
+            <arg direction="in" name="status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="SelectSportsFlashTeamStatus">
+
+
+            <arg direction="in" name="status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="MoveSportsFlashTeamStatus">
+
+
+            <arg direction="in" name="status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="SportFlashAlert">
+
+
+            <annotation name="com.jci.type_ref.SportsFlash_Alert" value="XMAD_SportsFlashAlertStatusInfo_s_t"/>
+
+
+            <arg direction="in" name="sportsFlash_Alert" type="(uuuayayayu)"/>
+
+
+        </signal>
+
+
+        <signal name="CancelAlert">
+
+
+            <annotation name="com.jci.type_ref.SportsFlash_cancel_status" value="XMAD_sportsFlashCancelStatusInfo_s_t"/>
+
+
+            <arg direction="in" name="sportsFlash_cancel_status" type="(uuu)"/>
+
+
+        </signal>
+
+
+        <signal name="PlayFlashAlertStatus">
+
+
+            <annotation name="com.jci.type_ref.PlayFlash_Alert_Status" value="XMAD_PlayFlashAlertStatusInfo_s_t"/>
+
+
+            <arg direction="in" name="playFlash_Alert_Status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="AbortFlashAlertStatus">
+
+
+            <annotation name="com.jci.type_ref.AbortFlash_Alert_status" value="XMAD_AbortFlashAlertStatusInfo_s_t"/>
+
+
+            <arg direction="in" name="abortFlash_Alert_status" type="(buu)"/>
+
+
+        </signal>
+
+
+        <signal name="TurnOffAlertStatus">
+
+
+            <annotation name="com.jci.type_ref.TurnOff_Alert_status" value="XMAD_TurnOffFlashAlertStatusInfo_s_t"/>
+
+
+            <arg direction="in" name="turnOff_Alert_status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="ReplayFlashAlertStatus">
+
+
+            <annotation name="com.jci.type_ref.Replay_Alert_status" value="XMAD_ReplayFlashAlertStatusInfo_s_t"/>
+
+
+            <arg direction="in" name="replay_Alert_status" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="TWFlashActiveStatus">
+
+
+            <arg direction="in" name="tWFlash_active_status" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="TWFlashFrequencyStatus">
+
+
+            <arg direction="in" name="tWFlash_frequency_status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="TWFirstTimeUsageStatus">
+
+
+            <arg direction="in" name="firstTimeUsage" type="b"/>
+
+
+        </signal>
+
+
+        <signal name="EnableTWReportAlertStatus">
+
+
+            <arg direction="in" name="status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="SelectTWCityStatus">
+
+
+            <arg direction="in" name="status" type="u"/>
+
+
+        </signal>
+
+
+        <signal name="TWCityNameCityID">
+
+
+            <annotation name="com.jci.type_ref.TW_CityNameCityID" value="XMAD_CityNameCityID_info_s_t"/>
+
+
+            <arg direction="in" name="tW_CityNameCityID" type="(aybuu)"/>
+
+
+        </signal>
+
+
+        <signal name="TWFlashAlert">
+
+
+            <annotation name="com.jci.type_ref.TWFlash_Alert" value="XMAD_TWFlashAlertStatusInfo_s_t"/>
+
+
+            <arg direction="in" name="tWFlash_Alert" type="(uuayu)"/>
+
+
+        </signal>
+
+
+        <signal name="FAVChannelsubscribed">
+
+
+            <annotation name="com.jci.type_ref.FAVChannel_subscribed" value="XMAD_FavChannelSubcribeStatus_info_s_t"/>
+
+
+            <arg direction="in" name="fAVChannel_subscribed" type="(ubay)"/>
+
+
+        </signal>
+
+
+        <signal name="FavSportTeamCount">
+
+
+            <arg direction="in" name="favSportTeamCount" type="y"/>
+
+
+        </signal>
+
+
+        <signal name="ChannelValidityStatus">
+
+
+            <annotation name="com.jci.type_ref.validityStatus" value="XMAD_ChannelValidityStatus_info_s_t"/>
+
+
+            <arg direction="in" name="validityStatus" type="(uu)"/>
+
+
+        </signal>
+
+
+        <signal name="UnlockSession"/>
+
+
+        <signal name="SubscriptionUpdated"/>
+
+
+        <signal name="FlashAvailableStatus">
+
+
+            <annotation name="com.jci.type_ref.FlashAvailable_Status" value="XMAD_FlashAvailableStatus_s_t"/>
+
+
+            <arg direction="in" name="flashAvailable_Status" type="(uuuuayayay)"/>
+
+
+        </signal>
+
+
+    </interface>
+
+
 </node>

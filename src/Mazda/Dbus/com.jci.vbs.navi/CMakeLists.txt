@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.vbs.navi LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.vbs.navi STATIC ${source_files})
+target_include_directories(com.jci.vbs.navi PUBLIC ../../../../include/Mazda/Dbus/com.jci.vbs.navi/)

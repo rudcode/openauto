@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.usbm LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.usbm STATIC ${source_files})
+target_include_directories(com.jci.usbm PUBLIC ../../../../include/Mazda/Dbus/com.jci.usbm/)

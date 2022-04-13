@@ -6,8 +6,10 @@
 #include <net/if.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include <unistd.h>
 
-BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration)
+BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Pointer configuration,
+                                   const std::shared_ptr<DBus::Connection> &session_connection)
     : configuration_(std::move(configuration)) {
   LOG(DEBUG) << "Reading BdsConfiguration.xml";
 
@@ -32,30 +34,27 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
   }
 
   if (bdsconfigured) {
-    auto connection = sdbus::createSessionBusConnection();
-    bcaClient = sdbus::createProxy(std::move(connection), "com.jci.bca", "/com/jci/bca");
-    bcaClient->uponSignal("ConnectionStatusResp").onInterface("com.jci.bca").call(
-        [this](const uint32_t &found_serviceId,
-               const uint32_t &connStatus,
-               const uint32_t &btDeviceId,
-               const uint32_t &status,
-               const sdbus::Struct<std::vector<uint8_t>> &terminalPath) {
-          LOG(DEBUG) << "Saw Service: " << found_serviceId;
-          if(found_serviceId == 1 && connStatus == 3){
-            LOG(DEBUG) << "Saw Service: Handsfree. Inititating connection";
-            this->bcaClient->callMethod("StartAdd").onInterface("com.jci.bca").withArguments(this->serviceId).withTimeout(1000).dontExpectReply();
-          }
-          else if (found_serviceId == serviceId && connStatus == 3) {
-            std::string pty(terminalPath.get<0>().begin(), terminalPath.get<0>().end());
-            LOG(DEBUG) << "PTY: " << pty;
-            BluetoothConnection bconnection(configuration_);
-            bconnection.handle_connect(pty);
-          }
-        });
-    bcaClient->finishRegistration();
-    bcaClient->callMethod("StartAdd").onInterface("com.jci.bca").withArguments(serviceId).withTimeout(1000).dontExpectReply();
+    bcaClient = com_jci_bca_objectProxy::create(session_connection, "com.jci.bca", "/com/jci/bca");
+    bcaClient->getcom_jci_bcaInterface()->signal_ConnectionStatusResp()->connect(sigc::mem_fun(*this,
+                                                                                               &BluetoothManager::ConnectionStatusResp));
+    bcaClient->getcom_jci_bcaInterface()->StartAdd(serviceId);
   }
 
+}
+
+void BluetoothManager::ConnectionStatusResp(uint32_t found_serviceId, uint32_t connStatus, uint32_t btDeviceId,
+                                            uint32_t status, std::tuple<std::vector<uint8_t>> terminalPath) {
+  LOG(DEBUG) << "Saw Service: " << found_serviceId;
+  if (found_serviceId == 1 && connStatus == 3) {
+    LOG(DEBUG) << "Saw Service: Handsfree. Inititating connection";
+    bcaClient->getcom_jci_bcaInterface()->StartAdd(serviceId);
+  } else if (found_serviceId == serviceId && connStatus == 3) {
+    std::vector<uint8_t> tpath = std::get<0>(terminalPath);
+    std::string pty(tpath.begin(), tpath.end());
+    LOG(DEBUG) << "PTY: " << pty;
+    BluetoothConnection bconnection(configuration_);
+    bconnection.handle_connect(pty);
+  }
 }
 
 BluetoothManager::~BluetoothManager() {

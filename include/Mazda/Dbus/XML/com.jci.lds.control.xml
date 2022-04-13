@@ -1,103 +1,303 @@
-<?xml version="1.0" encoding="utf-8"?>
-<node>
- <interface name="com.jci.lds.control">
-  <method name="ReadControl">
-   <arg direction="in" name="command" type="i"/>
-   <doc line="ReadControl = This method control the LDS reading. "/>
-   <doc line=" Command = enum(READ_START=0x00, READ_STOP=0x01) "/>
-  </method>
-  <method name="DRTestScreenRequest">
-   <annotation name="async_client" value="true"/>
-   <arg direction="in" name="dRUnitTestScreenRequest" type="i">
-    <doc line=" enum (Start Diag=0x00, Stop Diag=0x01)"/>
-   </arg>
-   <doc line=" This method will update LDS for Start and Stop of sending diagnostic information on Test Screen 73"/>
-  </method>
-  <method name="GetDRUnitStatus_sync">
-   <annotation name="sync" value="client"/>
-   <arg direction="out" name="connected" type="b"/>
-   <arg direction="out" name="status" type="b"/>
-   <arg direction="out" name="result" type="i"/>
-   <doc line=" This method will get DR-Unit status"/>
-  </method>
-  <method name="GetLastKnownPosition_sync">
-   <annotation name="sync" value="client"/>
-   <arg direction="out" name="positionAccuracy" type="i">
-    <doc line=" Accuracy = enum(POSITION_UNKNOWN=0x00, POSITION_GPS_3D=0x01, POSITION_GPS_2D=0x02, POSITION_DR=0x03) "/>
-   </arg>
-   <arg direction="out" name="uTCtime" type="t">
-    <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
-   </arg>
-   <arg direction="out" name="latitude" type="d">
-    <doc line=" Latitude in degrees. "/>
-   </arg>
-   <arg direction="out" name="longitude" type="d">
-    <doc line=" Longitude in degrees. "/>
-   </arg>
-   <arg direction="out" name="altitude" type="i">
-    <doc line=" Altitude in meters (can be negative). "/>
-   </arg>
-   <arg direction="out" name="heading" type="d">
-    <doc line=" Heading value in degrees, clockwise, zero is north. "/>
-   </arg>
-   <arg direction="out" name="velocity" type="d">
-    <doc line=" Speed in km/h. "/>
-   </arg>
-   <arg direction="out" name="horizontalAccuracy" type="d">
-    <doc line=" Horizontal DOP value. "/>
-   </arg>
-   <arg direction="out" name="verticalAccuracy" type="d">
-    <doc line=" Vertical DOP value. "/>
-   </arg>
-   <arg direction="out" name="result" type="i">
-    <doc line=" Vertical DOP value. "/>
-   </arg>
-   <doc line="GetPosition = This method returns the saved position. "/>
-  </method>
-  <method name="SetLastKnownPosition_sync">
-   <annotation name="sync" value="client"/>
-   <arg direction="in" name="positionAccuracy" type="i">
-    <doc line=" Accuracy = enum(POSITION_UNKNOWN=0x00, POSITION_GPS_3D=0x01, POSITION_GPS_2D=0x02, POSITION_DR=0x03) "/>
-   </arg>
-   <arg direction="in" name="uTCtime" type="t">
-    <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
-   </arg>
-   <arg direction="in" name="latitude" type="d">
-    <doc line=" Latitude in degrees. "/>
-   </arg>
-   <arg direction="in" name="longitude" type="d">
-    <doc line=" Longitude in degrees. "/>
-   </arg>
-   <arg direction="in" name="altitude" type="i">
-    <doc line=" Altitude in meters (can be negative). "/>
-   </arg>
-   <arg direction="in" name="heading" type="d">
-    <doc line=" Heading value in degrees, clockwise, zero is north. "/>
-   </arg>
-   <arg direction="in" name="velocity" type="d">
-    <doc line=" Speed in km/h. "/>
-   </arg>
-   <arg direction="in" name="horizontalAccuracy" type="d">
-    <doc line=" Horizontal DOP value. "/>
-   </arg>
-   <arg direction="in" name="verticalAccuracy" type="d">
-    <doc line=" Vertical DOP value. "/>
-   </arg>
-   <arg direction="out" name="result" type="i">
-    <doc line=" Vertical DOP value. "/>
-   </arg>
-   <doc line="GetPosition = This method set the save position. "/>
-  </method>
-  <method name="DRReloadRequest">
-   <annotation name="async_client" value="true"/>
-   <doc line=" This method recover DR-Unit connection. "/>
-  </method>
-  <signal name="ReadStatus">
-   <arg name="commandReply" type="i"/>
-   <arg name="status" type="i"/>
-   <doc line="ReadStatus = This signal provides the status of LDS reading. "/>
-   <doc line=" CommandReply = enum(READ_STARTED=0x02, READ_STOPPED=0x03, READ_READY=0x04) "/>
-   <doc line=" Status = enum(FAILED=0x00,SUCCESS=0x01) "/>
-  </signal>
- </interface>
+<?xml version="1.0" ?>
+<node cppname="com.jci.lds.control_object">
+    <interface name="com.jci.lds.control">
+
+
+        <method name="ReadControl">
+
+
+            <arg direction="in" name="command" type="i"/>
+
+
+            <doc line="ReadControl = This method control the LDS reading. "/>
+
+
+            <doc line=" Command = enum(READ_START=0x00, READ_STOP=0x01) "/>
+
+
+        </method>
+
+
+        <method name="DRTestScreenRequest">
+
+
+            <annotation name="async_client" value="true"/>
+
+
+            <arg direction="in" name="dRUnitTestScreenRequest" type="i">
+
+
+                <doc line=" enum (Start Diag=0x00, Stop Diag=0x01)"/>
+
+
+            </arg>
+
+
+            <doc line=" This method will update LDS for Start and Stop of sending diagnostic information on Test Screen 73"/>
+
+
+        </method>
+
+
+        <method name="GetDRUnitStatus_sync">
+
+
+            <annotation name="sync" value="client"/>
+
+
+            <arg direction="out" name="connected" type="b"/>
+
+
+            <arg direction="out" name="status" type="b"/>
+
+
+            <arg direction="out" name="result" type="i"/>
+
+
+            <doc line=" This method will get DR-Unit status"/>
+
+
+        </method>
+
+
+        <method name="GetLastKnownPosition_sync">
+
+
+            <annotation name="sync" value="client"/>
+
+
+            <arg direction="out" name="positionAccuracy" type="i">
+
+
+                <doc line=" Accuracy = enum(POSITION_UNKNOWN=0x00, POSITION_GPS_3D=0x01, POSITION_GPS_2D=0x02, POSITION_DR=0x03) "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="uTCtime" type="t">
+
+
+                <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="latitude" type="d">
+
+
+                <doc line=" Latitude in degrees. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="longitude" type="d">
+
+
+                <doc line=" Longitude in degrees. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="altitude" type="i">
+
+
+                <doc line=" Altitude in meters (can be negative). "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="heading" type="d">
+
+
+                <doc line=" Heading value in degrees, clockwise, zero is north. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="velocity" type="d">
+
+
+                <doc line=" Speed in km/h. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="horizontalAccuracy" type="d">
+
+
+                <doc line=" Horizontal DOP value. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="verticalAccuracy" type="d">
+
+
+                <doc line=" Vertical DOP value. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="result" type="i">
+
+
+                <doc line=" Vertical DOP value. "/>
+
+
+            </arg>
+
+
+            <doc line="GetPosition = This method returns the saved position. "/>
+
+
+        </method>
+
+
+        <method name="SetLastKnownPosition_sync">
+
+
+            <annotation name="sync" value="client"/>
+
+
+            <arg direction="in" name="positionAccuracy" type="i">
+
+
+                <doc line=" Accuracy = enum(POSITION_UNKNOWN=0x00, POSITION_GPS_3D=0x01, POSITION_GPS_2D=0x02, POSITION_DR=0x03) "/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="uTCtime" type="t">
+
+
+                <doc line=" UNIX timestamp from epoch, 0 means invalid."/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="latitude" type="d">
+
+
+                <doc line=" Latitude in degrees. "/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="longitude" type="d">
+
+
+                <doc line=" Longitude in degrees. "/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="altitude" type="i">
+
+
+                <doc line=" Altitude in meters (can be negative). "/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="heading" type="d">
+
+
+                <doc line=" Heading value in degrees, clockwise, zero is north. "/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="velocity" type="d">
+
+
+                <doc line=" Speed in km/h. "/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="horizontalAccuracy" type="d">
+
+
+                <doc line=" Horizontal DOP value. "/>
+
+
+            </arg>
+
+
+            <arg direction="in" name="verticalAccuracy" type="d">
+
+
+                <doc line=" Vertical DOP value. "/>
+
+
+            </arg>
+
+
+            <arg direction="out" name="result" type="i">
+
+
+                <doc line=" Vertical DOP value. "/>
+
+
+            </arg>
+
+
+            <doc line="GetPosition = This method set the save position. "/>
+
+
+        </method>
+
+
+        <method name="DRReloadRequest">
+
+
+            <annotation name="async_client" value="true"/>
+
+
+            <doc line=" This method recover DR-Unit connection. "/>
+
+
+        </method>
+
+
+        <signal name="ReadStatus">
+
+
+            <arg name="commandReply" type="i"/>
+
+
+            <arg name="status" type="i"/>
+
+
+            <doc line="ReadStatus = This signal provides the status of LDS reading. "/>
+
+
+            <doc line=" CommandReply = enum(READ_STARTED=0x02, READ_STOPPED=0x03, READ_READY=0x04) "/>
+
+
+            <doc line=" Status = enum(FAILED=0x00,SUCCESS=0x01) "/>
+
+
+        </signal>
+
+
+    </interface>
+
+
 </node>

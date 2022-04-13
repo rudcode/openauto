@@ -31,10 +31,10 @@ find_package(OpenSSL REQUIRED)
 find_package(ALSA REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(asio REQUIRED)
-find_package(sdbus-c++ REQUIRED)
-pkg_check_modules(SIGC++ REQUIRED sigc++-2.0)
+pkg_check_modules(DBUS REQUIRED "dbus-cxx-2.0")
+pkg_check_modules(SIGC++ REQUIRED sigc++-3.0)
 find_package(libusb-1.0 REQUIRED)
-pkg_check_modules(Systemd REQUIRED libsystemd)
+#pkg_check_modules(Systemd REQUIRED libsystemd)
 pkg_check_modules(LIBEVDEV REQUIRED libevdev)
 
 SET(AASDK_BUILD_STATIC ON CACHE BOOL "Build Static AASDK")
@@ -93,28 +93,14 @@ if (GIT_EXECUTABLE)
     configure_file(cmake/version.in.h ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
 endif ()
 
-
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/Mazda/Dbus/)
-file(GLOB_RECURSE dbus_xml ${include_directory}/Mazda/Dbus/XML/*.xml)
-set(GEN_DBUS_HEADER_COMMAND sdbus-c++-xml2cpp)
-foreach (header ${dbus_xml})
-    get_filename_component(header_file ${header} NAME)
-    string(REGEX REPLACE "\\.[^.]*$" "" header_out ${header_file})
-    message("Adding ${header} to be compiled to ${header_out}.h")
-    add_custom_command( #TARGET dbus_proxy_headers POST_BUILD
-            OUTPUT "Mazda/Dbus/${header_out}.h"
-            COMMAND ${GEN_DBUS_HEADER_COMMAND} ${header} --proxy="${header_out}.h"
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/Mazda/Dbus/
-            COMMENT "Generating" ${dbus_xml})
-endforeach ()
-
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR}
         ${PROTOBUF_INCLUDE_DIR}
         ${OPENSSL_INCLUDE_DIR}
         ${ALSA_INCLUDE_DIRS}
         ${SIGC++_INCLUDE_DIRS}
         ${ASIO_INCLUDE_DIRS}
-        ${LIBEVDEV_INCLUDE_DIRS})
+        ${LIBEVDEV_INCLUDE_DIRS}
+        ${DBUS_INCLUDE_DIRS})
 
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
@@ -122,18 +108,36 @@ set(autoapp_sources_directory ${sources_directory}/autoapp)
 set(autoapp_include_directory)
 file(GLOB_RECURSE autoapp_source_files ${autoapp_sources_directory}/*.cpp)
 
-add_executable(autoapp
-        ${autoapp_source_files}
-        "Mazda/Dbus/com.jci.bucpsa.h"
-        "Mazda/Dbus/com.xsembedded.ServiceProvider.h"
-        "Mazda/Dbus/com.jci.lds.control.h"
-        "Mazda/Dbus/com.jci.lds.data.h"
-        "Mazda/Dbus/com.jci.navi2IHU.HUDSettings.h"
-        "Mazda/Dbus/com.jci.vbs.navi.tmc.h"
-        "Mazda/Dbus/com.jci.vbs.navi.h"
-        "Mazda/Dbus/com.jci.nativeguictrl.h")
+add_executable(autoapp ${autoapp_source_files})
 target_include_directories(autoapp PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/)
 target_include_directories(autoapp PRIVATE ${include_directory})
+
+add_subdirectory(src/Mazda/Dbus/com.jci.bca)
+target_link_libraries(autoapp com.jci.bca)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.bucpsa)
+target_link_libraries(autoapp com.jci.bucpsa)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.nativeguictrl)
+target_link_libraries(autoapp com.jci.nativeguictrl)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.lds.control)
+target_link_libraries(autoapp com.jci.lds.control)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.lds.data)
+target_link_libraries(autoapp com.jci.lds.data)
+
+add_subdirectory(src/Mazda/Dbus/com.xsembedded.ServiceProvider)
+target_link_libraries(autoapp com.xsembedded.ServiceProvider)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.navi2IHU.HUDSettings)
+target_link_libraries(autoapp com.jci.navi2IHU.HUDSettings)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.vbs.navi.tmc)
+target_link_libraries(autoapp com.jci.vbs.navi.tmc)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.vbs.navi)
+target_link_libraries(autoapp com.jci.vbs.navi)
 
 target_compile_options(autoapp PUBLIC "-ffile-prefix-map=${CMAKE_SOURCE_DIR}=.")
 
@@ -147,9 +151,7 @@ target_link_libraries(autoapp
         ${Protobuf_LIBRARIES}
         ${OPENSSL_LIBRARIES}
         ${LIBEVDEV_LIBRARIES}
-        ${CMAKE_SYSROOT}/usr/lib/libsdbus-c++.a
-        ${CMAKE_SYSROOT}/usr/lib/libsystemd.a
-        ${CMAKE_SYSROOT}/usr/lib/libcap.a
+        ${DBUS_LIBRARIES}
         simple-web-server
         nlohmann_json::nlohmann_json
         easylogging++
@@ -241,3 +243,17 @@ add_custom_target(create_tar ALL COMMAND
         WORKING_DIRECTORY ${base_directory})
 add_dependencies(create_tar autoapp)
 add_dependencies(create_tar aa_installer)
+
+set(test_sources_directory ${sources_directory}/test)
+file(GLOB_RECURSE test_source_files ${test_sources_directory}/*.cpp)
+
+add_executable(test
+        ${test_source_files})
+target_include_directories(test PRIVATE ${include_directory})
+
+target_link_libraries(test
+        -static
+        -static-libstdc++
+        -static-libgcc
+        -pthread
+        )

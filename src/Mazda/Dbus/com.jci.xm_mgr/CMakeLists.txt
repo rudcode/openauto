@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.xm_mgr LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.xm_mgr STATIC ${source_files})
+target_include_directories(com.jci.xm_mgr PUBLIC ../../../../include/Mazda/Dbus/com.jci.xm_mgr/)

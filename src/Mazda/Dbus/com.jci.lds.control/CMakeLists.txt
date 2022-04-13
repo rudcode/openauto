@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5.1)
+project(com.jci.lds.control LANGUAGES CXX)
+file(GLOB_RECURSE source_files *.cpp)
+add_library(com.jci.lds.control STATIC ${source_files})
+target_include_directories(com.jci.lds.control PUBLIC ../../../../include/Mazda/Dbus/com.jci.lds.control/)

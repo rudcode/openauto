@@ -8,5 +8,5 @@
 class GpsSignals : public sigc::trackable {
  public:
   typedef std::shared_ptr<GpsSignals> Pointer;
-  sigc::signal<aasdk::proto::data::GPSLocation> requestUpdate;
+  sigc::signal<aasdk::proto::data::GPSLocation(void)> requestUpdate;
 };
