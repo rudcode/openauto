@@ -150,7 +150,7 @@ target_link_libraries(autoapp libusb)
 target_link_libraries(autoapp
         ${SIGC++_LIBRARIES}
         ${ALSA_LIBRARIES}
-        ${Protobuf_LIBRARIES}
+        ${Protobuf_LITE_LIBRARIES}
         ${OPENSSL_LIBRARIES}
         ${LIBEVDEV_LIBRARIES}
         ${DBUS_LIBRARIES}
