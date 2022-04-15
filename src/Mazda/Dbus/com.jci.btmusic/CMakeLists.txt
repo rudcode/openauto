@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(com.jci.btmusic LANGUAGES CXX)
-file(GLOB_RECURSE source_files *.cpp)
-add_library(com.jci.btmusic STATIC ${source_files})
-target_include_directories(com.jci.btmusic PUBLIC ../../../../include/Mazda/Dbus/com.jci.btmusic/)

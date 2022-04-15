@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(com.jci.cpp.devices.Display LANGUAGES CXX)
-file(GLOB_RECURSE source_files *.cpp)
-add_library(com.jci.cpp.devices.Display STATIC ${source_files})
-target_include_directories(com.jci.cpp.devices.Display PUBLIC ../../../../include/Mazda/Dbus/com.jci.cpp.devices.Display/)

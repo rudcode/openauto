@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(com.jci.cpp.vbi.Amplifier LANGUAGES CXX)
-file(GLOB_RECURSE source_files *.cpp)
-add_library(com.jci.cpp.vbi.Amplifier STATIC ${source_files})
-target_include_directories(com.jci.cpp.vbi.Amplifier PUBLIC ../../../../include/Mazda/Dbus/com.jci.cpp.vbi.Amplifier/)

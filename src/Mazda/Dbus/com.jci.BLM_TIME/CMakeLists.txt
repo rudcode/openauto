@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(com.jci.BLM_TIME LANGUAGES CXX)
-file(GLOB_RECURSE source_files *.cpp)
-add_library(com.jci.BLM_TIME STATIC ${source_files})
-target_include_directories(com.jci.BLM_TIME PUBLIC ../../../../include/Mazda/Dbus/com.jci.BLM_TIME/)

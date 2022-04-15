@@ -621,7 +621,8 @@
         <signal name="Curr_drive_fuel_eco_OneMin_bar_graph_data">
 
 
-            <annotation name="com.jci.type_ref.fuel_eco_dataY_oneMinbar" value="EEM_Drv1AvlFuel_SixtyMinute_BarGraph_s_t"/>
+            <annotation name="com.jci.type_ref.fuel_eco_dataY_oneMinbar"
+                        value="EEM_Drv1AvlFuel_SixtyMinute_BarGraph_s_t"/>
 
 
             <arg name="fuel_eco_dataY_oneMinbar" type="(ya(q)u)"/>

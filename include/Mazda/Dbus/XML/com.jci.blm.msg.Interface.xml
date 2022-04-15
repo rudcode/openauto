@@ -110,7 +110,8 @@
         <annotation name="def_struct_types.BLM_MSG_new_messages_count_data_t" value="u, BLM_MSG_new_messages_count_t"/>
 
 
-        <annotation name="def_struct_names.BLM_MSG_new_messages_count_t" value="clientType, count, availableForDownload"/>
+        <annotation name="def_struct_names.BLM_MSG_new_messages_count_t"
+                    value="clientType, count, availableForDownload"/>
 
 
         <annotation name="def_struct_types.BLM_MSG_new_messages_count_t" value="i, u, b"/>

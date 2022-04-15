@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(com.NNG.Api.Client LANGUAGES CXX)
-file(GLOB_RECURSE source_files *.cpp)
-add_library(com.NNG.Api.Client STATIC ${source_files})
-target_include_directories(com.NNG.Api.Client PUBLIC ../../../../include/Mazda/Dbus/com.NNG.Api.Client/)

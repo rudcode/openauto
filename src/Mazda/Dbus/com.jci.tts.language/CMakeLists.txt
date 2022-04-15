@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.5.1)
-project(com.jci.tts.language LANGUAGES CXX)
-file(GLOB_RECURSE source_files *.cpp)
-add_library(com.jci.tts.language STATIC ${source_files})
-target_include_directories(com.jci.tts.language PUBLIC ../../../../include/Mazda/Dbus/com.jci.tts.language/)
