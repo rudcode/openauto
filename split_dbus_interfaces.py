@@ -46,7 +46,7 @@ for child in root[1:]:
         pass
     subprocess.run(
         ["dbus-cxx-xml2cpp", "-x={}".format(os.path.join(os.getcwd(), save_dir, child.attrib['name'] + ".xml")),
-         "--proxy", "-f"], cwd=tmp_dir)
+         "--proxy", "--adapter", "-f"], cwd=tmp_dir)
     includes = []
     cpp = []
     for filename in os.listdir(tmp_dir):

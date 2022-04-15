@@ -10,6 +10,9 @@ INITIALIZE_EASYLOGGINGPP
 
 namespace fs = std::filesystem;
 
+
+//TODO: Check if backup already exists and skip if it does.
+
 int mkdir(fs::path path) {
   fs::directory_entry dir_path{path};
   if (!dir_path.exists()) {
@@ -115,6 +118,33 @@ void setup_sm(fs::path backup_dir) {
 
 }
 
+void setup_mmui(fs::path backup_dir) {
+  const char *file = "/jci/mmui/mmui_config.xml";
+  const auto path = backup_dir / "jci" / "mmui";
+  if (mkdir(path) != 0) {
+    LOG(ERROR) << "Failed install_bds";
+    return;
+  }
+  fs::copy(file, path / "mmui_config.xml", fs::copy_options::update_existing);
+
+  tinyxml2::XMLDocument doc;
+  doc.LoadFile(file);
+
+  tinyxml2::XMLNode *docRoot = doc.FirstChild()->NextSibling();
+
+  LOG(DEBUG) << docRoot->GetLineNum();
+
+  for (tinyxml2::XMLElement *e = docRoot->FirstChildElement(); e != nullptr; e = e->NextSiblingElement()) {
+    if (std::string(e->Attribute("name")) == "androidauto") {
+      e->SetAttribute("priority", 30);
+      LOG(DEBUG) << "Set androidauto priority to 30";
+      doc.SaveFile(file);
+      break;
+    }
+  }
+
+}
+
 void configure_opera(fs::path backup_dir) {
   auto path = backup_dir / "jci" / "opera" / "opera_home";
   if (mkdir(path) != 0) {
@@ -157,5 +187,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 
   install_bds(path_backup);
   setup_sm(path_backup);
+  setup_mmui(path_backup);
   configure_opera(path_backup);
 }

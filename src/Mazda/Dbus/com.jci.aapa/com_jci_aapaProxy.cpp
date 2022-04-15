@@ -6,8 +6,8 @@ com_jci_aapaProxy::com_jci_aapaProxy(std::string name) : DBus::InterfaceProxy(na
   m_method_InputKey = this->create_method<void(uint32_t, bool, int32_t)>("InputKey");
   m_method_SetRouteState = this->create_method<void(uint32_t)>("SetRouteState");
   m_method_GetNowPlayingInfo =
-      this->create_method < DBus::MultipleReturn < std::tuple < uint8_t, std::string, std::string, std::string,
-      std::string >, int32_t > () > ("GetNowPlayingInfo");
+      this->create_method<DBus::MultipleReturn<std::tuple<uint8_t, std::string, std::string, std::string, std::string>,
+                                               int32_t>()>("GetNowPlayingInfo");
   m_method_BTPairingResult = this->create_method<void(bool)>("BTPairingResult");
   m_method_BTReadyToPair = this->create_method<void(bool)>("BTReadyToPair");
   m_method_SendBTAuthenticationData = this->create_method<void(std::string, uint32_t)>("SendBTAuthenticationData");
@@ -15,19 +15,19 @@ com_jci_aapaProxy::com_jci_aapaProxy(std::string name) : DBus::InterfaceProxy(na
   m_method_NotifyBTHFCallStatus = this->create_method<void(bool, std::string)>("NotifyBTHFCallStatus");
   m_method_IntentPhoneCall = this->create_method<void(std::string)>("IntentPhoneCall");
   m_method_DialogWinkStatus = this->create_method<void(bool)>("DialogWinkStatus");
-  m_method_ClearLastFocus = this->create_method<void(std::tuple < bool, bool > )>("ClearLastFocus");
+  m_method_ClearLastFocus = this->create_method<void(std::tuple<bool, bool>)>("ClearLastFocus");
   m_method_SbnStatus = this->create_method<void(bool)>("SbnStatus");
   m_method_GetAOASessionStatus =
       this->create_method<DBus::MultipleReturn<bool, std::string, uint32_t>()>("GetAOASessionStatus");
   m_method_GetAvailable = this->create_method<uint8_t()>("GetAvailable");
   m_method_SetNativeTurnByTurnStatus =
-      this->create_method<std::tuple<int32_t>(std::tuple < bool > )>("SetNativeTurnByTurnStatus");
+      this->create_method<std::tuple<int32_t>(std::tuple<bool>)>("SetNativeTurnByTurnStatus");
   m_method_SetMP911EmergencyCallStatus = this->create_method<int32_t(uint32_t)>("SetMP911EmergencyCallStatus");
   m_signalproxy_AOASessionStatus = this->create_signal<void(bool)>("AOASessionStatus");
   m_signalproxy_SendSessionInfo = this->create_signal<void(std::string)>("SendSessionInfo");
   m_signalproxy_VideoProjectionRequestFromMD = this->create_signal<void(uint32_t)>("VideoProjectionRequestFromMD");
   m_signalproxy_NowPlayingInfo =
-      this->create_signal<void(std::tuple < uint8_t, std::string, std::string, std::string, std::string > )>(
+      this->create_signal<void(std::tuple<uint8_t, std::string, std::string, std::string, std::string>)>(
           "NowPlayingInfo");
   m_signalproxy_MDModeDisplayFirstDialog = this->create_signal<void(bool)>("MDModeDisplayFirstDialog");
   m_signalproxy_DisplayReconnectingDialog = this->create_signal<void(bool)>("DisplayReconnectingDialog");
@@ -50,7 +50,7 @@ com_jci_aapaProxy::com_jci_aapaProxy(std::string name) : DBus::InterfaceProxy(na
   m_signalproxy_NotifyDeviceConnection = this->create_signal<void(bool)>("NotifyDeviceConnection");
 
 }
-std::shared_ptr <com_jci_aapaProxy> com_jci_aapaProxy::create(std::string name) {
+std::shared_ptr<com_jci_aapaProxy> com_jci_aapaProxy::create(std::string name) {
   return std::shared_ptr<com_jci_aapaProxy>(new com_jci_aapaProxy(name));
 
 }
@@ -70,11 +70,8 @@ void com_jci_aapaProxy::SetRouteState(uint32_t state) {
   (*m_method_SetRouteState)(state);
 
 }
-DBus::MultipleReturn <std::tuple<uint8_t,
-                                 std::string,
-                                 std::string,
-                                 std::string,
-                                 std::string>, int32_t> com_jci_aapaProxy::GetNowPlayingInfo() {
+DBus::MultipleReturn<std::tuple<uint8_t, std::string, std::string, std::string, std::string>,
+                     int32_t> com_jci_aapaProxy::GetNowPlayingInfo() {
   return (*m_method_GetNowPlayingInfo)();
 
 }
@@ -122,7 +119,7 @@ uint8_t com_jci_aapaProxy::GetAvailable() {
   return (*m_method_GetAvailable)();
 
 }
-std::tuple <int32_t> com_jci_aapaProxy::SetNativeTurnByTurnStatus(std::tuple<bool> setNativeTurnByTurnStatus) {
+std::tuple<int32_t> com_jci_aapaProxy::SetNativeTurnByTurnStatus(std::tuple<bool> setNativeTurnByTurnStatus) {
   return (*m_method_SetNativeTurnByTurnStatus)(setNativeTurnByTurnStatus);
 
 }
@@ -130,99 +127,99 @@ int32_t com_jci_aapaProxy::SetMP911EmergencyCallStatus(uint32_t status) {
   return (*m_method_SetMP911EmergencyCallStatus)(status);
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_AOASessionStatus() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_AOASessionStatus() {
   return m_signalproxy_AOASessionStatus;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(std::string)>> com_jci_aapaProxy::signal_SendSessionInfo() {
+std::shared_ptr<DBus::SignalProxy<void(std::string)>> com_jci_aapaProxy::signal_SendSessionInfo() {
   return m_signalproxy_SendSessionInfo;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_VideoProjectionRequestFromMD() {
+std::shared_ptr<DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_VideoProjectionRequestFromMD() {
   return m_signalproxy_VideoProjectionRequestFromMD;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(std::tuple < uint8_t,
-                                        std::string,
-                                        std::string,
-                                        std::string,
-                                        std::string > )>> com_jci_aapaProxy::signal_NowPlayingInfo() {
+std::shared_ptr<DBus::SignalProxy<void(std::tuple<uint8_t,
+                                                  std::string,
+                                                  std::string,
+                                                  std::string,
+                                                  std::string>)>> com_jci_aapaProxy::signal_NowPlayingInfo() {
   return m_signalproxy_NowPlayingInfo;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_MDModeDisplayFirstDialog() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_MDModeDisplayFirstDialog() {
   return m_signalproxy_MDModeDisplayFirstDialog;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_DisplayReconnectingDialog() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_DisplayReconnectingDialog() {
   return m_signalproxy_DisplayReconnectingDialog;
 
 }
-std::shared_ptr <DBus::SignalProxy<void()>> com_jci_aapaProxy::signal_StartBtConnection() {
+std::shared_ptr<DBus::SignalProxy<void()>> com_jci_aapaProxy::signal_StartBtConnection() {
   return m_signalproxy_StartBtConnection;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(std::string, uint32_t, bool)>> com_jci_aapaProxy::signal_BTPairingRequest() {
+std::shared_ptr<DBus::SignalProxy<void(std::string, uint32_t, bool)>> com_jci_aapaProxy::signal_BTPairingRequest() {
   return m_signalproxy_BTPairingRequest;
 
 }
-std::shared_ptr <DBus::SignalProxy<void()>> com_jci_aapaProxy::signal_GetVehicleBtMacAddress() {
+std::shared_ptr<DBus::SignalProxy<void()>> com_jci_aapaProxy::signal_GetVehicleBtMacAddress() {
   return m_signalproxy_GetVehicleBtMacAddress;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifySpeedThreshold() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifySpeedThreshold() {
   return m_signalproxy_NotifySpeedThreshold;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_DisplaySbnInfo() {
+std::shared_ptr<DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_DisplaySbnInfo() {
   return m_signalproxy_DisplaySbnInfo;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_NotifyAudioFocusStatus() {
+std::shared_ptr<DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_NotifyAudioFocusStatus() {
   return m_signalproxy_NotifyAudioFocusStatus;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyBTConnectionComplete() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyBTConnectionComplete() {
   return m_signalproxy_NotifyBTConnectionComplete;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(uint8_t)>> com_jci_aapaProxy::signal_Available() {
+std::shared_ptr<DBus::SignalProxy<void(uint8_t)>> com_jci_aapaProxy::signal_Available() {
   return m_signalproxy_Available;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_NotifyStopAndSetup() {
+std::shared_ptr<DBus::SignalProxy<void(uint32_t)>> com_jci_aapaProxy::signal_NotifyStopAndSetup() {
   return m_signalproxy_NotifyStopAndSetup;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyNoVideoSinkSetup() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyNoVideoSinkSetup() {
   return m_signalproxy_NotifyNoVideoSinkSetup;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyDeviceNotResponding() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyDeviceNotResponding() {
   return m_signalproxy_NotifyDeviceNotResponding;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyASRStatus() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyASRStatus() {
   return m_signalproxy_NotifyASRStatus;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_ProjectionStatusResult() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_ProjectionStatusResult() {
   return m_signalproxy_ProjectionStatusResult;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_DisplayStopForSetupDialog() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_DisplayStopForSetupDialog() {
   return m_signalproxy_DisplayStopForSetupDialog;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(int32_t)>> com_jci_aapaProxy::signal_NotifyAANaviStatus() {
+std::shared_ptr<DBus::SignalProxy<void(int32_t)>> com_jci_aapaProxy::signal_NotifyAANaviStatus() {
   return m_signalproxy_NotifyAANaviStatus;
 
 }
-std::shared_ptr <DBus::SignalProxy<void()>> com_jci_aapaProxy::signal_GetNativeTurnByTurnStatusRequest() {
+std::shared_ptr<DBus::SignalProxy<void()>> com_jci_aapaProxy::signal_GetNativeTurnByTurnStatusRequest() {
   return m_signalproxy_GetNativeTurnByTurnStatusRequest;
 
 }
-std::shared_ptr <DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyDeviceConnection() {
+std::shared_ptr<DBus::SignalProxy<void(bool)>> com_jci_aapaProxy::signal_NotifyDeviceConnection() {
   return m_signalproxy_NotifyDeviceConnection;
 
 }

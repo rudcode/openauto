@@ -58,7 +58,7 @@ void GSTVideoOutput::spawn_gst() {
       (char *) "USER=jci",
       (char *) "LD_LIBRARY_PATH=/jci/lib:/jci/opera/3rdpartylibs/freetype:/usr/lib/imx-mm/audio-codec:/usr/lib/imx-mm/parser:/data_persist/dev/lib:",
       (char *) "HOME=/root",
-      (char *) "WAYLAND_IVI_SURFACE_ID=1",
+      (char *) "WAYLAND_IVI_SURFACE_ID=2",
       (char *) "PATH=/sbin:/usr/sbin:/bin:/usr/bin:/jci/bin/:/resources/dev/bin:/resources/dev/sbin:/data_persist/dev/bin:/data_persist/dev/sbin:/resources/dev/usr/bin",
       (char *) "XDG_RUNTIME_DIR=/tmp",
       (char *) "SHELL=/bin/sh",

@@ -34,7 +34,6 @@ find_package(asio REQUIRED)
 pkg_check_modules(DBUS REQUIRED "dbus-cxx-2.0")
 pkg_check_modules(SIGC++ REQUIRED sigc++-3.0)
 find_package(libusb-1.0 REQUIRED)
-#pkg_check_modules(Systemd REQUIRED libsystemd)
 pkg_check_modules(LIBEVDEV REQUIRED libevdev)
 
 SET(AASDK_BUILD_STATIC ON CACHE BOOL "Build Static AASDK")
@@ -120,6 +119,9 @@ target_link_libraries(autoapp com.jci.bucpsa)
 
 add_subdirectory(src/Mazda/Dbus/com.jci.nativeguictrl)
 target_link_libraries(autoapp com.jci.nativeguictrl)
+
+add_subdirectory(src/Mazda/Dbus/com.jci.aapa)
+target_link_libraries(autoapp com.jci.aapa)
 
 add_subdirectory(src/Mazda/Dbus/com.jci.lds.control)
 target_link_libraries(autoapp com.jci.lds.control)
@@ -244,14 +246,30 @@ add_custom_target(create_tar ALL COMMAND
 add_dependencies(create_tar autoapp)
 add_dependencies(create_tar aa_installer)
 
+#set(test_sources_directory ${sources_directory}/test)
+#file(GLOB_RECURSE test_source_files ${test_sources_directory}/*.cpp)
+#
+#add_executable(test
+#        ${test_source_files})
+#target_include_directories(test PRIVATE ${include_directory})
+#
+#target_link_libraries(test
+#        -static
+#        -static-libstdc++
+#        -static-libgcc
+#        -pthread
+#        )
+
 set(test_sources_directory ${sources_directory}/test)
 file(GLOB_RECURSE test_source_files ${test_sources_directory}/*.cpp)
 
-add_executable(test
-        ${test_source_files})
-target_include_directories(test PRIVATE ${include_directory})
+
+add_executable(test ${test_source_files})
+target_include_directories(test PRIVATE ${sources_directory}/test/)
 
 target_link_libraries(test
+        ${SIGC++_LIBRARIES}
+        ${DBUS_LIBRARIES}
         -static
         -static-libstdc++
         -static-libgcc

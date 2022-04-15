@@ -32,6 +32,7 @@
 #include <autoapp/Service/ServiceFactory.hpp>
 #include <easylogging++.h>
 #include <autoapp/Managers/VideoManager.hpp>
+#include <autoapp/Managers/AAPA.hpp>
 #include <autoapp/Managers/AudioManager.hpp>
 #include <autoapp/Managers/GPSManager.hpp>
 #include <autoapp/Managers/HttpManager.hpp>
@@ -179,10 +180,12 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<DBus::Connection> system_connection = dispatcher->create_connection(DBus::BusType::SYSTEM);
 
   AudioManagerClient audioManager(signals.audioSignals, system_connection);
-  VideoManager videoManager(signals.videoSignals, session_connection);
+//  VideoManager videoManager(signals.videoSignals, session_connection);
+  AAPA aapa(signals.videoSignals, session_connection);
+
   GPSManager gpsManager(signals.gpsSignals, system_connection);
   HttpManager httpManager(signals.videoSignals, signals.aaSignals);
-//  NavigationManager navigationManager(signals.navSignals);
+  NavigationManager navigationManager(signals.navSignals, system_connection);
 
   aasdk::tcp::TCPWrapper tcpWrapper;
 
@@ -210,7 +213,7 @@ int main(int argc, char *argv[]) {
 
   app->waitForUSBDevice();
 
-  // This needs to happen after the rest of openauto is setup, so it goes here.
+  // This needs to happen after the rest of openauto is set up, so it goes here.
   BluetoothManager bluetoothManager(configuration, session_connection);
 
   while (running) {
