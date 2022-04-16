@@ -45,7 +45,7 @@ aasdk::proto::data::GPSLocation GPSManager::update_position() {
 }
 
 GPSManager::GPSManager(GpsSignals::Pointer gs, const std::shared_ptr<DBus::Connection> &system_connection)
-    : gs_(std::move(gs)) {
+    : gs_(std::move(gs)), errorCount(0), lastError(0) {
 
   gpsclient = com_jci_lds_data_objectProxy::create(system_connection, "com.jci.lds.data", "/com/jci/lds/data");
   gpscontrol =

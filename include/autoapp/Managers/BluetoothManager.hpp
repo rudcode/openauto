@@ -27,7 +27,7 @@ class BluetoothManager {
   bool bdsconfigured = false;
   uint32_t serviceId = 0;
   std::shared_ptr<com_jci_bca_objectProxy> bcaClient;
-  void ConnectionStatusResp(uint32_t, uint32_t, uint32_t, uint32_t, std::tuple<std::vector<uint8_t>>);
+  void ConnectionStatusResp(uint32_t, uint32_t, uint32_t, uint32_t, std::tuple<std::vector<uint8_t>>) const;
 };
 
 struct connectionInfo {

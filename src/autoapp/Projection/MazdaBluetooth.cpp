@@ -29,7 +29,9 @@ static uint32_t hexStrToInt(const std::string &hexStr) {
 */
 static std::string formatNumber(uint32_t num) {
   std::stringstream str;
-  if (num < 16) str << "0";   // MACs are padded with zeros... std::setw doesn't woork on HU.
+  if (num < 16) {
+    str << "0";   // MACs are padded with zeros... std::setw doesn't woork on HU.
+  }
   str << std::uppercase << std::hex;
   str << num;
   std::string out = str.str();
@@ -37,7 +39,9 @@ static std::string formatNumber(uint32_t num) {
 }
 
 std::string get_bluetooth_mac_address() {
-  if (!macAddress.empty()) return macAddress;
+  if (!macAddress.empty()) {
+    return macAddress;
+  }
 
   std::ifstream macUpperFile("/sys/fsl_otp/HW_OCOTP_MAC1");
   std::ifstream macLowerFile("/sys/fsl_otp/HW_OCOTP_MAC0");
@@ -49,7 +53,9 @@ std::string get_bluetooth_mac_address() {
   macLower << macLowerFile.rdbuf();
 
   // Check for I/O error
-  if (macUpperFile.fail() || macLowerFile.fail()) return "";
+  if (macUpperFile.fail() || macLowerFile.fail()) {
+    return "";
+  }
 
   uint32_t macAddrUpper = hexStrToInt(macUpper.str());
   uint32_t macAddrLower = hexStrToInt(macLower.str());
@@ -81,11 +87,11 @@ void MazdaBluetooth::stop() {
 
 }
 
-bool MazdaBluetooth::isPaired(const std::string &address) const {
+bool MazdaBluetooth::isPaired(const std::string & /*address*/) const {
   return true;
 }
 
-void MazdaBluetooth::pair(const std::string &address, PairingPromise::Pointer promise) {
+void MazdaBluetooth::pair(const std::string & /*address*/, PairingPromise::Pointer promise) {
   promise->resolve();
 }
 

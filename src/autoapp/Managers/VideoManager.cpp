@@ -22,8 +22,9 @@ void VideoManager::DisplayMode(uint32_t DisplayMode) {
   // currentDisplayMode != 0 means backup camera wants the screen
   if ((bool) DisplayMode) {
     this->vs->focusRelease.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
-    if (hasFocus)
+    if (hasFocus) {
       this->waitsForFocus = true;
+    }
   } else {
     this->vs->focusRequest.emit(VIDEO_FOCUS_REQUESTOR::BACKUP_CAMERA);
   }
@@ -31,7 +32,7 @@ void VideoManager::DisplayMode(uint32_t DisplayMode) {
 
 void VideoManager::requestFocus(VIDEO_FOCUS_REQUESTOR requestor) {
   if (currentDisplayMode && requestor == VIDEO_FOCUS_REQUESTOR::ANDROID_AUTO) {
-    // we can safely exit - backup camera will notice us when finish and we request focus back
+    // we can safely exit - backup camera will notice us when we finish and we request focus back
     waitsForFocus = true;
     return;
   }

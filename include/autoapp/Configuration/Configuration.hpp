@@ -65,7 +65,7 @@ class Configuration : public IConfiguration {
   bool lefthandDrive_ = true;
   bool hideClock_ = false;
   bool enableTouchscreen_ = true;
-  uint32_t wifiPort_ = 30515;
+  int wifiPort_ = 30515;
   el::Level logLevel_ = el::Level::Debug;
   std::string logFile_;
   std::string wifiSSID_;

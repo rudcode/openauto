@@ -22,12 +22,10 @@
 
 #include <aasdk/USB/USBHub.hpp>
 #include <aasdk/USB/ConnectedAccessoriesEnumerator.hpp>
-#include <aasdk/USB/AccessoryModeQueryChain.hpp>
 #include <aasdk/USB/AccessoryModeQueryChainFactory.hpp>
 #include <aasdk/USB/AccessoryModeQueryFactory.hpp>
 #include <aasdk/TCP/TCPWrapper.hpp>
 #include <autoapp/App.hpp>
-#include <autoapp/Configuration/IConfiguration.hpp>
 #include <autoapp/Service/AndroidAutoEntityFactory.hpp>
 #include <autoapp/Service/ServiceFactory.hpp>
 #include <easylogging++.h>
@@ -108,8 +106,8 @@ void signalHandler(int signum) {
 int main(int argc, char *argv[]) {
   auto start_time = std::chrono::high_resolution_clock::now();
   /* Do some Mazda Specific Setup */
-  setenv("DBUS_SYSTEM_BUS_ADDRESS", "unix:path=/tmp/dbus_service_socket", true);
-  setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/tmp/dbus_hmi_socket", true);
+  setenv("DBUS_SYSTEM_BUS_ADDRESS", "unix:path=/tmp/dbus_service_socket", 1);
+  setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/tmp/dbus_hmi_socket", 1);
 
   int fd;
   fd = open("/sys/bus/usb/devices/usb1/authorized_default", O_WRONLY);

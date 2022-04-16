@@ -59,10 +59,10 @@ class NavigationManager {
   ~NavigationManager();
 
  private:
-  void onNavigationStart();
+  static void onNavigationStart();
   void onNavigationStop();
   void onNavigationTurn(int,
-                        std::string,
+                        const std::string &,
                         aasdk::proto::enums::NavigationTurnSide_Enum,
                         aasdk::proto::enums::NavigationTurnEvent_Enum,
                         int);

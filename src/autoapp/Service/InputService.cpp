@@ -73,7 +73,7 @@ void InputService::fillFeatures(aasdk::proto::messages::ServiceDiscoveryResponse
 
   if (inputDevice_->hasTouchscreen()) {
     const auto &touchscreenSurface = inputDevice_->getTouchscreenGeometry();
-    auto touchscreenConfig = inputChannel->mutable_touch_screen_config();
+    auto *touchscreenConfig = inputChannel->mutable_touch_screen_config();
 
     touchscreenConfig->set_width(touchscreenSurface.width);
     touchscreenConfig->set_height(touchscreenSurface.height);
@@ -140,11 +140,11 @@ void InputService::onButtonEvent(const projection::ButtonEvent &event) {
     inputEventIndication.set_timestamp(timestamp.count());
 
     if (event.code == aasdk::proto::enums::ButtonCode::SCROLL_WHEEL) {
-      auto relativeEvent = inputEventIndication.mutable_relative_input_event()->add_relative_input_events();
+      auto *relativeEvent = inputEventIndication.mutable_relative_input_event()->add_relative_input_events();
       relativeEvent->set_delta(event.wheelDirection == projection::WheelDirection::LEFT ? -1 : 1);
       relativeEvent->set_scan_code(event.code);
     } else {
-      auto buttonEvent = inputEventIndication.mutable_button_event()->add_button_events();
+      auto *buttonEvent = inputEventIndication.mutable_button_event()->add_button_events();
       buttonEvent->set_meta(0);
       buttonEvent->set_is_pressed(event.type == projection::ButtonEventType::PRESS);
       buttonEvent->set_long_press(false);
@@ -165,9 +165,9 @@ void InputService::onTouchEvent(const projection::TouchEvent &event) {
     aasdk::proto::messages::InputEventIndication inputEventIndication;
     inputEventIndication.set_timestamp(timestamp.count());
 
-    auto touchEvent = inputEventIndication.mutable_touch_event();
+    auto *touchEvent = inputEventIndication.mutable_touch_event();
     touchEvent->set_touch_action(event.type);
-    auto touchLocation = touchEvent->add_touch_location();
+    auto *touchLocation = touchEvent->add_touch_location();
     touchLocation->set_x(event.x);
     touchLocation->set_y(event.y);
     touchLocation->set_pointer_id(0);

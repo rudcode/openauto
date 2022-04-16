@@ -22,7 +22,13 @@
 namespace autoapp::service {
 
 Pinger::Pinger(asio::io_service &ioService, time_t duration)
-    : strand_(ioService), timer_(ioService), duration_(duration), cancelled_(false), pingsCount_(0), pongsCount_(0) {
+    : strand_(ioService),
+      timer_(ioService),
+      duration_(duration),
+      cancelled_(false),
+      pingsCount_(0),
+      pongsCount_(0),
+      missedCount_(0) {
 
 }
 
@@ -57,7 +63,8 @@ void Pinger::onTimerExceeded(const asio::error_code &error) {
   }
   if (promise_ == nullptr) {
     return;
-  } else if (error == asio::error::operation_aborted || cancelled_) {
+  }
+  if (error == asio::error::operation_aborted || cancelled_) {
     promise_->reject(aasdk::error::Error(aasdk::error::ErrorCode::OPERATION_ABORTED));
   } else if (pingsCount_ - pongsCount_ > 4) {
     promise_->reject(aasdk::error::Error());

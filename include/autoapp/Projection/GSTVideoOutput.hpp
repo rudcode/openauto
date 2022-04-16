@@ -49,6 +49,6 @@ class GSTVideoOutput : public IVideoOutput {
   void message_handler(asio::error_code ec, size_t bytes_transferred);
 
   void spawn_gst();
-  int CheckReverse();
+  static bool CheckReverse();
 };
 }

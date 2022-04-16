@@ -83,10 +83,11 @@ void NavigationService::onChannelError(const aasdk::error::Error &e) {
 
 void NavigationService::onNavigationStatus(const aasdk::proto::messages::NavigationRequestMessage &request) {
   LOG(DEBUG) << "onNavigationStatus " << aasdk::proto::enums::NavigationRequestState::Enum_Name(request.status());
-  if (request.status() == aasdk::proto::enums::NavigationRequestState::NAVIGATION_START)
+  if (request.status() == aasdk::proto::enums::NavigationRequestState::NAVIGATION_START) {
     navSignals_->onNavigationStart.emit();
-  else
+  } else {
     navSignals_->onNavigationStop.emit();
+  }
   channel_->receive(this->shared_from_this());
 }
 void NavigationService::onNavigationTurn(const aasdk::proto::messages::NavigationTurnMessage &request) {

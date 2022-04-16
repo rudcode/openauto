@@ -24,14 +24,18 @@ namespace autoapp::configuration {
 Configuration::Configuration() {
   try {
     toml::table config = toml::parse_file("/mnt/data_persist/dev/bin/autoapp_configuration.toml");
-    if (config.contains("lefthandDrive"))
+    if (config.contains("lefthandDrive")) {
       lefthandDrive_ = config["lefthandDrive"].as_boolean();
-    if (config.contains("hideClock"))
+    }
+    if (config.contains("hideClock")) {
       hideClock_ = config["hideClock"].as_boolean();
-    if (config.contains("enableTouchscreen"))
+    }
+    if (config.contains("enableTouchscreen")) {
       enableTouchscreen_ = config["enableTouchscreen"].as_boolean();
-    if (config.contains("wifiPort"))
+    }
+    if (config.contains("wifiPort")) {
       wifiPort_ = static_cast<uint32_t>(static_cast<long long>(*config["wifiPort"].as_integer()));
+    }
     if (config.contains("logLevel")) {
       std::optional<std::string> level = config["logLevel"].value<std::string>();
       if (level == "debug") {
@@ -104,7 +108,7 @@ el::Level Configuration::logLevel() {
 }
 
 std::string Configuration::logFile() {
-  return std::string(logFile_);
+  return logFile_;
 }
 
 std::string hostapd_config(const std::string &key) {
@@ -128,25 +132,22 @@ std::string hostapd_config(const std::string &key) {
       }
     }
     return "";
-  } else {
-    return "";
   }
+    return "";
 }
 
 std::string Configuration::wifiSSID() {
   if (wifiSSID_.empty()) {
     return hostapd_config("ssid");
-  } else {
-    return std::string(wifiSSID_);
   }
+  return wifiSSID_;
 }
 
 std::string Configuration::wifiPassword() {
   if (wifiPassword_.empty()) {
     return hostapd_config("wpa_passphrase");
-  } else {
-    return std::string(wifiPassword_);
   }
+  return wifiPassword_;
 }
 
 }

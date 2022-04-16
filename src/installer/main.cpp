@@ -13,7 +13,7 @@ namespace fs = std::filesystem;
 
 //TODO: Check if backup already exists and skip if it does.
 
-int mkdir(fs::path path) {
+int mkdir(const fs::path &path) {
   fs::directory_entry dir_path{path};
   if (!dir_path.exists()) {
     if (!fs::create_directories(dir_path)) {
@@ -25,7 +25,7 @@ int mkdir(fs::path path) {
   return 0;
 }
 
-void install_bds(fs::path backup_dir) {
+void install_bds(const fs::path &backup_dir) {
   const auto path = backup_dir / "jci" / "bds";
   if (mkdir(path) != 0) {
     LOG(ERROR) << "Failed install_bds";
@@ -68,7 +68,7 @@ void install_bds(fs::path backup_dir) {
   }
 }
 
-void setup_sm(fs::path backup_dir) {
+void setup_sm(const fs::path &backup_dir) {
   const auto path = backup_dir / "jci" / "sm";
   if (mkdir(path) != 0) {
     LOG(ERROR) << "Failed install_bds";
@@ -118,7 +118,7 @@ void setup_sm(fs::path backup_dir) {
 
 }
 
-void setup_mmui(fs::path backup_dir) {
+void setup_mmui(const fs::path &backup_dir) {
   const char *file = "/jci/mmui/mmui_config.xml";
   const auto path = backup_dir / "jci" / "mmui";
   if (mkdir(path) != 0) {
@@ -145,7 +145,7 @@ void setup_mmui(fs::path backup_dir) {
 
 }
 
-void configure_opera(fs::path backup_dir) {
+void configure_opera(const fs::path &backup_dir) {
   auto path = backup_dir / "jci" / "opera" / "opera_home";
   if (mkdir(path) != 0) {
     LOG(ERROR) << "Failed configure_opera";

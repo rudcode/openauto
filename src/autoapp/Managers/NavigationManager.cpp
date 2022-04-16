@@ -57,7 +57,7 @@ NavigationManager::NavigationManager(NavigationSignals::Pointer navSignals,
   LOG(INFO) << "HUD DETECTED";
   navSignals_->onNavigationDistance.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationDistance));
   navSignals_->onNavigationTurn.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationTurn));
-  navSignals_->onNavigationStart.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationStart));
+  navSignals_->onNavigationStart.connect(&NavigationManager::onNavigationStart);
   navSignals_->onNavigationStop.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationStop));
 //  }
 //  else {
@@ -74,7 +74,7 @@ uint32_t NavigationManager::roundabout(int degrees, aasdk::proto::enums::Navigat
 }
 
 void NavigationManager::onNavigationTurn(int turn_number,
-                                         std::string turn_name,
+                                         const std::string &turn_name,
                                          aasdk::proto::enums::NavigationTurnSide_Enum turn_side,
                                          aasdk::proto::enums::NavigationTurnEvent_Enum turn_event,
                                          int turn_angle) {
@@ -107,7 +107,7 @@ void NavigationManager::onNavigationDistance([[maybe_unused]] int distance,
     LOG(DEBUG) << "Roundabout";
     diricon = roundabout(navi_data->turn_angle, navi_data->turn_side);
   } else {
-    if (AA2MAZ.count(navi_data->turn_event)) {
+    if (AA2MAZ.count(navi_data->turn_event) > 0) {
       diricon = AA2MAZ[navi_data->turn_event][navi_data->turn_side - 1];
     } else {
       LOG(DEBUG) << "No matching navigation icon for " << navi_data->turn_event << " " << navi_data->turn_side;

@@ -10,7 +10,8 @@ AudioFocusRequest::AudioFocusRequest(asio::io_service &ioService) :
 void AudioFocusRequest::onTimerExceeded(const asio::error_code &error) {
   if (promise_ == nullptr) {
     return;
-  } else if (error == asio::error::operation_aborted || cancelled_) {
+  }
+  if (error == asio::error::operation_aborted || cancelled_) {
     promise_->resolve();
   } else {
     promise_->reject(aasdk::error::Error(aasdk::error::ErrorCode::NONE));

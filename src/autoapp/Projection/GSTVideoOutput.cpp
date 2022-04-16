@@ -7,7 +7,7 @@
 
 namespace autoapp::projection {
 
-GSTVideoOutput::GSTVideoOutput(asio::io_service &ioService) : ioService_(ioService) {}
+GSTVideoOutput::GSTVideoOutput(asio::io_service &ioService) : ioService_(ioService), running(false) {}
 
 void GSTVideoOutput::message_handler(asio::error_code ec, size_t bytes_transferred) {
   if (bytes_transferred || !ec) {
@@ -67,10 +67,10 @@ void GSTVideoOutput::spawn_gst() {
       nullptr
   };
 
-  if (!posix_spawn_file_actions_init(&fa)) {
-    if (!posix_spawn_file_actions_adddup2(&fa, p_stdin[0], 0)) {
-      if (!posix_spawn_file_actions_adddup2(&fa, p_stdout[1], 1)) {
-        if (!posix_spawn(&gstpid, "/bin/sh", &fa, nullptr, launch, environment)) {
+  if (posix_spawn_file_actions_init(&fa) == 0) {
+    if (posix_spawn_file_actions_adddup2(&fa, p_stdin[0], 0) == 0) {
+      if (posix_spawn_file_actions_adddup2(&fa, p_stdout[1], 1) == 0) {
+        if (posix_spawn(&gstpid, "/bin/sh", &fa, nullptr, launch, environment) == 0) {
           posix_spawn_file_actions_destroy(&fa);
           fcntl(p_stdin[1], F_SETFD, 0);
           fcntl(p_stdout[0], F_SETFD, 0);
@@ -136,7 +136,7 @@ void GSTVideoOutput::stop() {
   }
 }
 
-int GSTVideoOutput::CheckReverse() {
+bool GSTVideoOutput::CheckReverse() {
   bool reverse = false;
   char gpio_value[3];
   FILE *fd = fopen("/sys/class/gpio/Reverse/value", "r");

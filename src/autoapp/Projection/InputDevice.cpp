@@ -33,7 +33,8 @@ InputDevice::InputDevice(asio::io_service &ioService,
     strand_(ioService),
     audiosignals_(std::move(audiosignals)),
     videosignals_(std::move(videosignals)),
-    eventHandler_(nullptr) {
+    eventHandler_(nullptr),
+    canceled_(false) {
   keymap = {
       {KEY_G, ButtonCode::MICROPHONE_1},
       {KEY_BACKSPACE, ButtonCode::BACK},
@@ -150,8 +151,9 @@ void InputDevice::poll(asio::error_code ec) {
         rc = libevdev_next_event(touch_dev, LIBEVDEV_READ_FLAG_SYNC, &ev);
       }
       LOG(DEBUG) << "Input resynced";
-    } else if (rc == LIBEVDEV_READ_STATUS_SUCCESS)
+    } else if (rc == LIBEVDEV_READ_STATUS_SUCCESS) {
       handle_touch(&ev);
+    }
   }
 
   rc = 0;

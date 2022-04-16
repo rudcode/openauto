@@ -30,7 +30,7 @@ DBus::MultipleReturn<bool, std::string, uint32_t> AADBus::GetAOASessionStatus() 
 
 std::tuple<int32_t> AADBus::SetNativeTurnByTurnStatus(std::tuple<bool> setNativeTurnByTurnStatus) {
   return {};
-};
+}
 
 int32_t AADBus::SetMP911EmergencyCallStatus(uint32_t status) {
   return {};
@@ -38,7 +38,7 @@ int32_t AADBus::SetMP911EmergencyCallStatus(uint32_t status) {
 
 void AADBus::SbnStatus(bool status) {
   LOG(DEBUG) << "SbnStatus " << status;
-};
+}
 
 AAPA::AAPA(VideoSignals::Pointer videosignals,
            const std::shared_ptr<DBus::Connection> &session_connection) :

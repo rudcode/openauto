@@ -42,11 +42,8 @@ class AADBus : public com_jci_aapa {
 class AAPA {
  private:
   VideoSignals::Pointer vs;
-  bool waitsForFocus = false;
   sigc::connection requestFocusConnection;
   sigc::connection releaseFocusConnection;
-  bool currentDisplayMode;
-  bool hasFocus = false;
   std::shared_ptr<com_jci_aapa_objectAdapter> session_object;
   std::shared_ptr<com_jci_aapaInterface> adapter;
 

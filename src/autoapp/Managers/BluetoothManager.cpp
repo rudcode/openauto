@@ -42,8 +42,8 @@ BluetoothManager::BluetoothManager(autoapp::configuration::IConfiguration::Point
 
 }
 
-void BluetoothManager::ConnectionStatusResp(uint32_t found_serviceId, uint32_t connStatus, uint32_t btDeviceId,
-                                            uint32_t status, std::tuple<std::vector<uint8_t>> terminalPath) {
+void BluetoothManager::ConnectionStatusResp(uint32_t found_serviceId, uint32_t connStatus, uint32_t  /*btDeviceId*/,
+                                            uint32_t  /*status*/, std::tuple<std::vector<uint8_t>> terminalPath) const {
   LOG(DEBUG) << "Saw Service: " << found_serviceId;
   if (found_serviceId == 1 && connStatus == 3) {
     LOG(DEBUG) << "Saw Service: Handsfree. Inititating connection";
@@ -162,15 +162,17 @@ void BluetoothConnection::handle_connect(const std::string &pty) {
     if (i > 0) {
       buf.insert(buf.cend(), tmp, tmp + i);
     }
-    if (buf.size() < 4)
+    if (buf.size() < 4) {
       continue;
+    }
 
     msgLen = static_cast<uint16_t>(be16toh(*(uint16_t *) buf.data()));
     msg = static_cast<uint16_t>(be16toh(*(uint16_t *) (buf.data() + 2)));
     LOG(DEBUG) << "MSG Type: " << msg << " Size: " << msgLen;
 
-    if (static_cast<uint16_t>(buf.size()) < msgLen + 4)
+    if (static_cast<uint16_t>(buf.size()) < msgLen + 4) {
       continue;
+    }
 
     auto *buffer = new uint8_t[msgLen];
     std::copy(buf.cbegin() + 4, buf.cbegin() + msgLen, buffer);
@@ -204,7 +206,7 @@ int update_connection_info(connectionInfo &info) {
   ioctl(fd, SIOCGIFHWADDR, &ifr);
   mac = (unsigned char *) ifr.ifr_hwaddr.sa_data;
   info.macAddress.resize(18);
-  sprintf(&info.macAddress[0], "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  sprintf((info.macAddress).data(), "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
   ioctl(fd, SIOCGIFADDR, &ifr);
   info.ipAddress = inet_ntoa(((struct sockaddr_in *) &ifr.ifr_addr)->sin_addr);
 
