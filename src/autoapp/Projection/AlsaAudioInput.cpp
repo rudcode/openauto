@@ -179,6 +179,7 @@ void AlsaAudioInput::start(StartPromise::Pointer promise) {
 
     if ((err = snd_pcm_poll_descriptors(pcm_handle, ufds, static_cast<unsigned int>(count))) < 0) {
       printf("Unable to obtain poll descriptors for recording: %s\n", snd_strerror(err));
+      free(ufds);
       promise->reject();
       return;
     }
