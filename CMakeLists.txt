@@ -147,6 +147,9 @@ target_link_libraries(autoapp aasdk_static)
 target_link_libraries(autoapp aasdk_proto_static)
 target_link_libraries(autoapp libusb)
 
+target_include_directories(autoapp PRIVATE external/mINI/src/mini)
+
+
 target_link_libraries(autoapp
         ${SIGC++_LIBRARIES}
         ${ALSA_LIBRARIES}

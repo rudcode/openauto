@@ -38,6 +38,9 @@
 #include <autoapp/Managers/NavigationManager.hpp>
 #include <autoapp/Configuration/Configuration.hpp>
 
+#define MINI_CASE_SENSITIVE
+#include <ini.h>
+
 using ThreadPool = std::vector<std::thread>;
 
 class usbThreadPool {
@@ -101,6 +104,13 @@ void signalHandler(int signum) {
     running = false;
     LOG(INFO) << "Received SIGTERM";
   }
+}
+
+bool checkAapaVersion() {
+  mINI::INIFile file("/jci/version.ini");
+  mINI::INIStructure ini;
+  file.read(ini);
+  return ini["VersionInfo"].has("JCI_BLM_AAPA-IHU");
 }
 
 int main(int argc, char *argv[]) {
@@ -178,8 +188,16 @@ int main(int argc, char *argv[]) {
   std::shared_ptr<DBus::Connection> system_connection = dispatcher->create_connection(DBus::BusType::SYSTEM);
 
   AudioManagerClient audioManager(signals.audioSignals, system_connection);
-//  VideoManager videoManager(signals.videoSignals, session_connection);
-  AAPA aapa(signals.videoSignals, session_connection);
+  AAPA *aapa;
+  VideoManager *videoManager;
+
+  if (checkAapaVersion()) {
+    LOG(DEBUG) << "Using Mazda Android Auto Video";
+    aapa = new AAPA(signals.videoSignals, session_connection);
+  } else {
+    LOG(DEBUG) << "Using internal Video handling";
+    videoManager = new VideoManager(signals.videoSignals, session_connection);
+  }
 
   GPSManager gpsManager(signals.gpsSignals, system_connection);
   HttpManager httpManager(signals.videoSignals, signals.aaSignals);

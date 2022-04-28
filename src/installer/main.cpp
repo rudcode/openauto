@@ -71,6 +71,13 @@ void install_bds() {
   }
 }
 
+bool checkAapaVersion() {
+  mINI::INIFile file("/jci/version.ini");
+  mINI::INIStructure ini;
+  file.read(ini);
+  return ini["VersionInfo"].has("JCI_BLM_AAPA-IHU");
+}
+
 void setup_sm() {
   backup("/jci/sm/sm.conf");
 
@@ -109,9 +116,22 @@ void setup_sm() {
       dependancy->SetAttribute("type", "service");
       dependancy->SetAttribute("value", "audio_manager");
 
-      doc.SaveFile("/jci/sm/sm.conf");
-      LOG(INFO) << "/jci/sm/sm.conf configured";
     }
+    if (checkAapaVersion()) {
+      for (tinyxml2::XMLElement *e = serviceconfig->FirstChildElement(); e != nullptr; e = e->NextSiblingElement()) {
+        if (std::string(e->Attribute("name")) == "jciAAPA") {
+          LOG(INFO) << "Disabling jciAAPA";
+          e->SetAttribute("autorun", false);
+        }
+        if (std::string(e->Attribute("name")) == "aap_service") {
+          LOG(INFO) << "Disabling aap_service";
+          e->SetAttribute("autorun", false);
+        }
+      }
+    }
+    doc.SaveFile("/jci/sm/sm.conf");
+    LOG(INFO) << "/jci/sm/sm.conf configured";
+
   }
 
 }
