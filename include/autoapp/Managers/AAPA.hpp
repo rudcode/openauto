@@ -46,9 +46,11 @@ class AAPA {
   sigc::connection releaseFocusConnection;
   std::shared_ptr<com_jci_aapa_objectAdapter> session_object;
   std::shared_ptr<com_jci_aapaInterface> adapter;
+  AADBus *androiddbus;
 
  public:
-  explicit AAPA(VideoSignals::Pointer videosignals, const std::shared_ptr<DBus::Connection> &);
+  explicit AAPA(VideoSignals::Pointer videosignals,
+                const std::shared_ptr<DBus::Connection> &session_connection);
   ~AAPA();
 
   void requestFocus(VIDEO_FOCUS_REQUESTOR requestor);

@@ -3,7 +3,7 @@
 
 #include <utility>
 
-AADBus::AADBus(VideoSignals::Pointer videosignals) : vs(std::move(videosignals)) {
+AADBus::AADBus(VideoSignals::Pointer videosignals) : vs(videosignals) {
 
 }
 
@@ -45,9 +45,9 @@ AAPA::AAPA(VideoSignals::Pointer videosignals,
     vs(std::move(videosignals)) {
   session_connection->request_name("com.jci.aapa", DBUSCXX_NAME_FLAG_REPLACE_EXISTING);
 
-  AADBus androiddbus(vs);
+  androiddbus = new AADBus(vs);
 
-  adapter = com_jci_aapaInterface::create(&androiddbus);
+  adapter = com_jci_aapaInterface::create(androiddbus);
 
   session_object = com_jci_aapa_objectAdapter::create(session_connection, adapter, "/com/jci/aapa");
 

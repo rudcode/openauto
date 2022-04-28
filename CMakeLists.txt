@@ -245,33 +245,3 @@ add_custom_target(create_tar ALL COMMAND
         WORKING_DIRECTORY ${base_directory})
 add_dependencies(create_tar autoapp)
 add_dependencies(create_tar aa_installer)
-
-#set(test_sources_directory ${sources_directory}/test)
-#file(GLOB_RECURSE test_source_files ${test_sources_directory}/*.cpp)
-#
-#add_executable(test
-#        ${test_source_files})
-#target_include_directories(test PRIVATE ${include_directory})
-#
-#target_link_libraries(test
-#        -static
-#        -static-libstdc++
-#        -static-libgcc
-#        -pthread
-#        )
-
-set(test_sources_directory ${sources_directory}/test)
-file(GLOB_RECURSE test_source_files ${test_sources_directory}/*.cpp)
-
-
-add_executable(test ${test_source_files})
-target_include_directories(test PRIVATE ${sources_directory}/test/)
-
-target_link_libraries(test
-        ${SIGC++_LIBRARIES}
-        ${DBUS_LIBRARIES}
-        -static
-        -static-libstdc++
-        -static-libgcc
-        -pthread
-        )

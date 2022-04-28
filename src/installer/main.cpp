@@ -10,9 +10,6 @@ INITIALIZE_EASYLOGGINGPP
 
 namespace fs = std::filesystem;
 
-
-//TODO: Check if backup already exists and skip if it does.
-
 int mkdir(const fs::path &path) {
   fs::directory_entry dir_path{path};
   if (!dir_path.exists()) {
@@ -25,13 +22,19 @@ int mkdir(const fs::path &path) {
   return 0;
 }
 
-void install_bds(const fs::path &backup_dir) {
-  const auto path = backup_dir / "jci" / "bds";
-  if (mkdir(path) != 0) {
-    LOG(ERROR) << "Failed install_bds";
-    return;
+void backup(const fs::path &path) {
+  fs::path backup_path = "/mnt/data_persist/dev/backup";
+  backup_path += path;
+  if (!std::filesystem::exists(backup_path)) {
+    if (mkdir(backup_path.parent_path()) == 0) {
+      LOG(INFO) << "Backing up " << path << " to " << backup_path << std::endl;
+      fs::copy(path, backup_path, fs::copy_options::update_existing);
+    }
   }
-  fs::copy("/jci/bds/BdsConfiguration.xml", path / "BdsConfiguration.xml", fs::copy_options::update_existing);
+}
+
+void install_bds() {
+  backup("/jci/bds/BdsConfiguration.xml");
 
   tinyxml2::XMLDocument doc;
   doc.LoadFile("/jci/bds/BdsConfiguration.xml");
@@ -68,13 +71,8 @@ void install_bds(const fs::path &backup_dir) {
   }
 }
 
-void setup_sm(const fs::path &backup_dir) {
-  const auto path = backup_dir / "jci" / "sm";
-  if (mkdir(path) != 0) {
-    LOG(ERROR) << "Failed install_bds";
-    return;
-  }
-  fs::copy("/jci/sm/sm.conf", path / "sm.conf", fs::copy_options::update_existing);
+void setup_sm() {
+  backup("/jci/sm/sm.conf");
 
   tinyxml2::XMLDocument doc;
   doc.LoadFile("/jci/sm/sm.conf");
@@ -118,17 +116,11 @@ void setup_sm(const fs::path &backup_dir) {
 
 }
 
-void setup_mmui(const fs::path &backup_dir) {
-  const char *file = "/jci/mmui/mmui_config.xml";
-  const auto path = backup_dir / "jci" / "mmui";
-  if (mkdir(path) != 0) {
-    LOG(ERROR) << "Failed install_bds";
-    return;
-  }
-  fs::copy(file, path / "mmui_config.xml", fs::copy_options::update_existing);
+void setup_mmui() {
+  backup("/jci/mmui/mmui_config.xml");
 
   tinyxml2::XMLDocument doc;
-  doc.LoadFile(file);
+  doc.LoadFile("/jci/mmui/mmui_config.xml");
 
   tinyxml2::XMLNode *docRoot = doc.FirstChild()->NextSibling();
 
@@ -138,20 +130,15 @@ void setup_mmui(const fs::path &backup_dir) {
     if (std::string(e->Attribute("name")) == "androidauto") {
       e->SetAttribute("priority", 30);
       LOG(DEBUG) << "Set androidauto priority to 30";
-      doc.SaveFile(file);
+      doc.SaveFile("/jci/mmui/mmui_config.xml");
       break;
     }
   }
 
 }
 
-void configure_opera(const fs::path &backup_dir) {
-  auto path = backup_dir / "jci" / "opera" / "opera_home";
-  if (mkdir(path) != 0) {
-    LOG(ERROR) << "Failed configure_opera";
-    return;
-  }
-  fs::copy("/jci/opera/opera_home/opera.ini", path / "opera.ini", fs::copy_options::update_existing);
+void configure_opera() {
+  backup("/jci/opera/opera_home/opera.ini");
 
   mINI::INIFile file("/jci/opera/opera_home/opera.ini");
   mINI::INIStructure ini;
@@ -165,12 +152,7 @@ void configure_opera(const fs::path &backup_dir) {
   file.write(ini, false);
 
   if (fs::exists("/jci/opera/opera_dir/userjs/fps.js")) {
-    path = backup_dir / "jci" / "opera" / "opera_dir" / "userjs";
-    if (mkdir(path) != 0) {
-      LOG(ERROR) << "Failed configure_opera";
-      return;
-    }
-    fs::copy("/jci/opera/opera_dir/userjs/fps.js", path / "fps.js", fs::copy_options::update_existing);
+    backup("/jci/opera/opera_dir/userjs/fps.js");
     fs::remove("/jci/opera/opera_dir/userjs/fps.js");
   }
 }
@@ -185,8 +167,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
     }
   }
 
-  install_bds(path_backup);
-  setup_sm(path_backup);
-  setup_mmui(path_backup);
-  configure_opera(path_backup);
+  install_bds();
+  setup_sm();
+  setup_mmui();
+  configure_opera();
 }

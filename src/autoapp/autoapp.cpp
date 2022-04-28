@@ -171,8 +171,8 @@ int main(int argc, char *argv[]) {
 
   Signals signals = Signals();
 
-  DBus::set_logging_function(DBus::log_std_err);
-  DBus::set_log_level(SL_TRACE);
+//  DBus::set_logging_function(DBus::log_std_err);
+//  DBus::set_log_level(SL_TRACE);
   std::shared_ptr<DBus::Dispatcher> dispatcher = DBus::StandaloneDispatcher::create();
   std::shared_ptr<DBus::Connection> session_connection = dispatcher->create_connection(DBus::BusType::SESSION);
   std::shared_ptr<DBus::Connection> system_connection = dispatcher->create_connection(DBus::BusType::SYSTEM);
