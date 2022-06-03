@@ -49,7 +49,7 @@ void GSTVideoOutput::spawn_gst() {
   char *const launch[] = {
       (char *) "sh",
       (char *) "-c",
-      (char *) "gst-launch fdsrc fd=0 timeout=1000 do-timestamp=true ! queue max-size-buffers=600 ! h264parse " \
+      (char *) "gst-launch fdsrc fd=0 timeout=1000000 do-timestamp=true ! queue max-size-buffers=600 ! h264parse " \
       "! vpudec low-latency=true framedrop=true framedrop-level-mask=0x200 frame-plus=1 "\
       "!  mfw_v4lsink name=aavideo 2>&1",
       nullptr};
