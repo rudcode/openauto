@@ -4,9 +4,6 @@
 NavigationManager::NavigationManager(NavigationSignals::Pointer navSignals,
                                      const std::shared_ptr<DBus::Connection> &systemconnection) : navSignals_(std::move(
     navSignals)) {
-//  auto hudSettingsConnection = sdbus::createSessionBusConnection();
-//  hudSettings_ = new HUDSettingsCLient(hudSettingsConnection, "com.jci.navi2IHU", "/com/jci/navi2IHU"); // on hmi bus
-
   std::shared_ptr<com_jci_vbs_navi_tmc_objectProxy>
       tmcProxy = com_jci_vbs_navi_tmc_objectProxy::create(systemconnection, "com.jci.vbs.navi", "/com/jci/vbs/navi");
   std::shared_ptr<com_jci_vbs_navi_objectProxy>
@@ -53,17 +50,10 @@ NavigationManager::NavigationManager(NavigationSignals::Pointer navSignals,
                           TurnIcon{MazdaIcons::DESTINATION_LEFT, MazdaIcons::DESTINATION_RIGHT,
                                    MazdaIcons::DESTINATION})); //TURN_DESTINATION
 
-//  if (hudSettings_->GetHUDIsInstalled()) {
-  LOG(INFO) << "HUD DETECTED";
   navSignals_->onNavigationDistance.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationDistance));
   navSignals_->onNavigationTurn.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationTurn));
   navSignals_->onNavigationStart.connect(&NavigationManager::onNavigationStart);
   navSignals_->onNavigationStop.connect(sigc::mem_fun(*this, &NavigationManager::onNavigationStop));
-//  }
-//  else {
-//    LOG(INFO) << "HUD NOT DETECTED";
-//  }
-
 }
 
 uint32_t NavigationManager::roundabout(int degrees, aasdk::proto::enums::NavigationTurnSide_Enum side) {
