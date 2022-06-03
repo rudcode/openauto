@@ -201,7 +201,25 @@ int main(int argc, char *argv[]) {
 
   GPSManager gpsManager(signals.gpsSignals, system_connection);
   HttpManager httpManager(signals.videoSignals, signals.aaSignals);
-  NavigationManager navigationManager(signals.navSignals, system_connection);
+  NavigationManager *navigationManager;
+
+  try {
+    std::shared_ptr<com_jci_navi2IHU_HUDSettings_objectProxy>
+        hudSettingsProxy = com_jci_navi2IHU_HUDSettings_objectProxy::create(session_connection, "com.jci.navi2IHU", "/com/jci/navi2IHU");
+    std::shared_ptr<com_jci_navi2IHU_HUDSettingsProxy>
+        hudSettingsClient_ = hudSettingsProxy->getcom_jci_navi2IHU_HUDSettingsInterface();
+
+    if (hudSettingsClient_->GetHUDIsInstalled()) {
+      LOG(INFO) << "HUD DETECTED";
+      navigationManager = new NavigationManager(signals.navSignals, system_connection);
+    }
+    else {
+      LOG(INFO) << "HUD NOT DETECTED";
+    }
+  }
+  catch (...) {
+    LOG(INFO) << "HUD NOT DETECTED";
+  }
 
   aasdk::tcp::TCPWrapper tcpWrapper;
 

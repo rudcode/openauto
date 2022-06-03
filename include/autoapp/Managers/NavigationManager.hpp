@@ -70,7 +70,6 @@ class NavigationManager {
                             [[maybe_unused]] int, int, aasdk::proto::enums::NavigationDistanceUnit_Enum);
   static uint32_t roundabout(int, aasdk::proto::enums::NavigationTurnSide_Enum side);
 
-//  HUDSettingsCLient *hudSettings_;
   std::shared_ptr<com_jci_vbs_navi_tmcProxy> tmcClient_;
   std::shared_ptr<com_jci_vbs_naviProxy> naviClient_;
   NaviData *navi_data;
